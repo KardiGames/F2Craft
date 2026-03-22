@@ -5,18 +5,12 @@ using UnityEngine;
 [Serializable]
 public class ItemsSlot
 {
-    public enum Mode
-    {
-        Both, Input, Output
-    }
-    
     [SerializeField] private Item _item;
     [SerializeField] private int _quantity = 0;
     [SerializeField] private int _quantityLimit = 1;
     [SerializeField] private List<Item> _whiteList = new List<Item>();
     [SerializeField] private List<Item> _blackList = new List<Item>();
-    [SerializeField] private Mode _mode;
-    ItemsSlot(int quantityLimit, IEnumerable<Item> whileList, IEnumerable<Item> blackList, Mode mode = Mode.Both) {
+    ItemsSlot(int quantityLimit, IEnumerable<Item> whileList, IEnumerable<Item> blackList) {
         if (quantityLimit < 1)
             quantityLimit = 1;
         _quantityLimit=quantityLimit;
@@ -25,18 +19,15 @@ public class ItemsSlot
             _whiteList.AddRange(whileList);
         if (blackList != null) 
             _blackList.AddRange(blackList);
-
-        _mode = Mode.Both;
     }
 
-    public ItemsSlot (int quantityLimit, Mode mode = Mode.Both)
+    public ItemsSlot (int quantityLimit)
     {
         if (quantityLimit<1)
             quantityLimit = 1;
         _quantityLimit = quantityLimit;
-        _mode = mode;
     }
-    public ItemsSlot (Item item, int quantityLimit, Mode mode = Mode.Both) : this (quantityLimit, mode)
+    public ItemsSlot (Item item, int quantityLimit) : this (quantityLimit)
     {
         _whiteList.Add(item);
     }
@@ -46,8 +37,7 @@ public class ItemsSlot
    
     public int FreeCapacity (Item item)
     {
-        if (_mode == Mode.Output
-            || (_item != null && _item != item)
+        if ((_item != null && _item != item)
             || _blackList.Contains(item)
             || (_whiteList.Count > 0 && !_whiteList.Contains(item))
             )
@@ -58,8 +48,7 @@ public class ItemsSlot
 
     public int Available (Item item)
     {
-        if ( _mode == Mode.Input
-            || _item != Item 
+        if (_item != Item 
             || _item == null
             )
             return 0;

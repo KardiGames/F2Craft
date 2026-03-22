@@ -241,7 +241,7 @@ Transform:
   m_GameObject: {fileID: 196829931}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 16.47, y: -0, z: -24.01}
+  m_LocalPosition: {x: 16.4, y: 0.1, z: -23.9}
   m_LocalScale: {x: 5, y: 3, z: 5}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -410,7 +410,7 @@ Light:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 410087039}
   m_Enabled: 1
-  serializedVersion: 12
+  serializedVersion: 13
   m_Type: 1
   m_Color: {r: 1, g: 1, b: 1, a: 1}
   m_Intensity: 2
@@ -462,7 +462,7 @@ Light:
   m_UseBoundingSphereOverride: 0
   m_UseViewFrustumForShadowCasterCull: 1
   m_ForceVisible: 0
-  m_ShadowRadius: 0
+  m_ShapeRadius: 0
   m_ShadowAngle: 0
   m_LightUnit: 1
   m_LuxAtDistance: 1
@@ -521,6 +521,7 @@ GameObject:
   m_Component:
   - component: {fileID: 763858543}
   - component: {fileID: 763858544}
+  - component: {fileID: 763858545}
   - component: {fileID: 763858542}
   - component: {fileID: 763858541}
   - component: {fileID: 763858540}
@@ -633,12 +634,28 @@ MonoBehaviour:
   m_GameObject: {fileID: 763858539}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 3d7adfddce8c7bf479245b562f12066b, type: 3}
+  m_Script: {fileID: 11500000, guid: 3d82f70ea854bde4f8d12e9a2b19cfce, type: 3}
   m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::Building
+  m_EditorClassIdentifier: Assembly-CSharp::Factory
   _playerNumber: 0
-  _hp: 100
+  _hp: 0
   _activeEntitiesManager: {fileID: 1242861811}
+  _blueprint: {fileID: 0}
+  _productionStorage: []
+  _resourcesStorage: []
+  _tmpBlueprint: {fileID: 11400000, guid: 6e350b2bc9a59db42b85745907946398, type: 2}
+--- !u!114 &763858545
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 763858539}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 11659a3e12c54ba4fa094709b24fd44a, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::ItemRecycler
 --- !u!1 &813894203
 GameObject:
   m_ObjectHideFlags: 0
@@ -848,7 +865,7 @@ MonoBehaviour:
   _entities:
   - {fileID: 813894208}
   - {fileID: 196829935}
-  - {fileID: 763858544}
+  - {fileID: 0}
   - {fileID: 2114594837}
 --- !u!4 &1242861812
 Transform:
