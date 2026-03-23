@@ -43,7 +43,7 @@ public class ItemsSlot
             )
             return 0;
 
-        return _quantity;
+        return _quantityLimit - _quantity;
     }
 
     public int Available (Item item)

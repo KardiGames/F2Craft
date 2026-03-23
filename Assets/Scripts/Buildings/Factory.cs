@@ -8,7 +8,7 @@ public class Factory : Building
     [SerializeField] private List<ItemsSlot> _productionStorage;
     [SerializeField] private List<ItemsSlot> _resourcesStorage;
     private ItemRecycler _recycler;
-    private float _timer=-1;
+    private float _timer=0f;
     private bool _isProducting=false;
     [SerializeField] private BlueprintForItem _tmpBlueprint;
 

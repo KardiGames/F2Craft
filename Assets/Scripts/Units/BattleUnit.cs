@@ -1,6 +1,6 @@
 using UnityEngine;
 
-public class BattleUnit : ActiveEntity
+public class BattleUnit : Unit
 {
     [SerializeField] private ActiveEntity _target;
     [SerializeField] private float _moveSpeed;
