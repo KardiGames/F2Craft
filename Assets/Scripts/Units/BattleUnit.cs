@@ -3,7 +3,6 @@ using UnityEngine;
 public class BattleUnit : Unit
 {
     [SerializeField] private ActiveEntity _target;
-    [SerializeField] private float _moveSpeed;
     [SerializeField] private int _damage;
     [SerializeField] float _attackDistance;
     [SerializeField] private float _attackCooldown;

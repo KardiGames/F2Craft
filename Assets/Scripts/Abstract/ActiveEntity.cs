@@ -5,7 +5,7 @@ public class ActiveEntity : MonoBehaviour
 {
     
     [SerializeField] private int _playerNumber=0;
-    [SerializeField] private int _hp=0;
+    [SerializeField] protected int _hp=0;
     [SerializeField] private ActiveEntitiesManager _activeEntitiesManager; //TODO delete SerField
 
     public int PlayerNumber => _playerNumber;
