@@ -8,7 +8,10 @@ namespace WorkerLogic
         
         public void Execute(Worker worker)
         {
-            worker.MoveTo(point);
+            if (worker.TryReachThePoint(point))
+            {
+
+            }
         }
 
         public void Reset()

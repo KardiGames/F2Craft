@@ -35,15 +35,21 @@ public class Worker : Unit
         _command = command;
     }
 
-    public void Move(Vector3 point)
+    public bool TryReachThePoint(Vector3 point)
     {
+        Vector3 current = transform.position;
+        Vector3 delta = point - current;
 
-        Vector3 moveVector = point - transform.position;
-        moveVector.y = 0;
-        transform.position=transform.position+(moveVector.normalized.
+        float sqrDelta = delta.x * delta.x + delta.y * delta.y + delta.z * delta.z;
 
-            .normalized * _moveSpeed * Time.deltaTime;
+        if (sqrDelta <= _moveSpeed*_moveSpeed*Time.deltaTime*Time.deltaTime)
+        {
+            transform.position = point;
+            return true;
+        }
 
-        transform.position = new Vector3();
+        float distance = Mathf.Sqrt(sqrDelta);
+        transform.position = current + _moveSpeed * Time.deltaTime * (delta / distance);
+        return false;
     }
 }
