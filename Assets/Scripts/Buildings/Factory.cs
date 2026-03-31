@@ -1,6 +1,5 @@
 using System.Collections.Generic;
 using UnityEngine;
-using UnityEngine.Rendering.UI;
 
 public class Factory : Building
 {
@@ -14,7 +13,8 @@ public class Factory : Building
 
     private void Start()
     {
-        SetupBlueprint(_tmpBlueprint);
+        if (_tmpBlueprint!= null)
+            SetupBlueprint(_tmpBlueprint);
     }
     public void SetupBlueprint(BlueprintForItem blueprint)
     {
@@ -28,6 +28,45 @@ public class Factory : Building
         for (int i = 0; i < _blueprint.Resources.Count; i++)
             _resourcesStorage.Add(new ItemsSlot(_blueprint.Resources[i], _blueprint.ResourcesQuantities[i] * STORAGE_QUANTITY_MULTIPLER));
 
+    }
+
+    public override IEnumerable<Item> ItemsToGive()
+    {
+        List<Item> items = new List<Item>();
+        foreach (ItemsSlot slot in _productionStorage)
+            if (slot.Quantity > 0 && slot.Item!=null)
+                items.Add(slot.Item);
+        return items;
+    }
+
+    public override int ItemsOfTypeToGet(Item item, out ItemsSlot slot)
+    {
+        int capacity;
+        slot = null;
+        for (int i = 0; i < _resourcesStorage.Count; i++)
+        {
+            capacity = _resourcesStorage[i].FreeCapacity(item);
+            if (capacity>0)
+            {
+                slot = _resourcesStorage[i];
+                return capacity;
+            }
+        }
+            return 0;
+    }   
+
+    public override int ItemsOfTypeToGive(Item item, out ItemsSlot slot)
+    {
+        slot = null;
+        for (int i=0; i < _productionStorage.Count; i++)
+        {
+            if (_productionStorage[i].Item==item)
+            {
+                slot = _productionStorage[i];
+                return _productionStorage[i].Available(item);
+            }
+        }
+        return 0;
     }
 
     private void RemoveBlueprint()
@@ -59,8 +98,9 @@ public class Factory : Building
     {
         if (_isProducting)
         {
-            _timer -= Time.deltaTime;
-            if (_timer <= 0f)
+            if (_timer > 0f)
+                _timer -= Time.deltaTime;
+            else
                 ProduceItem();
         } 
         else
@@ -70,12 +110,17 @@ public class Factory : Building
             
     }
 
+    private void OnMouseDown()
+    {
+        GameObject.Find("Worker").GetComponent<WorkerLogic.Commander>().Interact(this);
+    }
+
     private void ProduceItem ()
     {
 
         for (int i = 0; i < _blueprint.Production.Count; i++)
         {
-            if (!_productionStorage[i].TryGet(_blueprint.Production[i], _blueprint.ProductionQuantities[i]))
+            if (!_productionStorage[i].TryStore(_blueprint.Production[i], _blueprint.ProductionQuantities[i]))
                 print ("Error. Something goes wrong with production "+_blueprint.Production[i]);
         }
 

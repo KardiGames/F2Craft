@@ -1,22 +1,46 @@
+using System;
 using UnityEngine;
 namespace WorkerLogic
 {
 
     public class Move : ICommand
     {
-        private Vector3 point;
-        
-        public void Execute(Worker worker)
-        {
-            if (worker.TryReachThePoint(point))
-            {
+        public event Action OnFinishedCommandExecuted;
+        private enum State {Finished, Moving}
+        private Worker _worker;
+        private Vector3 _point;
+        private State _state = State.Moving;
 
+        public Move (Worker worker, Vector3 point)
+        {
+            _worker = worker;
+            _point = point;
+            _state = State.Moving;
+            if (_worker == null)
+            {
+                Debug.Log("Error! Command Move hasn't created!");
+                _state = State.Finished;
             }
         }
 
-        public void Reset()
+        public void Execute()
         {
-            throw new System.NotImplementedException();
+            if (_state == State.Finished)
+            {
+                OnFinishedCommandExecuted?.Invoke();
+                return;
+            }
+
+            if (_worker.TryReachThePoint(_point))
+            {
+                _state = State.Finished;
+            }
+        }
+
+        public void Cancel()
+        {
+            _state = State.Finished;
+            OnFinishedCommandExecuted = null;
         }
     }
 

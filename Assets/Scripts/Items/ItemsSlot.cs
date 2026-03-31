@@ -37,7 +37,8 @@ public class ItemsSlot
    
     public int FreeCapacity (Item item)
     {
-        if ((_item != null && _item != item)
+        if (item == null
+            || (_item != null && _item != item)
             || _blackList.Contains(item)
             || (_whiteList.Count > 0 && !_whiteList.Contains(item))
             )
@@ -48,11 +49,11 @@ public class ItemsSlot
 
     public int Available (Item item)
     {
-        if (_item != Item 
-            || _item == null
+        if (item == _item
+            && _item != null
             )
-            return 0;
-        return _quantity;
+            return _quantity;
+        return 0;
     }
 
     public void Clear ()
@@ -76,9 +77,12 @@ public class ItemsSlot
         return true;
     }
 
-    public bool TryGive (Item item, int quantity)
+    public bool TryGive (ItemsSlot slot, int quantity)
     {
-        if (Available(item) >= quantity)
+        if (slot == null || quantity<=0) 
+            return false;
+
+        if (_item != null && _quantity >= quantity && slot.TryStore(_item, quantity))
         {
             _quantity -= quantity;
             if (_quantity == 0)
@@ -88,10 +92,14 @@ public class ItemsSlot
         return false;
     }
 
-    public bool TryGet (Item item, int quantity)
+    public bool TryStore (Item item, int quantity)
     {
+        if (quantity <= 0 || item == null)
+            return false;
+
         if (FreeCapacity (item)  >= quantity)
         {
+            _item = item;
             _quantity += quantity;
             return true;
         }

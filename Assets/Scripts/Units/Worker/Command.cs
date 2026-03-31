@@ -1,10 +1,12 @@
+using System;
 using UnityEngine;
 
 namespace WorkerLogic
 {
     public interface ICommand
     {
-        public void Execute(Worker worker);
-        public void Reset();
+        public event Action OnFinishedCommandExecuted;
+        public void Execute();
+        public void Cancel();
     }
 }
