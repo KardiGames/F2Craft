@@ -231,6 +231,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::Building
   _playerNumber: 1
   _hp: 200
+  _maxHp: 0
   _activeEntitiesManager: {fileID: 1242861811}
 --- !u!4 &196829936
 Transform:
@@ -638,12 +639,14 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::Factory
   _playerNumber: 0
-  _hp: 10
-  _activeEntitiesManager: {fileID: 1242861811}
+  _hp: 0
+  _maxHp: 0
+  _activeEntitiesManager: {fileID: 0}
   _blueprint: {fileID: 0}
   _productionStorage: []
   _resourcesStorage: []
-  _tmpBlueprint: {fileID: 11400000, guid: 6e350b2bc9a59db42b85745907946398, type: 2}
+  _tmpBlueprint: {fileID: 11400000, guid: f7d4427ab76e9c047897d9e4fc583cb3, type: 2}
+  _tmpFoundation: {fileID: 2879976269712404072, guid: 7cb8965d171c1624f8d1dcfc43514e67, type: 3}
 --- !u!114 &763858545
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -722,7 +725,7 @@ MeshRenderer:
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
-  - {fileID: 2100000, guid: a26e802eed2a2084a9715da71578352d, type: 2}
+  - {fileID: 2100000, guid: 31321ba15b8f8eb4c954353edc038b1d, type: 2}
   m_StaticBatchInfo:
     firstSubMesh: 0
     subMeshCount: 0
@@ -783,6 +786,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::Building
   _playerNumber: 0
   _hp: 500
+  _maxHp: 0
   _activeEntitiesManager: {fileID: 1242861811}
 --- !u!1 &832575517
 GameObject:
@@ -865,9 +869,6 @@ MonoBehaviour:
   _entities:
   - {fileID: 813894208}
   - {fileID: 196829935}
-  - {fileID: 763858544}
-  - {fileID: 2114594837}
-  - {fileID: 2037003718}
 --- !u!4 &1242861812
 Transform:
   m_ObjectHideFlags: 0
@@ -1124,8 +1125,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: '::'
   _underConstructionPrefab: {fileID: -9182022544975094174, guid: 7df046f8aa389f24dbf8ad477499c4a9, type: 3}
-  _tmpBuildingToConstruct: {fileID: 5216407075933274954, guid: 8eb1275f61b7b4944b6ce9d39c0b523d, type: 3}
-  _tmpItemToProduce: {fileID: 0}
+  _tmpBuildingBlueprint: {fileID: 11400000, guid: e0256a5a92b8be547a58a5d3095115a4, type: 2}
+  _tmpItemToProduce: {fileID: 11400000, guid: 6e350b2bc9a59db42b85745907946398, type: 2}
 --- !u!1 &1960610186
 GameObject:
   m_ObjectHideFlags: 0
@@ -1250,12 +1251,14 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::Factory
   _playerNumber: 0
-  _hp: 10
-  _activeEntitiesManager: {fileID: 1242861811}
+  _hp: 0
+  _maxHp: 0
+  _activeEntitiesManager: {fileID: 0}
   _blueprint: {fileID: 0}
   _productionStorage: []
   _resourcesStorage: []
   _tmpBlueprint: {fileID: 11400000, guid: f7d4427ab76e9c047897d9e4fc583cb3, type: 2}
+  _tmpFoundation: {fileID: 2879976269712404072, guid: 7cb8965d171c1624f8d1dcfc43514e67, type: 3}
 --- !u!4 &1960610192
 Transform:
   m_ObjectHideFlags: 0
@@ -1385,6 +1388,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::Worker
   _playerNumber: 0
   _hp: 5
+  _maxHp: 0
   _activeEntitiesManager: {fileID: 1242861811}
   _moveSpeed: 0.3
   _connectedBuilding: {fileID: 0}
@@ -1550,8 +1554,9 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::BattleUnit
   _playerNumber: 0
-  _hp: 50
-  _activeEntitiesManager: {fileID: 1242861811}
+  _hp: 0
+  _maxHp: 0
+  _activeEntitiesManager: {fileID: 0}
   _moveSpeed: 1
   _target: {fileID: 0}
   _damage: 10

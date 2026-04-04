@@ -3,30 +3,34 @@ using UnityEngine;
 
 public class ActiveEntity : MonoBehaviour
 {
-    
-    [SerializeField] private int _playerNumber=0;
+    [SerializeField] protected int _playerNumber=0;
     [SerializeField] protected int _hp=0;
+    [SerializeField] protected int _maxHp=0;
     [SerializeField] protected ActiveEntitiesManager _activeEntitiesManager; //TODO delete SerField
 
     public int PlayerNumber => _playerNumber;
     public int HP => _hp;
+    public int MaxHp => _maxHp;
 
-    public void Init(int playerNumber, int hp, ActiveEntitiesManager activeEntitiesManager)
+    protected void Init(int playerNumber, int hp, int maxHp, ActiveEntitiesManager activeEntitiesManager)
     {
-        if (_playerNumber != 0 || hp != 0 || _activeEntitiesManager!=null)
+        if (_playerNumber != 0 || _hp != 0 || _maxHp!=0 || _activeEntitiesManager!=null)
         {
-            print("Error. Re-initiation. Canceling");
+            print("Error. Re-initiation. Canceling. GO: "+gameObject.name);
+            Destroy(gameObject);
             return;
         }
 
         if (hp <= 0 || activeEntitiesManager == null)
         {
             print ("Error! Active Entity initialisation aborted");
+            Destroy(gameObject);
             return;
         }
         
         _playerNumber = playerNumber;
         _hp = hp;
+        _maxHp = maxHp;
         _activeEntitiesManager = activeEntitiesManager;
         _activeEntitiesManager.AddEntity(this);
     }
@@ -39,10 +43,16 @@ public class ActiveEntity : MonoBehaviour
         
         if (_hp<0)
         {
-            _activeEntitiesManager.RemoveEntity(this);
-            Destroy(gameObject);
+            Destroy();
         }
     }
+    
+    protected void Destroy ()
+    {
+        _activeEntitiesManager?.RemoveEntity(this);
+        Destroy(gameObject);
+    }
+    
     private void Start()
     {
         if (_activeEntitiesManager == null)

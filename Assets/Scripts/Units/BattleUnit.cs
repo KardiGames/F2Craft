@@ -8,6 +8,11 @@ public class BattleUnit : Unit
     [SerializeField] private float _attackCooldown;
     private float _timeToAttack=0f;
 
+    private void Start() //CRUTCH
+    {
+        Init(0, 50, 50, GameObject.Find("SingleScripts").GetComponent<ActiveEntitiesManager>());
+    }
+
     private void Update()
     {
         if (_target == null)

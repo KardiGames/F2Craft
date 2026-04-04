@@ -12,8 +12,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: d932bdfecf2ac954c9da13afe8134401, type: 3}
   m_Name: FactoryBlueprint
   m_EditorClassIdentifier: Assembly-CSharp::BlueprintForBuilding
-  _buildingPefub: {fileID: 0}
-  _itemBlueprint: {fileID: 0}
-  _time: 0
-  _resources: []
-  _resourcesQuantities: 
+  _buildingPefub: {fileID: 5216407075933274954, guid: 8eb1275f61b7b4944b6ce9d39c0b523d, type: 3}
+  _time: 30
+  _buildingHP: 150
+  _resources:
+  - {fileID: 11400000, guid: a40053139cbbab34a820502f4295ac6d, type: 2}
+  _resourcesQuantities: 1e000000

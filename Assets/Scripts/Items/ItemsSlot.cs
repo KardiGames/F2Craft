@@ -5,37 +5,42 @@ using UnityEngine;
 [Serializable]
 public class ItemsSlot
 {
+    public event Action OnContentChanged;
+    public event Action OnItemsAdded;
+    public event Action OnItemsRemoved;
+
     [SerializeField] private Item _item;
     [SerializeField] private int _quantity = 0;
     [SerializeField] private int _quantityLimit = 1;
     [SerializeField] private List<Item> _whiteList = new List<Item>();
     [SerializeField] private List<Item> _blackList = new List<Item>();
-    ItemsSlot(int quantityLimit, IEnumerable<Item> whileList, IEnumerable<Item> blackList) {
+    ItemsSlot(int quantityLimit, IEnumerable<Item> whileList, IEnumerable<Item> blackList)
+    {
         if (quantityLimit < 1)
             quantityLimit = 1;
-        _quantityLimit=quantityLimit;
+        _quantityLimit = quantityLimit;
 
         if (whileList != null)
             _whiteList.AddRange(whileList);
-        if (blackList != null) 
+        if (blackList != null)
             _blackList.AddRange(blackList);
     }
 
-    public ItemsSlot (int quantityLimit)
+    public ItemsSlot(int quantityLimit)
     {
-        if (quantityLimit<1)
+        if (quantityLimit < 1)
             quantityLimit = 1;
         _quantityLimit = quantityLimit;
     }
-    public ItemsSlot (Item item, int quantityLimit) : this (quantityLimit)
+    public ItemsSlot(Item item, int quantityLimit) : this(quantityLimit)
     {
         _whiteList.Add(item);
     }
     public Item Item => _item;
     public int Quantity => _quantity;
     public int QuantityLimit => _quantityLimit;
-   
-    public int FreeCapacity (Item item)
+
+    public int FreeCapacity(Item item)
     {
         if (item == null
             || (_item != null && _item != item)
@@ -47,7 +52,7 @@ public class ItemsSlot
         return _quantityLimit - _quantity;
     }
 
-    public int Available (Item item)
+    public int Available(Item item)
     {
         if (item == _item
             && _item != null
@@ -56,35 +61,56 @@ public class ItemsSlot
         return 0;
     }
 
-    public void Clear ()
+    public void Clear()
     {
+        if (_item == null)
+            return;
+
         _quantity = 0;
         _item = null;
+        OnItemsRemoved?.Invoke();
+        OnContentChanged?.Invoke();
+
     }
 
-    public bool TrySpend (Item item, int quantity)
+    public bool TrySpend(Item item, int quantity)
     {
-        if (item == null && quantity<0) 
+        if (item == null && quantity < 0)
             return false;
 
         if (_item != item && _quantity < quantity)
             return false;
 
         _quantity -= quantity;
+        OnItemsRemoved?.Invoke();
+        OnContentChanged?.Invoke();
+
         if (_quantity == 0)
             _item = null;
 
         return true;
     }
 
-    public bool TryGive (ItemsSlot slot, int quantity)
+    public bool TryPermanentSpend(Item item, int quantity)
     {
-        if (slot == null || quantity<=0) 
+        if (TrySpend(item, quantity))
+        {
+            _quantityLimit -= quantity;
+            return true;
+        }
+        return false;
+    }
+
+    public bool TryGive(ItemsSlot slot, int quantity)
+    {
+        if (slot == null || quantity <= 0)
             return false;
 
         if (_item != null && _quantity >= quantity && slot.TryStore(_item, quantity))
         {
             _quantity -= quantity;
+            OnItemsRemoved?.Invoke();
+            OnContentChanged?.Invoke();
             if (_quantity == 0)
                 _item = null;
             return true;
@@ -92,15 +118,17 @@ public class ItemsSlot
         return false;
     }
 
-    public bool TryStore (Item item, int quantity)
+    public bool TryStore(Item item, int quantity)
     {
         if (quantity <= 0 || item == null)
             return false;
 
-        if (FreeCapacity (item)  >= quantity)
+        if (FreeCapacity(item) >= quantity)
         {
             _item = item;
             _quantity += quantity;
+            OnItemsAdded?.Invoke();
+            OnContentChanged?.Invoke();
             return true;
         }
         return false;

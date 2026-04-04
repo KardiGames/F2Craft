@@ -3,7 +3,7 @@ using UnityEngine;
 public class Foundation : MonoBehaviour
 {
     [SerializeField] private ConstructionSite _underConstructionPrefab;
-    [SerializeField] private Building _tmpBuildingToConstruct;
+    [SerializeField] private BlueprintForBuilding _tmpBuildingBlueprint;
     [SerializeField] private BlueprintForItem _tmpItemToProduce;
 
     private void Start()
@@ -14,14 +14,14 @@ public class Foundation : MonoBehaviour
 
     private void OnMouseUpAsButton()
     {
-        StartConstruction (_tmpBuildingToConstruct);
+        StartConstruction (_tmpBuildingBlueprint, _tmpItemToProduce);
     }
 
-    private void StartConstruction (Building building)
+    private void StartConstruction (BlueprintForBuilding buildingBlueprint, BlueprintForItem blueprintToSetup)
     {
         ConstructionSite site = Instantiate<ConstructionSite>(_underConstructionPrefab, transform.position, _underConstructionPrefab.transform.rotation);
         //CRUTCH: go.Find
-        site.Init(0, 1, GameObject.Find("SingleScripts").GetComponent<ActiveEntitiesManager>());
+        site.Init(0, GameObject.Find("SingleScripts").GetComponent<ActiveEntitiesManager>(), buildingBlueprint, blueprintToSetup, this);
         
 
     }

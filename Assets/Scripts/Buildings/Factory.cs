@@ -7,14 +7,32 @@ public class Factory : Building
     [SerializeField] private List<ItemsSlot> _productionStorage;
     [SerializeField] private List<ItemsSlot> _resourcesStorage;
     private ItemRecycler _recycler;
-    private float _timer=0f;
-    private bool _isProducting=false;
+    private float _timer = 0f;
+    private bool _isProducting = false;
     [SerializeField] private BlueprintForItem _tmpBlueprint;
+    [SerializeField] private Foundation _tmpFoundation;
 
     private void Start()
     {
-        if (_tmpBlueprint!= null)
-            SetupBlueprint(_tmpBlueprint);
+        //CRUTCH: go.Find
+        if (_tmpBlueprint != null)
+        {
+            Foundation fdt = Instantiate<Foundation>(_tmpFoundation, transform.position, _tmpFoundation.transform.rotation);
+            Init(0, 250, 250, GameObject.Find("SingleScripts").GetComponent<ActiveEntitiesManager>(), _tmpBlueprint, fdt);
+            fdt.gameObject.SetActive(false);
+        }
+    }
+    public void Init(int playerNumber, int hp, int maxHp, ActiveEntitiesManager activeEntitiesManager, BlueprintForItem itemBlueprint, Foundation foundation)
+    {
+        if (foundation == null || itemBlueprint == null)
+        {
+            Destroy();
+            return;
+        }
+        Init(playerNumber, hp, maxHp, activeEntitiesManager);
+        _foundation = foundation;
+        SetupBlueprint(itemBlueprint);
+
     }
     public void SetupBlueprint(BlueprintForItem blueprint)
     {
@@ -22,9 +40,9 @@ public class Factory : Building
             return;
         RemoveBlueprint();
         _blueprint = blueprint;
-        
-        for (int i=0; i<_blueprint.Production.Count; i++)
-            _productionStorage.Add(new ItemsSlot(_blueprint.Production[i], _blueprint.ProductionQuantities[i]*STORAGE_QUANTITY_MULTIPLER));
+
+        for (int i = 0; i < _blueprint.Production.Count; i++)
+            _productionStorage.Add(new ItemsSlot(_blueprint.Production[i], _blueprint.ProductionQuantities[i] * STORAGE_QUANTITY_MULTIPLER));
         for (int i = 0; i < _blueprint.Resources.Count; i++)
             _resourcesStorage.Add(new ItemsSlot(_blueprint.Resources[i], _blueprint.ResourcesQuantities[i] * STORAGE_QUANTITY_MULTIPLER));
 
@@ -34,7 +52,7 @@ public class Factory : Building
     {
         List<Item> items = new List<Item>();
         foreach (ItemsSlot slot in _productionStorage)
-            if (slot.Quantity > 0 && slot.Item!=null)
+            if (slot.Quantity > 0 && slot.Item != null)
                 items.Add(slot.Item);
         return items;
     }
@@ -46,21 +64,21 @@ public class Factory : Building
         for (int i = 0; i < _resourcesStorage.Count; i++)
         {
             capacity = _resourcesStorage[i].FreeCapacity(item);
-            if (capacity>0)
+            if (capacity > 0)
             {
                 slot = _resourcesStorage[i];
                 return capacity;
             }
         }
-            return 0;
-    }   
+        return 0;
+    }
 
     public override int ItemsOfTypeToGive(Item item, out ItemsSlot slot)
     {
         slot = null;
-        for (int i=0; i < _productionStorage.Count; i++)
+        for (int i = 0; i < _productionStorage.Count; i++)
         {
-            if (_productionStorage[i].Item==item)
+            if (_productionStorage[i].Item == item)
             {
                 slot = _productionStorage[i];
                 return _productionStorage[i].Available(item);
@@ -102,26 +120,21 @@ public class Factory : Building
                 _timer -= Time.deltaTime;
             else
                 ProduceItem();
-        } 
+        }
         else
         {
             StartProduction();
         }
-            
+
     }
 
-    private void OnMouseDown()
-    {
-        GameObject.Find("Worker").GetComponent<WorkerLogic.Commander>().Interact(this);
-    }
-
-    private void ProduceItem ()
+    private void ProduceItem()
     {
 
         for (int i = 0; i < _blueprint.Production.Count; i++)
         {
             if (!_productionStorage[i].TryStore(_blueprint.Production[i], _blueprint.ProductionQuantities[i]))
-                print ("Error. Something goes wrong with production "+_blueprint.Production[i]);
+                print("Error. Something goes wrong with production " + _blueprint.Production[i]);
         }
 
         _isProducting = false;
@@ -143,14 +156,14 @@ public class Factory : Building
     {
         if (!_isProducting
             && _blueprint != null
-            && HaveFreeSpaceForProduction ()
+            && HaveFreeSpaceForProduction()
             && HaveEnoughResources()
             )
             return true;
         return false;
     }
 
-    private bool TrySpendResources ()
+    private bool TrySpendResources()
     {
         for (int i = 0; i < _blueprint.Resources.Count; i++)
         {
@@ -160,9 +173,9 @@ public class Factory : Building
         return true;
     }
 
-    private bool HaveFreeSpaceForProduction ()
+    private bool HaveFreeSpaceForProduction()
     {
-        for (int i=0; i<_blueprint.Production.Count; i++)
+        for (int i = 0; i < _blueprint.Production.Count; i++)
         {
             if (_productionStorage[i].FreeCapacity(_blueprint.Production[i]) < _blueprint.ProductionQuantities[i])
                 return false;
@@ -171,7 +184,7 @@ public class Factory : Building
         return true;
     }
 
-    private bool HaveEnoughResources ()
+    private bool HaveEnoughResources()
     {
         for (int i = 0; i < _blueprint.Resources.Count; i++)
         {

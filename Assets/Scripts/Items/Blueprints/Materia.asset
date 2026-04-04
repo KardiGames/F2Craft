@@ -14,7 +14,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::BlueprintForItem
   _production:
   - {fileID: 11400000, guid: a40053139cbbab34a820502f4295ac6d, type: 2}
-  _productionQuantities: 01000000
+  _productionQuantities: 02000000
   _time: 3
   _resources: []
   _resourcesQuantities: 

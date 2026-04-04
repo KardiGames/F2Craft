@@ -49,12 +49,14 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::Factory
   _playerNumber: 0
-  _hp: 10
+  _hp: 0
+  _maxHp: 0
   _activeEntitiesManager: {fileID: 0}
   _blueprint: {fileID: 0}
   _productionStorage: []
   _resourcesStorage: []
-  _tmpBlueprint: {fileID: 11400000, guid: f7d4427ab76e9c047897d9e4fc583cb3, type: 2}
+  _tmpBlueprint: {fileID: 0}
+  _tmpFoundation: {fileID: 0}
 --- !u!114 &6167024785155600365
 MonoBehaviour:
   m_ObjectHideFlags: 0
