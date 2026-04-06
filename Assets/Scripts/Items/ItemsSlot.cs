@@ -1,5 +1,7 @@
 using System;
 using System.Collections.Generic;
+using System.Linq;
+using UnityEditor.PackageManager;
 using UnityEngine;
 
 [Serializable]
@@ -14,7 +16,7 @@ public class ItemsSlot
     [SerializeField] private int _quantityLimit = 1;
     [SerializeField] private List<Item> _whiteList = new List<Item>();
     [SerializeField] private List<Item> _blackList = new List<Item>();
-    ItemsSlot(int quantityLimit, IEnumerable<Item> whileList, IEnumerable<Item> blackList)
+    public ItemsSlot(int quantityLimit, IEnumerable<Item> whileList, IEnumerable<Item> blackList)
     {
         if (quantityLimit < 1)
             quantityLimit = 1;
@@ -73,6 +75,22 @@ public class ItemsSlot
 
     }
 
+    public void SetAccessLists(IEnumerable<Item> whitelist, IEnumerable<Item> blacklist)
+    {
+        if (_item != null && (blacklist != null && blacklist.Contains(_item)) || (whitelist != null && whitelist.Contains(_item) == false))
+        {
+
+                Debug.Log("Error! New Black-while-lists doesn't set of ItemsList");
+            return;
+        }
+        _whiteList.Clear();
+        if (whitelist is not null)
+            _whiteList?.AddRange(whitelist);
+        if (blacklist is not null)
+            _blackList.Clear();
+        _blackList?.AddRange(blacklist);
+    }
+
     public bool TrySpend(Item item, int quantity)
     {
         if (item == null && quantity < 0)
@@ -95,6 +113,8 @@ public class ItemsSlot
     {
         if (TrySpend(item, quantity))
         {
+            OnItemsRemoved?.Invoke();
+            OnContentChanged?.Invoke();
             _quantityLimit -= quantity;
             return true;
         }

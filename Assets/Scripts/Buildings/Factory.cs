@@ -18,11 +18,11 @@ public class Factory : Building
         if (_tmpBlueprint != null)
         {
             Foundation fdt = Instantiate<Foundation>(_tmpFoundation, transform.position, _tmpFoundation.transform.rotation);
-            Init(0, 250, 250, GameObject.Find("SingleScripts").GetComponent<ActiveEntitiesManager>(), _tmpBlueprint, fdt);
+            Init(0, 250, 250, GameObject.Find("SingleScripts").GetComponent<ActiveEntitiesManager>(), fdt, _tmpBlueprint);
             fdt.gameObject.SetActive(false);
         }
     }
-    public void Init(int playerNumber, int hp, int maxHp, ActiveEntitiesManager activeEntitiesManager, BlueprintForItem itemBlueprint, Foundation foundation)
+    public void Init(int playerNumber, int hp, int maxHp, ActiveEntitiesManager activeEntitiesManager, Foundation foundation, BlueprintForItem itemBlueprint)
     {
         if (foundation == null || itemBlueprint == null)
         {

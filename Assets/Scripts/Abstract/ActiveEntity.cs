@@ -12,7 +12,7 @@ public class ActiveEntity : MonoBehaviour
     public int HP => _hp;
     public int MaxHp => _maxHp;
 
-    protected void Init(int playerNumber, int hp, int maxHp, ActiveEntitiesManager activeEntitiesManager)
+    public void Init(int playerNumber, int hp, int maxHp, ActiveEntitiesManager activeEntitiesManager)
     {
         if (_playerNumber != 0 || _hp != 0 || _maxHp!=0 || _activeEntitiesManager!=null)
         {

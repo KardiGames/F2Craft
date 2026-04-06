@@ -9,6 +9,7 @@ public class ConstructionSite : Building
 
     [SerializeField] private BlueprintForBuilding _buildingBlueprint;
     [SerializeField] private BlueprintForItem _itemBlueprint;
+    [SerializeField] private BlueprintForUnit _unitBlueprint;
     [SerializeField] private List<ItemsSlot> _resourcesStorage = new();
 
     private Renderer _renderer;
@@ -18,13 +19,20 @@ public class ConstructionSite : Building
     [SerializeField] private int _stageResuorcesCost = 0; //CRUTCH delete SerField
     
 
-    public void Init(int playerNumber, ActiveEntitiesManager activeEntitiesManager, BlueprintForBuilding buildingBlueprint, BlueprintForItem itemBlueprint, Foundation foundation)
+    public void Init(int playerNumber, ActiveEntitiesManager activeEntitiesManager, BlueprintForBuilding buildingBlueprint, Foundation foundation, BlueprintForItem itemBlueprint, BlueprintForUnit unitBlueprint)
     {
-        if (buildingBlueprint == null || itemBlueprint == null || foundation == null)
+        if (buildingBlueprint == null || foundation == null)
         {
             print("Error! ConstructionSite initialisation aborted");
             return;
         }
+        
+        if ((buildingBlueprint.ConstructingBuilding is Factory && itemBlueprint == null) && (buildingBlueprint.ConstructingBuilding is UnitProducer && unitBlueprint==null))
+        {
+            print("Error! ConstructionSite initialisation aborted");
+            return;
+        }
+
         if (_buildingBlueprint != null || _itemBlueprint != null || _foundation != null)
         {
             print("Error. ConstructionSite re-initialisation aborted");
@@ -34,6 +42,7 @@ public class ConstructionSite : Building
         Init(playerNumber, BASE_HP, buildingBlueprint.BuildingHP, activeEntitiesManager);
         _buildingBlueprint = buildingBlueprint;
         _itemBlueprint = itemBlueprint;
+        _unitBlueprint = unitBlueprint;
         _foundation = foundation;
 
         for (int i = 0; i < _buildingBlueprint.Resources.Count; i++)
@@ -129,7 +138,12 @@ public class ConstructionSite : Building
         if (_buildingBlueprint.ConstructingBuilding is Factory factoryBlueprint)
         {
             Factory factory = Instantiate<Factory>(factoryBlueprint, transform.position, factoryBlueprint.transform.rotation);
-            factory.Init(_playerNumber, _hp, _maxHp, _activeEntitiesManager, _itemBlueprint, _foundation);
+            factory.Init(_playerNumber, _hp, _maxHp, _activeEntitiesManager, _foundation, _itemBlueprint);
+            Destroy();
+        } else if (_buildingBlueprint.ConstructingBuilding is UnitProducer unitProducerBlueprint)
+        {
+            UnitProducer producer = Instantiate<UnitProducer>(unitProducerBlueprint, transform.position, unitProducerBlueprint.transform.rotation);
+            producer.Init(_playerNumber, _hp, _maxHp, _activeEntitiesManager, _foundation, _unitBlueprint);
             Destroy();
         }
 

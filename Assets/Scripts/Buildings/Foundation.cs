@@ -5,6 +5,7 @@ public class Foundation : MonoBehaviour
     [SerializeField] private ConstructionSite _underConstructionPrefab;
     [SerializeField] private BlueprintForBuilding _tmpBuildingBlueprint;
     [SerializeField] private BlueprintForItem _tmpItemToProduce;
+    [SerializeField] private BlueprintForUnit _tmpUnitToProduce;
 
     private void Start()
     {
@@ -14,15 +15,20 @@ public class Foundation : MonoBehaviour
 
     private void OnMouseUpAsButton()
     {
-        StartConstruction (_tmpBuildingBlueprint, _tmpItemToProduce);
+        StartUnitProducerConstruction (_tmpBuildingBlueprint, _tmpUnitToProduce);
     }
 
-    private void StartConstruction (BlueprintForBuilding buildingBlueprint, BlueprintForItem blueprintToSetup)
+    private void StartFactoryConstruction (BlueprintForBuilding buildingBlueprint, BlueprintForItem blueprintToSetup)
     {
         ConstructionSite site = Instantiate<ConstructionSite>(_underConstructionPrefab, transform.position, _underConstructionPrefab.transform.rotation);
         //CRUTCH: go.Find
-        site.Init(0, GameObject.Find("SingleScripts").GetComponent<ActiveEntitiesManager>(), buildingBlueprint, blueprintToSetup, this);
-        
+        site.Init(0, GameObject.Find("SingleScripts").GetComponent<ActiveEntitiesManager>(), buildingBlueprint, this, blueprintToSetup, null);
+    }
+    private void StartUnitProducerConstruction(BlueprintForBuilding buildingBlueprint, BlueprintForUnit blueprintToSetup)
+    {
+        ConstructionSite site = Instantiate<ConstructionSite>(_underConstructionPrefab, transform.position, _underConstructionPrefab.transform.rotation);
+        //CRUTCH: go.Find
+        site.Init(0, GameObject.Find("SingleScripts").GetComponent<ActiveEntitiesManager>(), buildingBlueprint, this, null, blueprintToSetup);
 
     }
 }

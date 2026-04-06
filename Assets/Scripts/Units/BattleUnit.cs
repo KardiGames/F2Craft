@@ -10,7 +10,11 @@ public class BattleUnit : Unit
 
     private void Start() //CRUTCH
     {
-        Init(0, 50, 50, GameObject.Find("SingleScripts").GetComponent<ActiveEntitiesManager>());
+        if (_activeEntitiesManager is null)
+        {
+            Init(0, 50, 50, GameObject.Find("SingleScripts").GetComponent<ActiveEntitiesManager>());
+            print("Crutch. Unit initiated by Start()");
+        }
     }
 
     private void Update()
@@ -41,7 +45,7 @@ public class BattleUnit : Unit
     {
         if (_target == null) 
             return;
-
+        transform.LookAt(_target.transform.position);
         Vector3 moveVector = ((_target.transform.position - transform.position).normalized)*_moveSpeed*Time.deltaTime;
         
         transform.position = transform.position+ moveVector;
