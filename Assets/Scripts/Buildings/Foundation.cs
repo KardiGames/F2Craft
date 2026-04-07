@@ -7,16 +7,23 @@ public class Foundation : MonoBehaviour
     [SerializeField] private BlueprintForItem _tmpItemToProduce;
     [SerializeField] private BlueprintForUnit _tmpUnitToProduce;
 
+    public void SetSelection (bool isSelecting)
+    {
+
+    }
+    public void ConstructCurrenTempSetup()
+    {
+        if (_tmpItemToProduce != null)
+            StartFactoryConstruction(_tmpBuildingBlueprint, _tmpItemToProduce);
+        else if (_tmpBuildingBlueprint != null)
+            StartUnitProducerConstruction(_tmpBuildingBlueprint, _tmpUnitToProduce);
+    }
     private void Start()
     {
         if (_underConstructionPrefab == null)
             print("Error! Link is null!");
     }
 
-    private void OnMouseUpAsButton()
-    {
-        StartUnitProducerConstruction (_tmpBuildingBlueprint, _tmpUnitToProduce);
-    }
 
     private void StartFactoryConstruction (BlueprintForBuilding buildingBlueprint, BlueprintForItem blueprintToSetup)
     {

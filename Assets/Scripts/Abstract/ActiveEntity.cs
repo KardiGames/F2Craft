@@ -46,6 +46,11 @@ public class ActiveEntity : MonoBehaviour
             Destroy();
         }
     }
+
+    public void SetSelection (bool isSelecting)
+    {
+
+    }
     
     protected void Destroy ()
     {

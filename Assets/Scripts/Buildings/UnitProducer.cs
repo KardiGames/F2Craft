@@ -165,11 +165,6 @@ public class UnitProducer : Building
         {
             StartProduction();
         }
-
-        if (Input.GetKeyUp(KeyCode.Space))
-        {
-            AddUnitToQueue();
-        }
     }
 
     private void ProduceUnit()

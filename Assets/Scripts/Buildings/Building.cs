@@ -21,9 +21,4 @@ public class Building : ActiveEntity
     public virtual IEnumerable<Item> ItemsToGive() {
         return Array.Empty<Item>();
     }
-    private void OnMouseDown()
-    {
-        GameObject.Find("Worker").GetComponent<WorkerLogic.Commander>().Interact(this);
-    }
-
 }
