@@ -23,15 +23,13 @@ public class Worker : Unit
     private void Start() //TODO Delete this crutch
     {
         if (_activeEntitiesManager is not null)
-            _itemsSlot = new ItemsSlot(5);
+            Init(_playerNumber, 5, _moveSpeed, _maxHp, _activeEntitiesManager);
     }
-    public void Init(int slotCapaciity, float moveSpeed, int hp, ActiveEntitiesManager activeEntitiesManager)
+    public void Init(int playerNumber, int slotCapaciity, float moveSpeed, int hp, ActiveEntitiesManager activeEntitiesManager)
     {
-        _hp = hp;
-        _maxHp = hp;
+        Init(playerNumber, hp, hp, activeEntitiesManager);
         _moveSpeed = moveSpeed;
         _itemsSlot = new ItemsSlot(slotCapaciity);
-        _activeEntitiesManager = activeEntitiesManager;
     }
 
 

@@ -8,14 +8,8 @@ public class BattleUnit : Unit
     [SerializeField] private float _attackCooldown;
     private float _timeToAttack=0f;
 
-    private void Start() //CRUTCH
-    {
-        if (_activeEntitiesManager is null)
-        {
-            Init(0, 50, 50, GameObject.Find("SingleScripts").GetComponent<ActiveEntitiesManager>());
-            print("Crutch. Unit initiated by Start()");
-        }
-    }
+    public new void Init (int playerNumber, ActiveEntitiesManager activeEntitiesManager) =>
+        base.Init(playerNumber, activeEntitiesManager);
 
     private void Update()
     {

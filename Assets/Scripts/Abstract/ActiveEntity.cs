@@ -3,25 +3,25 @@ using UnityEngine;
 
 public class ActiveEntity : MonoBehaviour
 {
-    [SerializeField] protected int _playerNumber=0;
-    [SerializeField] protected int _hp=0;
-    [SerializeField] protected int _maxHp=0;
+    [SerializeField] protected int _playerNumber;
+    [SerializeField] protected int _hp;
+    [SerializeField] protected int _maxHp;
     [SerializeField] protected ActiveEntitiesManager _activeEntitiesManager; //TODO delete SerField
 
     public int PlayerNumber => _playerNumber;
     public int HP => _hp;
     public int MaxHp => _maxHp;
 
-    public void Init(int playerNumber, int hp, int maxHp, ActiveEntitiesManager activeEntitiesManager)
+    protected void Init(int playerNumber, ActiveEntitiesManager activeEntitiesManager)
     {
-        if (_playerNumber != 0 || _hp != 0 || _maxHp!=0 || _activeEntitiesManager!=null)
+        if (_activeEntitiesManager!=null)
         {
             print("Error. Re-initiation. Canceling. GO: "+gameObject.name);
             Destroy(gameObject);
             return;
         }
 
-        if (hp <= 0 || activeEntitiesManager == null)
+        if (activeEntitiesManager == null || _maxHp<=0 || _hp<=0 || _hp>_maxHp)
         {
             print ("Error! Active Entity initialisation aborted");
             Destroy(gameObject);
@@ -29,8 +29,6 @@ public class ActiveEntity : MonoBehaviour
         }
         
         _playerNumber = playerNumber;
-        _hp = hp;
-        _maxHp = maxHp;
         _activeEntitiesManager = activeEntitiesManager;
         _activeEntitiesManager.AddEntity(this);
     }
@@ -58,14 +56,13 @@ public class ActiveEntity : MonoBehaviour
         Destroy(gameObject);
     }
     
-    private void Start()
+    private void Start() //CRUTCH
     {
-        if (_activeEntitiesManager == null)
+        if (_activeEntitiesManager is null)
         {
-            print("ERROR! Active Entity hasn't initiated. Destroying");
-            Destroy(gameObject);
+            Init(0, GameObject.Find("SingleScripts").GetComponent<ActiveEntitiesManager>());
+            print("Crutch. Unit initiated by Start()");
         }
     }
-
-    
+   
 }

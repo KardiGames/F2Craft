@@ -171,11 +171,11 @@ public class UnitProducer : Building
     {
         if (_blueprint.ProducedUnit is BattleUnit producedUnit) {
             BattleUnit unit = Instantiate <BattleUnit> (producedUnit, transform.position, producedUnit.transform.rotation);
-            unit.Init(0, 50, 50, _activeEntitiesManager);
+            unit.Init(0, _activeEntitiesManager);
         } else if (_blueprint.ProducedUnit is Worker worker)
         {
             Worker newWorker = Instantiate<Worker>(worker, transform.position, worker.transform.rotation);
-            worker.Init(5, 5, 5, _activeEntitiesManager);
+            worker.Init(_playerNumber, 5, 5, 5, _activeEntitiesManager);
         }
 
             _isProducting = false;
