@@ -62,7 +62,7 @@ public class SelectionManager : MonoBehaviour
     {
         _selectedEntity?.SetSelection(false);
         _selectedEntity = null;
-        _selectedFoundation?.SetSelection(false );
+        _selectedFoundation?.EnableSelection(false );
         _selectedFoundation = null;
     }
 
@@ -76,7 +76,7 @@ public class SelectionManager : MonoBehaviour
             return;
         }
         _selectedFoundation = target.GetComponent<Foundation>();
-        _selectedFoundation?.SetSelection(true);
+        _selectedFoundation?.EnableSelection(true);
 
         if (_selectedFoundation == null)
             print("Error. Nothing is selected. Must be");

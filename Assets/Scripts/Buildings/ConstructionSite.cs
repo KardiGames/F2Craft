@@ -1,12 +1,9 @@
 using System;
 using System.Collections.Generic;
-using System.Threading;
 using UnityEngine;
 
 public class ConstructionSite : Building
 {
-    private const int BASE_HP = 1;
-
     [SerializeField] private BlueprintForBuilding _buildingBlueprint;
     [SerializeField] private BlueprintForItem _itemBlueprint;
     [SerializeField] private BlueprintForUnit _unitBlueprint;
@@ -37,9 +34,10 @@ public class ConstructionSite : Building
         {
             print("Error. ConstructionSite re-initialisation aborted");
             return;
-
         }
-        Init(playerNumber, BASE_HP, buildingBlueprint.BuildingHP, activeEntitiesManager);
+
+        _maxHp = _buildingBlueprint.BuildingHP;
+        Init(playerNumber, activeEntitiesManager);
         _buildingBlueprint = buildingBlueprint;
         _itemBlueprint = itemBlueprint;
         _unitBlueprint = unitBlueprint;
@@ -138,15 +136,14 @@ public class ConstructionSite : Building
         if (_buildingBlueprint.ConstructingBuilding is Factory factoryBlueprint)
         {
             Factory factory = Instantiate<Factory>(factoryBlueprint, transform.position, factoryBlueprint.transform.rotation);
-            factory.Init(_playerNumber, _hp, _maxHp, _activeEntitiesManager, _foundation, _itemBlueprint);
+            factory.Init(_playerNumber, _hp, _activeEntitiesManager, _foundation, _itemBlueprint);
             Destroy();
         } else if (_buildingBlueprint.ConstructingBuilding is UnitProducer unitProducerBlueprint)
         {
             UnitProducer producer = Instantiate<UnitProducer>(unitProducerBlueprint, transform.position, unitProducerBlueprint.transform.rotation);
-            producer.Init(_playerNumber, _hp, _maxHp, _activeEntitiesManager, _foundation, _unitBlueprint);
+            producer.Init(_playerNumber, _hp, _activeEntitiesManager, _foundation, _unitBlueprint);
             Destroy();
         }
-
     }
 }
 

@@ -47,9 +47,12 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 6277662801fd32e4aa2c2dbf38a9c7d8, type: 3}
   m_Name: 
   m_EditorClassIdentifier: '::'
+  _activeEntitiesManager: {fileID: 0}
   _underConstructionPrefab: {fileID: -9182022544975094174, guid: 7df046f8aa389f24dbf8ad477499c4a9, type: 3}
-  _tmpBuildingBlueprint: {fileID: 11400000, guid: e0256a5a92b8be547a58a5d3095115a4, type: 2}
-  _tmpItemToProduce: {fileID: 11400000, guid: 6e350b2bc9a59db42b85745907946398, type: 2}
+  _tmpBuildingBlueprint: {fileID: 0}
+  _tmpItemToProduce: {fileID: 0}
+  _tmpUnitToProduce: {fileID: 0}
+  _playerNumber: 0
 --- !u!33 &6977860809888986409
 MeshFilter:
   m_ObjectHideFlags: 0

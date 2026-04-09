@@ -12,13 +12,15 @@ public class ActiveEntity : MonoBehaviour
     public int HP => _hp;
     public int MaxHp => _maxHp;
 
-    protected void Init(int playerNumber, ActiveEntitiesManager activeEntitiesManager)
+    protected virtual void Init(int playerNumber, ActiveEntitiesManager activeEntitiesManager)
     {
         if (_activeEntitiesManager!=null)
         {
-            print("Error. Re-initiation. Canceling. GO: "+gameObject.name);
+            print("Error. Re-initiation. Canceling. GO: "+gameObject.name+". Trying to continue");
+            if (_activeEntitiesManager.Contains(this))
+                return;
+            print("Error! Fail. Destroyng");
             Destroy(gameObject);
-            return;
         }
 
         if (activeEntitiesManager == null || _maxHp<=0 || _hp<=0 || _hp>_maxHp)
@@ -60,8 +62,8 @@ public class ActiveEntity : MonoBehaviour
     {
         if (_activeEntitiesManager is null)
         {
-            Init(0, GameObject.Find("SingleScripts").GetComponent<ActiveEntitiesManager>());
-            print("Crutch. Unit initiated by Start()");
+            Init(_playerNumber, GameObject.Find("SingleScripts").GetComponent<ActiveEntitiesManager>());
+            print("Crutch. Entity initiated by Start()");
         }
     }
    

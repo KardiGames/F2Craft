@@ -31,4 +31,6 @@ public class ActiveEntitiesManager : MonoBehaviour
         return _entities.Where(entity => entity.PlayerNumber != playerNumber);
     }
 
+    public bool Contains(ActiveEntity entity) =>
+        _entities.Contains(entity);
 }

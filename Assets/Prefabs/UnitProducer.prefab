@@ -49,8 +49,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::UnitProducer
   _playerNumber: 0
-  _hp: 0
-  _maxHp: 0
+  _hp: 150
+  _maxHp: 150
   _activeEntitiesManager: {fileID: 0}
   _blueprint: {fileID: 0}
   _resourcesStorage: []

@@ -28,11 +28,11 @@ public class UnitProducer : Building
         if (_tmpBlueprint != null)
         {
             Foundation fdt = Instantiate<Foundation>(_tmpFoundation, transform.position, _tmpFoundation.transform.rotation);
-            Init(0, 250, 250, GameObject.Find("SingleScripts").GetComponent<ActiveEntitiesManager>(), fdt, _tmpBlueprint);
+            Init(0, _maxHp, GameObject.Find("SingleScripts").GetComponent<ActiveEntitiesManager>(), fdt, _tmpBlueprint);
             fdt.gameObject.SetActive(false);
         }
     }
-    public void Init(int playerNumber, int hp, int maxHp, ActiveEntitiesManager activeEntitiesManager, Foundation foundation, BlueprintForUnit unitBlueprint)
+    public void Init(int playerNumber, int hp, ActiveEntitiesManager activeEntitiesManager, Foundation foundation, BlueprintForUnit unitBlueprint)
     {
         if (foundation == null || unitBlueprint == null)
         {
@@ -40,7 +40,8 @@ public class UnitProducer : Building
             Destroy();
             return;
         }
-        Init(playerNumber, hp, maxHp, activeEntitiesManager);
+        _hp = hp;
+        Init(playerNumber, activeEntitiesManager);
         _foundation = foundation;
         SetupBlueprint(unitBlueprint);
         _optionalResoursesSlots = OPTIONAL_SLOTS_NUMBER;
@@ -175,7 +176,7 @@ public class UnitProducer : Building
         } else if (_blueprint.ProducedUnit is Worker worker)
         {
             Worker newWorker = Instantiate<Worker>(worker, transform.position, worker.transform.rotation);
-            worker.Init(_playerNumber, 5, 5, 5, _activeEntitiesManager);
+            worker.Init(_playerNumber, 5, _activeEntitiesManager);
         }
 
             _isProducting = false;

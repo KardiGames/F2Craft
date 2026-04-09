@@ -9,27 +9,6 @@ public class CommandCenter : Building
     [SerializeField] private int _materiaCapacity;
     private float _timer = 0f;
     private bool _isProducting = false;
-    [SerializeField] private Foundation _tmpFoundation; // CRUTCH delete this
-
-    private void Start()
-    {
-        //CRUTCH: go.Find
-
-            Foundation fdt = Instantiate<Foundation>(_tmpFoundation, transform.position, _tmpFoundation.transform.rotation);
-            Init(0, 500, 500, GameObject.Find("SingleScripts").GetComponent<ActiveEntitiesManager>(), fdt);
-            fdt.gameObject.SetActive(false);
-    }
-    public void Init(int playerNumber, int hp, int maxHp, ActiveEntitiesManager activeEntitiesManager, Foundation foundation)
-    {
-        if (foundation == null || _materiaItem == null)
-        {
-            Destroy();
-            return;
-        }
-        Init(playerNumber, hp, maxHp, activeEntitiesManager);
-        _foundation = foundation;
-        _materiaStorage = new ItemsSlot(_materiaItem, _materiaCapacity);
-    }
 
     public override IEnumerable<Item> ItemsToGive()
     {
@@ -45,6 +24,25 @@ public class CommandCenter : Building
         return _materiaStorage.Available(item);
     }
 
+    public new void Init(int playerNumber, ActiveEntitiesManager activeEntitiesManager)
+    {
+        base.Init(playerNumber, activeEntitiesManager);
+        _materiaStorage = new ItemsSlot(_materiaItem, _materiaCapacity);
+    }
+    private void Start()
+    {
+        if (_materiaItem == null)
+        {
+            print("Error! Materia item isn't installed. Destroying");
+            Destroy();
+            return;
+        }
+        if (_materiaStorage == null)
+        {
+            Init(_playerNumber, GameObject.Find("SingleScripts").GetComponent<ActiveEntitiesManager>());
+            print("Crutch. Unit initiated by Start()");
+        }
+    }
     private void Update()
     {
         if (_isProducting)

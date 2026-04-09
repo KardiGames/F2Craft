@@ -6,7 +6,7 @@ public class BattleUnit : Unit
     [SerializeField] private int _damage;
     [SerializeField] float _attackDistance;
     [SerializeField] private float _attackCooldown;
-    private float _timeToAttack=0f;
+    private float _cooldown=0f;
 
     public new void Init (int playerNumber, ActiveEntitiesManager activeEntitiesManager) =>
         base.Init(playerNumber, activeEntitiesManager);
@@ -48,12 +48,12 @@ public class BattleUnit : Unit
 
     private void Attack()
     {
-        if (_timeToAttack <= 0f)
+        if (_cooldown <= 0f)
         {
             _target.GetDamage(_damage);
-            _timeToAttack += _attackCooldown;
+            _cooldown += _attackCooldown;
         }
         else
-            _timeToAttack-= Time.deltaTime;
+            _cooldown-= Time.deltaTime;
     }
 }

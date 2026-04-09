@@ -48,10 +48,10 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::BattleUnit
   _playerNumber: 0
-  _hp: 0
-  _maxHp: 0
+  _hp: 15
+  _maxHp: 15
   _activeEntitiesManager: {fileID: 0}
-  _moveSpeed: 1
+  _moveSpeed: 1.5
   _target: {fileID: 0}
   _damage: 10
   _attackDistance: 5

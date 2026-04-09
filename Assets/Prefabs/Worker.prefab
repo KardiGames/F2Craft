@@ -50,10 +50,10 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::Worker
   _playerNumber: 0
-  _hp: 0
-  _maxHp: 0
+  _hp: 5
+  _maxHp: 5
   _activeEntitiesManager: {fileID: 0}
-  _moveSpeed: 0
+  _moveSpeed: 6
   _connectedBuilding: {fileID: 0}
   _itemsSlot:
     _item: {fileID: 0}
