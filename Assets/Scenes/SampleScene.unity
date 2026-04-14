@@ -335,7 +335,7 @@ Transform:
   m_GameObject: {fileID: 196829931}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 47.019997, y: 0.1, z: 79.74}
+  m_LocalPosition: {x: 61.75, y: 0.1, z: 92.07}
   m_LocalScale: {x: 5, y: 3, z: 5}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -428,7 +428,7 @@ Transform:
   m_GameObject: {fileID: 330585543}
   serializedVersion: 2
   m_LocalRotation: {x: 0.38268343, y: 0, z: 0, w: 0.92387956}
-  m_LocalPosition: {x: 0, y: 10, z: 240}
+  m_LocalPosition: {x: 0, y: 10, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -808,7 +808,7 @@ MonoBehaviour:
   _productionStorage: []
   _resourcesStorage: []
   _tmpBlueprint: {fileID: 11400000, guid: 6e350b2bc9a59db42b85745907946398, type: 2}
-  _tmpFoundationPrefub: {fileID: 0}
+  _tmpFoundationPrefub: {fileID: 2879976269712404072, guid: 7cb8965d171c1624f8d1dcfc43514e67, type: 3}
 --- !u!114 &763858545
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1203,7 +1203,7 @@ MonoBehaviour:
   _productionStorage: []
   _resourcesStorage: []
   _tmpBlueprint: {fileID: 11400000, guid: 6e350b2bc9a59db42b85745907946398, type: 2}
-  _tmpFoundationPrefub: {fileID: 0}
+  _tmpFoundationPrefub: {fileID: 2879976269712404072, guid: 7cb8965d171c1624f8d1dcfc43514e67, type: 3}
 --- !u!4 &1960610192
 Transform:
   m_ObjectHideFlags: 0
@@ -1228,6 +1228,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 2040517588}
+  - component: {fileID: 2040517589}
   m_Layer: 0
   m_Name: CameraController
   m_TagString: Untagged
@@ -1244,13 +1245,38 @@ Transform:
   m_GameObject: {fileID: 2040517587}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0.38268343, z: 0, w: 0.92387956}
-  m_LocalPosition: {x: -115.1, y: 10, z: -256.5}
+  m_LocalPosition: {x: 54, y: 10, z: 67}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children:
   - {fileID: 330585546}
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 45, z: 0}
+--- !u!114 &2040517589
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2040517587}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 659ab7b2093f3c34f9fdbffae41738ac, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::RTSCameraController
+  cameraTransform: {fileID: 330585546}
+  followTransform: {fileID: 0}
+  moveWithKeyboad: 1
+  moveWithEdgeScrolling: 1
+  moveWithMouseDrag: 1
+  fastSpeed: 0.5
+  normalSpeed: 0.1
+  movementSensitivity: 1
+  edgeSize: 50
+  cursorArrowUp: {fileID: 2800000, guid: d44631936a6911247a3d6acf1649ae7e, type: 3}
+  cursorArrowDown: {fileID: 2800000, guid: cb49e95df37fd984eb5486edc4985732, type: 3}
+  cursorArrowLeft: {fileID: 2800000, guid: 43ae6cdb976450e44ba2c55a507440b8, type: 3}
+  cursorArrowRight: {fileID: 2800000, guid: 2c068678caa5b6641a47aa74d02c0052, type: 3}
 --- !u!1 &2114594833
 GameObject:
   m_ObjectHideFlags: 0
