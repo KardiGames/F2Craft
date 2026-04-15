@@ -20,11 +20,6 @@ public class Worker : Unit
         _command = value;
     }
 }
-    private void Start() //TODO Delete this crutch
-    {
-        if (_activeEntitiesManager != null)
-            Init(_playerNumber, 5, _activeEntitiesManager);
-    }
     public void Init(int playerNumber, int slotCapacity, ActiveEntitiesManager activeEntitiesManager)
     {
         Init(playerNumber,activeEntitiesManager);
@@ -66,6 +61,14 @@ public class Worker : Unit
             return true;
         }
         return false;
+    }
+    private void Start() //TODO Delete this crutch
+    {
+        if (_activeEntitiesManager == null)
+        {
+            Init(_playerNumber, 5, GameObject.Find("SingleScripts").GetComponent<ActiveEntitiesManager>());
+            print("Crutch. Worker initiated by Start()");
+        }
     }
     private void Update()
     {

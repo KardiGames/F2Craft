@@ -11,6 +11,15 @@ public class BattleUnit : Unit
     public new void Init (int playerNumber, ActiveEntitiesManager activeEntitiesManager) =>
         base.Init(playerNumber, activeEntitiesManager);
 
+    private void Start() //CRUTCH
+    {
+        if (_activeEntitiesManager == null)
+        {
+            Init(_playerNumber, GameObject.Find("SingleScripts").GetComponent<ActiveEntitiesManager>());
+            print("Crutch. Battle Unit initiated by Start()");
+        }
+    }
+
     private void Update()
     {
         if (_target == null)

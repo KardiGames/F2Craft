@@ -15,10 +15,10 @@ public class Factory : Building
     private void Start()
     {
         //CRUTCH: go.Find
-        if (_tmpBlueprint != null)
+        if (_tmpBlueprint != null && _activeEntitiesManager==null)
         {
             Foundation fdt = Instantiate<Foundation>(_tmpFoundationPrefub, transform.position, _tmpFoundationPrefub.transform.rotation);
-            Init(0, _maxHp, GameObject.Find("SingleScripts").GetComponent<ActiveEntitiesManager>(), fdt, _tmpBlueprint);
+            Init(_playerNumber, _maxHp, GameObject.Find("SingleScripts").GetComponent<ActiveEntitiesManager>(), fdt, _tmpBlueprint);
             fdt.gameObject.SetActive(false);
             print("Crutch. Factory initiated by Start()");
         }

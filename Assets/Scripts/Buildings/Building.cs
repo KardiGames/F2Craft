@@ -7,6 +7,7 @@ public class Building : ActiveEntity
     protected const int STORAGE_QUANTITY_MULTIPLER = 2;
     public int Level => 1;
     protected Foundation _foundation;
+
     public virtual int ItemsOfTypeToGive (Item item, out ItemsSlot slot)
     {
         slot = null;

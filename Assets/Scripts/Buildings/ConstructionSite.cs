@@ -36,7 +36,7 @@ public class ConstructionSite : Building
             return;
         }
 
-        _maxHp = _buildingBlueprint.BuildingHP;
+        _maxHp = buildingBlueprint.BuildingHP;
         Init(playerNumber, activeEntitiesManager);
         _buildingBlueprint = buildingBlueprint;
         _itemBlueprint = itemBlueprint;

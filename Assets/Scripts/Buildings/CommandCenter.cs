@@ -37,10 +37,10 @@ public class CommandCenter : Building
             Destroy();
             return;
         }
-        if (_materiaStorage == null)
+        if (_activeEntitiesManager==null && _materiaStorage == null)
         {
             Init(_playerNumber, GameObject.Find("SingleScripts").GetComponent<ActiveEntitiesManager>());
-            print("Crutch. Unit initiated by Start()");
+            print("Crutch. Command center initiated by Start()");
         }
     }
     private void Update()

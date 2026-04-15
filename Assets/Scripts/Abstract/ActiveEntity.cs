@@ -25,7 +25,7 @@ public class ActiveEntity : MonoBehaviour
 
         if (activeEntitiesManager == null || _maxHp<=0 || _hp<=0 || _hp>_maxHp)
         {
-            print ("Error! Active Entity initialisation aborted");
+            print ("Error! Active Entity initialisation aborted. GO: " + gameObject.name);
             Destroy(gameObject);
             return;
         }
@@ -57,14 +57,5 @@ public class ActiveEntity : MonoBehaviour
         _activeEntitiesManager?.RemoveEntity(this);
         Destroy(gameObject);
     }
-    
-    private void Start() //CRUTCH
-    {
-        if (_activeEntitiesManager is null)
-        {
-            Init(_playerNumber, GameObject.Find("SingleScripts").GetComponent<ActiveEntitiesManager>());
-            print("Crutch. Entity initiated by Start()");
-        }
-    }
-   
+  
 }
