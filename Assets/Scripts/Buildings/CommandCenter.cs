@@ -5,7 +5,7 @@ public class CommandCenter : Building
 {
     [SerializeField] private Item _materiaItem;
     [SerializeField] private float _producingTime;
-    [SerializeField] private ItemsSlot _materiaStorage;
+    private ItemsSlot _materiaStorage;
     [SerializeField] private int _materiaCapacity;
     private float _timer = 0f;
     private bool _isProducting = false;

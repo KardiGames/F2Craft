@@ -36,7 +36,7 @@ public class ConstructionSite : Building
             return;
         }
 
-        _maxHp = buildingBlueprint.BuildingHP;
+        _maxHp = buildingBlueprint.ConstructingBuilding.MaxHp;
         Init(playerNumber, activeEntitiesManager);
         _buildingBlueprint = buildingBlueprint;
         _itemBlueprint = itemBlueprint;
@@ -107,7 +107,7 @@ public class ConstructionSite : Building
 
     private void FinishStage()
     {
-        _hp = Mathf.Min(_hp + (int)((float)_stageResuorcesCost / _totalResourcesCost * _buildingBlueprint.BuildingHP), _maxHp);
+        _hp = Mathf.Min(_hp + Mathf.CeilToInt((float)_stageResuorcesCost / _totalResourcesCost * _buildingBlueprint.ConstructingBuilding.MaxHp), _maxHp);
 
 
         int currentResourcesCost = 0;

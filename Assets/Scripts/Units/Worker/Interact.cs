@@ -76,7 +76,6 @@ namespace WorkerLogic
                 if (TryGetItemOfType(item))
                     return;
             }
-            Debug.Log(_building.ItemsToGive().Count<Item>());
             _state = State.Finished; //THINK m.b. better without this
         }
 

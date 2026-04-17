@@ -6,7 +6,8 @@ public class ActiveEntity : MonoBehaviour
     [SerializeField] protected int _playerNumber;
     [SerializeField] protected int _hp;
     [SerializeField] protected int _maxHp;
-    [SerializeField] protected ActiveEntitiesManager _activeEntitiesManager; //TODO delete SerField
+    [SerializeField] protected ActiveEntitiesManager _activeEntitiesManager;
+    [SerializeField] protected GameObject _selectionIndicator;
 
     public int PlayerNumber => _playerNumber;
     public int HP => _hp;
@@ -57,5 +58,10 @@ public class ActiveEntity : MonoBehaviour
         _activeEntitiesManager?.RemoveEntity(this);
         Destroy(gameObject);
     }
-  
+
+    private void Start()
+    {
+        if (_selectionIndicator == null)
+            Debug.LogError("Selection indicator isn't set on " + gameObject.name);
+    }
 }
