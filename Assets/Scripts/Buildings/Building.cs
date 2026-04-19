@@ -25,7 +25,7 @@ public class Building : ActiveEntity
 
     protected override void Destroy()
     {
-        _foundation.gameObject.SetActive(true);
+        _foundation?.gameObject.SetActive(true);
         base.Destroy();
     }
 
@@ -36,12 +36,13 @@ public class Building : ActiveEntity
         {
             Debug.LogError("Empty foundation on " + gameObject.name+ " . Destroying");
             Destroy();
+            return;
         }
-        if (!_foundation.IsInstantiated)
+        if (_foundation.IsInstantiated == false)
         {
             print("Crutch. Instantiating foundation for " + gameObject.name);
             _foundation=Instantiate(_foundation, transform.position, _foundation.transform.rotation);
-            _foundation.gameObject.SetActive(false);
         }
+        _foundation.gameObject.SetActive(false);
     }
 }
