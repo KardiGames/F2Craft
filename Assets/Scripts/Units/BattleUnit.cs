@@ -8,17 +8,8 @@ public class BattleUnit : Unit
     [SerializeField] private float _attackCooldown;
     private float _cooldown=0f;
 
-    public new void Init (int playerNumber, ActiveEntitiesManager activeEntitiesManager) =>
-        base.Init(playerNumber, activeEntitiesManager);
-
-    private void Start() //CRUTCH
-    {
-        if (_activeEntitiesManager == null)
-        {
-            Init(_playerNumber, GameObject.Find("SingleScripts").GetComponent<ActiveEntitiesManager>());
-            print("Crutch. Battle Unit initiated by Start()");
-        }
-    }
+    public new void Init (int playerNumber) =>
+        base.Init(playerNumber);
 
     private void Update()
     {
@@ -48,8 +39,10 @@ public class BattleUnit : Unit
     {
         if (_target == null) 
             return;
-        transform.LookAt(_target.transform.position);
-        Vector3 moveVector = ((_target.transform.position - transform.position).normalized)*_moveSpeed*Time.deltaTime;
+        Vector3 targetPoint = _target.transform.position;
+        targetPoint.y = transform.position.y;
+        transform.LookAt(targetPoint);
+        Vector3 moveVector = ((targetPoint - transform.position).normalized)*_moveSpeed*Time.deltaTime;
         
         transform.position = transform.position+ moveVector;
 

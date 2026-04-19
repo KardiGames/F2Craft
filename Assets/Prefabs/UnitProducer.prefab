@@ -52,8 +52,8 @@ MonoBehaviour:
   _playerNumber: 0
   _hp: 150
   _maxHp: 150
-  _activeEntitiesManager: {fileID: 0}
   _selectionIndicator: {fileID: 8887875155389156890}
+  _foundation: {fileID: 2879976269712404072, guid: 7cb8965d171c1624f8d1dcfc43514e67, type: 3}
   _blueprint: {fileID: 0}
   _resourcesStorage: []
   _optionalResoursesSlots: 0

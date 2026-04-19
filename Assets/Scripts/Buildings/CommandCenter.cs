@@ -24,22 +24,24 @@ public class CommandCenter : Building
         return _materiaStorage.Available(item);
     }
 
-    public new void Init(int playerNumber, ActiveEntitiesManager activeEntitiesManager)
+    public new void Init(int playerNumber)
     {
-        base.Init(playerNumber, activeEntitiesManager);
+        base.Init(playerNumber);
         _materiaStorage = new ItemsSlot(_materiaItem, _materiaCapacity);
     }
-    private void Start()
+    protected override void Start()
     {
+
+        base.Start();
         if (_materiaItem == null)
         {
-            print("Error! Materia item isn't installed. Destroying");
+            Debug.LogError("Materia item isn't installed. Destroying");
             Destroy();
             return;
         }
-        if (_activeEntitiesManager==null && _materiaStorage == null)
+        if (_materiaStorage == null)
         {
-            Init(_playerNumber, GameObject.Find("SingleScripts").GetComponent<ActiveEntitiesManager>());
+            Init(_playerNumber);
             print("Crutch. Command center initiated by Start()");
         }
     }
@@ -82,7 +84,7 @@ public class CommandCenter : Building
 
     private bool IsAbleToStartProduction()
     {
-        if (!_isProducting
+        if (_isProducting == false
             && _materiaItem != null
             && HaveFreeSpaceForProduction()
             )

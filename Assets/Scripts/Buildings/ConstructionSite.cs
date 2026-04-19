@@ -16,7 +16,7 @@ public class ConstructionSite : Building
     [SerializeField] private int _stageResuorcesCost = 0; //CRUTCH delete SerField
     
 
-    public void Init(int playerNumber, ActiveEntitiesManager activeEntitiesManager, BlueprintForBuilding buildingBlueprint, Foundation foundation, BlueprintForItem itemBlueprint, BlueprintForUnit unitBlueprint)
+    public void Init(int playerNumber, BlueprintForBuilding buildingBlueprint, Foundation foundation, BlueprintForItem itemBlueprint, BlueprintForUnit unitBlueprint)
     {
         if (buildingBlueprint == null || foundation == null)
         {
@@ -37,7 +37,7 @@ public class ConstructionSite : Building
         }
 
         _maxHp = buildingBlueprint.ConstructingBuilding.MaxHp;
-        Init(playerNumber, activeEntitiesManager);
+        Init(playerNumber);
         _buildingBlueprint = buildingBlueprint;
         _itemBlueprint = itemBlueprint;
         _unitBlueprint = unitBlueprint;
@@ -136,12 +136,12 @@ public class ConstructionSite : Building
         if (_buildingBlueprint.ConstructingBuilding is Factory factoryBlueprint)
         {
             Factory factory = Instantiate<Factory>(factoryBlueprint, transform.position, factoryBlueprint.transform.rotation);
-            factory.Init(_playerNumber, _hp, _activeEntitiesManager, _foundation, _itemBlueprint);
+            factory.Init(_playerNumber, _hp, _foundation, _itemBlueprint);
             Destroy();
         } else if (_buildingBlueprint.ConstructingBuilding is UnitProducer unitProducerBlueprint)
         {
             UnitProducer producer = Instantiate<UnitProducer>(unitProducerBlueprint, transform.position, unitProducerBlueprint.transform.rotation);
-            producer.Init(_playerNumber, _hp, _activeEntitiesManager, _foundation, _unitBlueprint);
+            producer.Init(_playerNumber, _hp, _foundation, _unitBlueprint);
             Destroy();
         }
     }
