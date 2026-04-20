@@ -1,16 +1,55 @@
+#nullable enable
+using System.Collections.Generic;
+using System.Collections.Specialized;
 using UnityEngine;
-using static UnityEngine.GraphicsBuffer;
+
 
 public class SelectionManager : MonoBehaviour
 {
-    [SerializeField] private LayerMask clickable;
-    [SerializeField] private ActiveEntity _selectedEntity;
+    [SerializeField] private LayerMask _clickable;
     [SerializeField] private Foundation _selectedFoundation;
+    [SerializeField] private List<ActiveEntity> _selectedEntities=new();
+    private List<Unit> _allUnits=new();
+    private List<Building> _allBuildings=new();
+
     private Camera _camera;
 
     private void Awake()
     {
         _camera = Camera.main;
+    }
+
+    private void Start()
+    {
+        if (_camera == null || _clickable==0)
+            Debug.LogError("Link is not set");
+    }
+
+    private void OnEnable()
+    {
+        ActiveEntity.AddObserver(RefreshEntitiesLists);
+    }
+    private void OnDisable()
+    {
+        ActiveEntity.RemoveObserver(RefreshEntitiesLists);
+    }
+
+    private void RefreshEntitiesLists(object? sender, NotifyCollectionChangedEventArgs e)
+    {
+        _allBuildings.Clear();
+        _allUnits.Clear();
+        foreach (ActiveEntity entity in ActiveEntity.GetEntitiesList())
+        {
+            switch (entity)
+            {
+                case (Unit unit):
+                    _allUnits.Add(unit);
+                    break;
+                case (Building building):
+                    _allBuildings.Add(building);
+                    break;
+            }
+        }
     }
 
     private void Update()
@@ -20,7 +59,7 @@ public class SelectionManager : MonoBehaviour
         {
         RaycastHit hit;
         Ray ray = _camera.ScreenPointToRay(Input.mousePosition);
-            if (Physics.Raycast(ray, out hit, Mathf.Infinity, clickable))
+            if (Physics.Raycast(ray, out hit, Mathf.Infinity, _clickable))
             {
                 SelectByClick(hit.collider.gameObject);
             } else
@@ -33,46 +72,53 @@ public class SelectionManager : MonoBehaviour
         {
             RaycastHit hit;
             Ray ray = _camera.ScreenPointToRay(Input.mousePosition);
-            if ((_selectedEntity is Worker worker) && Physics.Raycast(ray, out hit, Mathf.Infinity, clickable))
+            foreach (ActiveEntity entity in _selectedEntities)
             {
-                Building target = hit.collider.gameObject.GetComponent<Building>();
-                if (target != null)
+
+                if ((entity is Worker worker) && Physics.Raycast(ray, out hit, Mathf.Infinity, _clickable))
                 {
-                    worker.GetComponent<WorkerLogic.Commander>().Interact(target);
+                    Building target = hit.collider.gameObject.GetComponent<Building>();
+                    if (target != null)
+                    {
+                        worker.GetComponent<WorkerLogic.Commander>().Interact(target);
+                    }
                 }
             }
         }
 
         if (Input.GetKeyDown(KeyCode.Space))
         {
-            if (_selectedEntity is Worker worker)
+            if (_selectedEntities.Count==1 && _selectedEntities[0] is Worker worker)
             {
                 worker.GetComponent<WorkerLogic.Commander>().SwitchProgrammedMode();
-            } else if (_selectedEntity is UnitProducer producer)
+            } else if (_selectedEntities.Count == 1 && _selectedEntities[0] is UnitProducer producer)
             {
                 producer.AddUnitToQueue();
-            } else if (_selectedFoundation is not null)
+            } else if (_selectedFoundation != null)
             {
-                _selectedFoundation.ConstructCurrenTempSetup();
+                _selectedFoundation.ConstructCurrentTempSetup();
             }
         }
     }
 
     private void DeselectAll()
     {
-        _selectedEntity?.SetSelection(false);
-        _selectedEntity = null;
-        _selectedFoundation?.EnableSelection(false );
+        foreach (ActiveEntity entity in _selectedEntities)
+        {
+        entity?.SetSelection(false);
+        _selectedEntities.Clear();
+        }
+        _selectedFoundation?.EnableSelection(false);
         _selectedFoundation = null;
     }
 
     private void SelectByClick(GameObject target)
     {
         DeselectAll();
-        _selectedEntity=target.GetComponent<ActiveEntity>();
-        if (_selectedEntity != null)
+        _selectedEntities=target.GetComponent<ActiveEntity>();
+        if (_selectedEntities != null)
         {
-            _selectedEntity.SetSelection(true);
+            _selectedEntities.SetSelection(true);
             return;
         }
         _selectedFoundation = target.GetComponent<Foundation>();

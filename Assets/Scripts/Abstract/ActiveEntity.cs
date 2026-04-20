@@ -33,6 +33,10 @@ public class ActiveEntity : MonoBehaviour
     {
         _entities.CollectionChanged += handler;
     }
+    public static void RemoveObserver (NotifyCollectionChangedEventHandler handler)
+    {
+        _entities.CollectionChanged -= handler;
+    }
 
     public static IEnumerable<ActiveEntity> GetEnemiesList(int playerNumber)
     {

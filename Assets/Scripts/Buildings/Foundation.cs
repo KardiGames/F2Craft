@@ -13,7 +13,7 @@ public class Foundation : MonoBehaviour
     {
 
     }
-    public void ConstructCurrenTempSetup()
+    public void ConstructCurrentTempSetup()
     {
         if (_tmpItemToProduce != null)
             StartFactoryConstruction(_tmpBuildingBlueprint, _tmpItemToProduce);

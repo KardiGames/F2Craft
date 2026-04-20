@@ -13,8 +13,12 @@ public class EntitiesObserver : MonoBehaviour
         _entities.AddRange(ActiveEntity.GetEntitiesList());
     }
 
-    private void Start()
+    private void OnEnable()
     {
         ActiveEntity.AddObserver(Refresh);
+    }
+    private void OnDisable()
+    {
+        ActiveEntity.RemoveObserver(Refresh);
     }
 }
