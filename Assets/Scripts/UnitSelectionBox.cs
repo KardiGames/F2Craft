@@ -16,7 +16,8 @@ public class UnitSelectionBox : MonoBehaviour
 
     private void Start()
     {
-        if (_selectionManager==null || _boxVisual == null)
+        if (_selectionManager == null || _boxVisual == null)
+            Debug.LogError("Link is not set");
 
         _myCam = Camera.main;
         _startPosition = Vector2.zero;
@@ -101,7 +102,7 @@ public class UnitSelectionBox : MonoBehaviour
 
     void SelectUnits()
     {
-        foreach (var unit in _selectionManager.allUnitsList)
+        foreach (var unit in ActiveEntity.GetEntitiesList())
         {
             if (_selectionBox.Contains(_myCam.WorldToScreenPoint(unit.transform.position)))
             {

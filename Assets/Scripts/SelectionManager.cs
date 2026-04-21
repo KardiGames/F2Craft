@@ -111,6 +111,16 @@ public class SelectionManager : MonoBehaviour
         _selectedFoundation = null;
     }
 
+
+    public void DragSelect(ActiveEntity entity)
+    {
+        if (_selectedEntities.Contains(entity)==false)
+        {
+            _selectedEntities.Add(entity);
+            entity.SetSelection(true);
+        }
+    }
+
     private void SelectByClick(GameObject target)
     {
         DeselectAll();
@@ -127,4 +137,5 @@ public class SelectionManager : MonoBehaviour
         if (_selectedFoundation == null)
             Debug.LogError("Nothing is selected. Must be");
     }
+
 }

@@ -128,10 +128,10 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 160136962}
+  - component: {fileID: 160136958}
   - component: {fileID: 160136961}
   - component: {fileID: 160136960}
   - component: {fileID: 160136959}
-  - component: {fileID: 160136958}
   m_Layer: 5
   m_Name: DragSelectionCanvas
   m_TagString: Untagged
@@ -151,6 +151,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 98314bc0e88c648448c8e68e7be87acd, type: 3}
   m_Name: 
   m_EditorClassIdentifier: '::'
+  _selectionManager: {fileID: 1242861813}
+  _boxVisual: {fileID: 187763283}
 --- !u!114 &160136959
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1864,11 +1866,11 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: d1803d8dae5512c46b5035ebc3ebe183, type: 3}
   m_Name: 
   m_EditorClassIdentifier: '::'
-  clickable:
+  _clickable:
     serializedVersion: 2
     m_Bits: 128
-  _selectedEntity: {fileID: 0}
   _selectedFoundation: {fileID: 0}
+  _selectedEntities: []
 --- !u!114 &1242861814
 MonoBehaviour:
   m_ObjectHideFlags: 0
