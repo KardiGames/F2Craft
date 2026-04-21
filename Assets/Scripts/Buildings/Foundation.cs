@@ -9,7 +9,7 @@ public class Foundation : MonoBehaviour
     [SerializeField] private int _tmpPlayerNumber;
 
     public bool IsInstantiated { get; private set; } = false;
-    public void EnableSelection (bool isSelected)
+    public void SetSelection (bool isSelected)
     {
 
     }

@@ -1,4 +1,3 @@
-#nullable enable
 using System.Collections.Generic;
 using System.Collections.Specialized;
 using UnityEngine;
@@ -34,7 +33,7 @@ public class SelectionManager : MonoBehaviour
         ActiveEntity.RemoveObserver(RefreshEntitiesLists);
     }
 
-    private void RefreshEntitiesLists(object? sender, NotifyCollectionChangedEventArgs e)
+    private void RefreshEntitiesLists(object sender, NotifyCollectionChangedEventArgs e)
     {
         _allBuildings.Clear();
         _allUnits.Clear();
@@ -108,23 +107,24 @@ public class SelectionManager : MonoBehaviour
         entity?.SetSelection(false);
         _selectedEntities.Clear();
         }
-        _selectedFoundation?.EnableSelection(false);
+        _selectedFoundation?.SetSelection(false);
         _selectedFoundation = null;
     }
 
     private void SelectByClick(GameObject target)
     {
         DeselectAll();
-        _selectedEntities=target.GetComponent<ActiveEntity>();
+        ActiveEntity selectedEntity = target.GetComponent<ActiveEntity>();
         if (_selectedEntities != null)
         {
-            _selectedEntities.SetSelection(true);
+            _selectedEntities.Add(selectedEntity);
+            selectedEntity.SetSelection(true);
             return;
         }
         _selectedFoundation = target.GetComponent<Foundation>();
-        _selectedFoundation?.EnableSelection(true);
+        _selectedFoundation?.SetSelection(true);
 
         if (_selectedFoundation == null)
-            print("Error. Nothing is selected. Must be");
+            Debug.LogError("Nothing is selected. Must be");
     }
 }
