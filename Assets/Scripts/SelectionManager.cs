@@ -60,7 +60,14 @@ public class SelectionManager : MonoBehaviour
         Ray ray = _camera.ScreenPointToRay(Input.mousePosition);
             if (Physics.Raycast(ray, out hit, Mathf.Infinity, _clickable))
             {
-                SelectByClick(hit.collider.gameObject);
+                if (Input.GetKey(KeyCode.LeftShift) || Input.GetKey(KeyCode.RightShift))
+                {
+                    ExtendSelection(hit.collider.gameObject);
+                } else
+                {
+                    SelectByClick(hit.collider.gameObject);
+                }
+                    
             } else
             {
                 DeselectAll();
@@ -104,9 +111,9 @@ public class SelectionManager : MonoBehaviour
     {
         foreach (ActiveEntity entity in _selectedEntities)
         {
-        entity?.SetSelection(false);
-        _selectedEntities.Clear();
+            entity?.SetSelection(false);
         }
+        _selectedEntities.Clear();
         _selectedFoundation?.SetSelection(false);
         _selectedFoundation = null;
     }
@@ -125,7 +132,7 @@ public class SelectionManager : MonoBehaviour
     {
         DeselectAll();
         ActiveEntity selectedEntity = target.GetComponent<ActiveEntity>();
-        if (_selectedEntities != null)
+        if (selectedEntity != null)
         {
             _selectedEntities.Add(selectedEntity);
             selectedEntity.SetSelection(true);
@@ -136,6 +143,25 @@ public class SelectionManager : MonoBehaviour
 
         if (_selectedFoundation == null)
             Debug.LogError("Nothing is selected. Must be");
+    }
+
+    private void ExtendSelection (GameObject target)
+    {
+        if (_selectedEntities.Count == 0)
+        {
+            SelectByClick(target);
+            return;
+        }
+        
+        ActiveEntity selectedEntity = target.GetComponent<ActiveEntity>();
+        if (selectedEntity == null)
+            return;
+
+        if ((selectedEntity is Unit) == (_selectedEntities[0] is Unit))
+        {
+            _selectedEntities.Add(selectedEntity);
+            selectedEntity.SetSelection(true);
+        }
     }
 
 }

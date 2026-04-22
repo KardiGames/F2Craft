@@ -60,7 +60,6 @@ MonoBehaviour:
   _autoproduction: 0
   _queuedUnits: 0
   _tmpBlueprint: {fileID: 0}
-  _tmpFoundation: {fileID: 0}
 --- !u!114 &693668467032575836
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -162,7 +161,7 @@ GameObject:
   - component: {fileID: 4725065589267989369}
   - component: {fileID: 5747917245888167668}
   - component: {fileID: 5815451295561700608}
-  m_Layer: 7
+  m_Layer: 0
   m_Name: SelectionIndicator
   m_TagString: Untagged
   m_Icon: {fileID: 0}

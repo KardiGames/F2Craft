@@ -11,7 +11,7 @@ GameObject:
   - component: {fileID: 6315304426051264922}
   - component: {fileID: 806506321061358276}
   - component: {fileID: 2564532764168886575}
-  m_Layer: 7
+  m_Layer: 0
   m_Name: SelectionIndicator
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -141,7 +141,6 @@ MonoBehaviour:
   _playerNumber: 0
   _hp: 15
   _maxHp: 15
-  _activeEntitiesManager: {fileID: 0}
   _selectionIndicator: {fileID: 517325742261540844}
   _moveSpeed: 1.5
   _target: {fileID: 0}

@@ -11,7 +11,7 @@ GameObject:
   - component: {fileID: 168304054124323153}
   - component: {fileID: 2147594053940104324}
   - component: {fileID: 5715841694398399278}
-  m_Layer: 7
+  m_Layer: 0
   m_Name: SelectionIndicator
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -142,8 +142,8 @@ MonoBehaviour:
   _playerNumber: 0
   _hp: 1
   _maxHp: 0
-  _activeEntitiesManager: {fileID: 0}
   _selectionIndicator: {fileID: 5616558918432774967}
+  _foundation: {fileID: 0}
   _buildingBlueprint: {fileID: 0}
   _itemBlueprint: {fileID: 0}
   _unitBlueprint: {fileID: 0}

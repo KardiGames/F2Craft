@@ -47,7 +47,8 @@ public class UnitSelectionBox : MonoBehaviour
         // When Releasing
         if (Input.GetMouseButtonUp(0))
         {
-            SelectUnits();
+            if (_boxVisual.rect.height>0 ||  _boxVisual.rect.width>0)
+                SelectUnits();
 
             _startPosition = Vector2.zero;
             _endPosition = Vector2.zero;
