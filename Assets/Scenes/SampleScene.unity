@@ -2199,19 +2199,19 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 659ab7b2093f3c34f9fdbffae41738ac, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::RTSCameraController
-  cameraTransform: {fileID: 330585546}
-  followTransform: {fileID: 0}
-  moveWithKeyboad: 1
-  moveWithEdgeScrolling: 0
-  moveWithMouseDrag: 1
-  fastSpeed: 0.5
-  normalSpeed: 0.1
-  movementSensitivity: 1
-  edgeSize: 50
-  cursorArrowUp: {fileID: 2800000, guid: d44631936a6911247a3d6acf1649ae7e, type: 3}
-  cursorArrowDown: {fileID: 2800000, guid: cb49e95df37fd984eb5486edc4985732, type: 3}
-  cursorArrowLeft: {fileID: 2800000, guid: 43ae6cdb976450e44ba2c55a507440b8, type: 3}
-  cursorArrowRight: {fileID: 2800000, guid: 2c068678caa5b6641a47aa74d02c0052, type: 3}
+  _followTransform: {fileID: 0}
+  _moveWithKeyboad: 1
+  _moveWithEdgeScrolling: 1
+  _moveWithMouseDrag: 0
+  _blockOutsideMouseMoving: 0
+  _fastSpeed: 0.05
+  _normalSpeed: 0.01
+  _movementSensitivity: 1
+  _edgeSize: 50
+  _cursorArrowUp: {fileID: 2800000, guid: d44631936a6911247a3d6acf1649ae7e, type: 3}
+  _cursorArrowDown: {fileID: 2800000, guid: cb49e95df37fd984eb5486edc4985732, type: 3}
+  _cursorArrowLeft: {fileID: 2800000, guid: 43ae6cdb976450e44ba2c55a507440b8, type: 3}
+  _cursorArrowRight: {fileID: 2800000, guid: 2c068678caa5b6641a47aa74d02c0052, type: 3}
 --- !u!1001 &2900378561124960386
 PrefabInstance:
   m_ObjectHideFlags: 0

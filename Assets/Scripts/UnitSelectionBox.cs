@@ -103,11 +103,14 @@ public class UnitSelectionBox : MonoBehaviour
 
     void SelectUnits()
     {
-        foreach (var unit in ActiveEntity.GetEntitiesList())
+        foreach (var entity in ActiveEntity.GetEntitiesList())
         {
-            if (_selectionBox.Contains(_myCam.WorldToScreenPoint(unit.transform.position)))
+            if (_selectionBox.Contains(_myCam.WorldToScreenPoint(entity.transform.position)))
             {
-                _selectionManager.DragSelect(unit);
+                if (Input.GetKey(KeyCode.LeftShift) || Input.GetKey(KeyCode.RightShift))
+                    _selectionManager.ExtendSelection(entity);
+                else
+                    _selectionManager.DragSelect(entity);
             }
         }
     }

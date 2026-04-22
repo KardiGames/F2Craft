@@ -154,13 +154,18 @@ public class SelectionManager : MonoBehaviour
         }
         
         ActiveEntity selectedEntity = target.GetComponent<ActiveEntity>();
-        if (selectedEntity == null)
+        ExtendSelection(selectedEntity);
+    }
+    public void ExtendSelection(ActiveEntity entity)
+    {
+
+        if (entity == null)
             return;
 
-        if ((selectedEntity is Unit) == (_selectedEntities[0] is Unit))
+        if ((entity is Unit) == (_selectedEntities[0] is Unit))
         {
-            _selectedEntities.Add(selectedEntity);
-            selectedEntity.SetSelection(true);
+            _selectedEntities.Add(entity);
+            entity.SetSelection(true);
         }
     }
 
