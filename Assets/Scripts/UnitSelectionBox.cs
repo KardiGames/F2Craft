@@ -47,7 +47,7 @@ public class UnitSelectionBox : MonoBehaviour
         // When Releasing
         if (Input.GetMouseButtonUp(0))
         {
-            if (_boxVisual.rect.height>0 ||  _boxVisual.rect.width>0)
+            if (_boxVisual.rect.height > 0 || _boxVisual.rect.width > 0)
                 SelectUnits();
 
             _startPosition = Vector2.zero;
@@ -107,10 +107,7 @@ public class UnitSelectionBox : MonoBehaviour
         {
             if (_selectionBox.Contains(_myCam.WorldToScreenPoint(entity.transform.position)))
             {
-                if (Input.GetKey(KeyCode.LeftShift) || Input.GetKey(KeyCode.RightShift))
-                    _selectionManager.ExtendSelection(entity);
-                else
-                    _selectionManager.DragSelect(entity);
+                _selectionManager.DragSelect(entity);
             }
         }
     }

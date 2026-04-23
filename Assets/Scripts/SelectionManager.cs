@@ -1,6 +1,7 @@
 using System.Collections.Generic;
 using System.Collections.Specialized;
 using UnityEngine;
+using static UnityEngine.EventSystems.EventTrigger;
 
 
 public class SelectionManager : MonoBehaviour
@@ -68,7 +69,7 @@ public class SelectionManager : MonoBehaviour
                     SelectByClick(hit.collider.gameObject);
                 }
                     
-            } else
+            } else if (Input.GetKey(KeyCode.LeftShift)==false && Input.GetKey(KeyCode.RightShift)==false)
             {
                 DeselectAll();
             }
@@ -118,14 +119,16 @@ public class SelectionManager : MonoBehaviour
         _selectedFoundation = null;
     }
 
-
     public void DragSelect(ActiveEntity entity)
     {
-        if (_selectedEntities.Contains(entity)==false)
-        {
-            _selectedEntities.Add(entity);
-            entity.SetSelection(true);
-        }
+        if (_selectedEntities.Contains(entity) || entity == null)
+            return;
+        if (_selectedEntities.Count > 0 && (entity is Unit) != (_selectedEntities[0] is Unit))
+            return;
+
+        _selectedFoundation = null;
+        _selectedEntities.Add(entity);
+        entity.SetSelection(true);
     }
 
     private void SelectByClick(GameObject target)
@@ -154,19 +157,15 @@ public class SelectionManager : MonoBehaviour
         }
         
         ActiveEntity selectedEntity = target.GetComponent<ActiveEntity>();
-        ExtendSelection(selectedEntity);
-    }
-    public void ExtendSelection(ActiveEntity entity)
-    {
-
-        if (entity == null)
+        if (selectedEntity == null)
             return;
 
-        if ((entity is Unit) == (_selectedEntities[0] is Unit))
+        if ((selectedEntity is Unit) == (_selectedEntities[0] is Unit))
         {
-            _selectedEntities.Add(entity);
-            entity.SetSelection(true);
+            _selectedEntities.Add(selectedEntity);
+            selectedEntity.SetSelection(true);
         }
     }
+
 
 }
