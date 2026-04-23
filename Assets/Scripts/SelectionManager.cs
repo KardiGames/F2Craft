@@ -7,7 +7,6 @@ using static UnityEngine.EventSystems.EventTrigger;
 public class SelectionManager : MonoBehaviour
 {
     [SerializeField] private LayerMask _clickable;
-    [SerializeField] private Foundation _selectedFoundation;
     [SerializeField] private List<ActiveEntity> _selectedEntities=new();
     private List<Unit> _allUnits=new();
     private List<Building> _allBuildings=new();
@@ -101,9 +100,6 @@ public class SelectionManager : MonoBehaviour
             } else if (_selectedEntities.Count == 1 && _selectedEntities[0] is UnitProducer producer)
             {
                 producer.AddUnitToQueue();
-            } else if (_selectedFoundation != null)
-            {
-                _selectedFoundation.ConstructCurrentTempSetup();
             }
         }
     }
@@ -115,8 +111,6 @@ public class SelectionManager : MonoBehaviour
             entity?.SetSelection(false);
         }
         _selectedEntities.Clear();
-        _selectedFoundation?.SetSelection(false);
-        _selectedFoundation = null;
     }
 
     public void DragSelect(ActiveEntity entity)
@@ -126,7 +120,6 @@ public class SelectionManager : MonoBehaviour
         if (_selectedEntities.Count > 0 && (entity is Unit) != (_selectedEntities[0] is Unit))
             return;
 
-        _selectedFoundation = null;
         _selectedEntities.Add(entity);
         entity.SetSelection(true);
     }
@@ -135,17 +128,10 @@ public class SelectionManager : MonoBehaviour
     {
         DeselectAll();
         ActiveEntity selectedEntity = target.GetComponent<ActiveEntity>();
-        if (selectedEntity != null)
-        {
+        if (selectedEntity == null)
+            return;
             _selectedEntities.Add(selectedEntity);
             selectedEntity.SetSelection(true);
-            return;
-        }
-        _selectedFoundation = target.GetComponent<Foundation>();
-        _selectedFoundation?.SetSelection(true);
-
-        if (_selectedFoundation == null)
-            Debug.LogError("Nothing is selected. Must be");
     }
 
     private void ExtendSelection (GameObject target)
