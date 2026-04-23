@@ -1,7 +1,6 @@
 using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
-using UnityEngine.UIElements;
 
 public class UnitProducer : Building
 {
@@ -18,29 +17,29 @@ public class UnitProducer : Building
     private bool _isProducting = false;
     private List<Item> _spentOptionalResources = new();
     [SerializeField] private BlueprintForUnit _tmpBlueprint;
-    [SerializeField] private Foundation _tmpFoundation;
 
-    public bool Autoproduction { get => _autoproduction; set => _autoproduction = value; }
+    public bool Autoproduction { get => _autoproduction; private set => _autoproduction = value; }
     public int QueuedUnits => _queuedUnits;
-    private void Start()
+    protected override void Start()
     {
-        //CRUTCH: go.Find
+        base.Start();
+
         if (_tmpBlueprint != null)
         {
-            Foundation fdt = Instantiate<Foundation>(_tmpFoundation, transform.position, _tmpFoundation.transform.rotation);
-            Init(0, 250, 250, GameObject.Find("SingleScripts").GetComponent<ActiveEntitiesManager>(), fdt, _tmpBlueprint);
-            fdt.gameObject.SetActive(false);
+            print("Crutch. Unitproducer blueprint set by Start()");
+            SetupBlueprint(_tmpBlueprint);
         }
     }
-    public void Init(int playerNumber, int hp, int maxHp, ActiveEntitiesManager activeEntitiesManager, Foundation foundation, BlueprintForUnit unitBlueprint)
+    public void Init(int playerNumber, int hp, Foundation foundation, BlueprintForUnit unitBlueprint)
     {
-        if (foundation == null || unitBlueprint == null)
+        if (foundation == null || foundation.IsInstantiated==false || unitBlueprint == null)
         {
-            print("Error! Unit producer havn't built");
+            Debug.LogError("Error! Unit producer havn't built");
             Destroy();
             return;
         }
-        Init(playerNumber, hp, maxHp, activeEntitiesManager);
+        _hp = hp;
+        Init(playerNumber);
         _foundation = foundation;
         SetupBlueprint(unitBlueprint);
         _optionalResoursesSlots = OPTIONAL_SLOTS_NUMBER;
@@ -66,8 +65,8 @@ public class UnitProducer : Building
         _queuedUnits++;
     }
     public void RemoveUnitFromQueue()
-    { 
-        _queuedUnits--; 
+    {
+        _queuedUnits--;
     }
 
     public void ForceOptionalResource(Item item)
@@ -123,9 +122,9 @@ public class UnitProducer : Building
 
             if (foundSlotCapacity > 0)
                 continue;
-          
+
             capacity = _resourcesStorage[i].FreeCapacity(item);
-            if (capacity>0)
+            if (capacity > 0)
             {
                 slot = _resourcesStorage[i];
                 foundSlotCapacity = capacity;
@@ -165,25 +164,25 @@ public class UnitProducer : Building
         {
             StartProduction();
         }
-
-        if (Input.GetKeyUp(KeyCode.Space))
-        {
-            AddUnitToQueue();
-        }
     }
 
     private void ProduceUnit()
     {
-        if (_blueprint.ProducedUnit is BattleUnit producedUnit) {
-            BattleUnit unit = Instantiate <BattleUnit> (producedUnit, transform.position, producedUnit.transform.rotation);
-            unit.Init(0, 50, 50, _activeEntitiesManager);
-        } else if (_blueprint.ProducedUnit is Worker worker)
+
+        Vector3 unitPosition = transform.position;
+        unitPosition.y = _blueprint.ProducedUnit.transform.position.y;
+        if (_blueprint.ProducedUnit is BattleUnit producedUnit)
         {
-            Worker newWorker = Instantiate<Worker>(worker, transform.position, worker.transform.rotation);
-            worker.Init(5, 5, 5, _activeEntitiesManager);
+            BattleUnit unit = Instantiate<BattleUnit>(producedUnit, unitPosition, producedUnit.transform.rotation);
+            unit.Init(_playerNumber);
+        }
+        else if (_blueprint.ProducedUnit is Worker worker)
+        {
+            Worker newWorker = Instantiate<Worker>(worker, unitPosition, worker.transform.rotation);
+            newWorker.Init(_playerNumber, 5);
         }
 
-            _isProducting = false;
+        _isProducting = false;
         if (_autoproduction == false)
             _queuedUnits--;
         StartProduction();
@@ -203,7 +202,7 @@ public class UnitProducer : Building
     private bool IsAbleToStartProduction()
     {
         if (!_isProducting
-            && _queuedUnits>0
+            && _queuedUnits > 0
             && _blueprint != null
             //TODO add here check for empty exit
             && HaveEnoughResources()

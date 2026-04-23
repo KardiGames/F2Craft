@@ -6,16 +6,10 @@ public class BattleUnit : Unit
     [SerializeField] private int _damage;
     [SerializeField] float _attackDistance;
     [SerializeField] private float _attackCooldown;
-    private float _timeToAttack=0f;
+    private float _cooldown=0f;
 
-    private void Start() //CRUTCH
-    {
-        if (_activeEntitiesManager is null)
-        {
-            Init(0, 50, 50, GameObject.Find("SingleScripts").GetComponent<ActiveEntitiesManager>());
-            print("Crutch. Unit initiated by Start()");
-        }
-    }
+    public new void Init (int playerNumber) =>
+        base.Init(playerNumber);
 
     private void Update()
     {
@@ -45,8 +39,10 @@ public class BattleUnit : Unit
     {
         if (_target == null) 
             return;
-        transform.LookAt(_target.transform.position);
-        Vector3 moveVector = ((_target.transform.position - transform.position).normalized)*_moveSpeed*Time.deltaTime;
+        Vector3 targetPoint = _target.transform.position;
+        targetPoint.y = transform.position.y;
+        transform.LookAt(targetPoint);
+        Vector3 moveVector = ((targetPoint - transform.position).normalized)*_moveSpeed*Time.deltaTime;
         
         transform.position = transform.position+ moveVector;
 
@@ -54,12 +50,12 @@ public class BattleUnit : Unit
 
     private void Attack()
     {
-        if (_timeToAttack <= 0f)
+        if (_cooldown <= 0f)
         {
             _target.GetDamage(_damage);
-            _timeToAttack += _attackCooldown;
+            _cooldown += _attackCooldown;
         }
         else
-            _timeToAttack-= Time.deltaTime;
+            _cooldown-= Time.deltaTime;
     }
 }

@@ -30,7 +30,7 @@ Transform:
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: 44, y: -0, z: -28}
-  m_LocalScale: {x: 2, y: 0.2, z: 2}
+  m_LocalScale: {x: 2, y: 0.02, z: 2}
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 0}
@@ -48,8 +48,10 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: '::'
   _underConstructionPrefab: {fileID: -9182022544975094174, guid: 7df046f8aa389f24dbf8ad477499c4a9, type: 3}
-  _tmpBuildingBlueprint: {fileID: 11400000, guid: e0256a5a92b8be547a58a5d3095115a4, type: 2}
-  _tmpItemToProduce: {fileID: 11400000, guid: 6e350b2bc9a59db42b85745907946398, type: 2}
+  _tmpBuildingBlueprint: {fileID: 0}
+  _tmpItemToProduce: {fileID: 0}
+  _tmpUnitToProduce: {fileID: 0}
+  _tmpPlayerNumber: 0
 --- !u!33 &6977860809888986409
 MeshFilter:
   m_ObjectHideFlags: 0

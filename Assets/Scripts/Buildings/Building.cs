@@ -5,8 +5,9 @@ using UnityEngine;
 public class Building : ActiveEntity
 {
     protected const int STORAGE_QUANTITY_MULTIPLER = 2;
+    [SerializeField] protected Foundation _foundation;
     public int Level => 1;
-    protected Foundation _foundation;
+
     public virtual int ItemsOfTypeToGive (Item item, out ItemsSlot slot)
     {
         slot = null;
@@ -21,9 +22,27 @@ public class Building : ActiveEntity
     public virtual IEnumerable<Item> ItemsToGive() {
         return Array.Empty<Item>();
     }
-    private void OnMouseDown()
+
+    protected override void Destroy()
     {
-        GameObject.Find("Worker").GetComponent<WorkerLogic.Commander>().Interact(this);
+        _foundation?.gameObject.SetActive(true);
+        base.Destroy();
     }
 
+    protected override void Start()
+    {
+        base.Start();
+        if (_foundation == null)
+        {
+            Debug.LogError("Empty foundation on " + gameObject.name+ " . Destroying");
+            Destroy();
+            return;
+        }
+        if (_foundation.IsInstantiated == false)
+        {
+            print("Crutch. Instantiating foundation for " + gameObject.name);
+            _foundation=Instantiate(_foundation, transform.position, _foundation.transform.rotation);
+        }
+        _foundation.gameObject.SetActive(false);
+    }
 }

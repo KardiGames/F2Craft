@@ -20,18 +20,10 @@ public class Worker : Unit
         _command = value;
     }
 }
-    private void Start() //TODO Delete this crutch
+    public void Init(int playerNumber, int slotCapacity)
     {
-        if (_activeEntitiesManager is not null)
-            _itemsSlot = new ItemsSlot(5);
-    }
-    public void Init(int slotCapaciity, float moveSpeed, int hp, ActiveEntitiesManager activeEntitiesManager)
-    {
-        _hp = hp;
-        _maxHp = hp;
-        _moveSpeed = moveSpeed;
-        _itemsSlot = new ItemsSlot(slotCapaciity);
-        _activeEntitiesManager = activeEntitiesManager;
+        Init(playerNumber);
+        _itemsSlot = new ItemsSlot(slotCapacity);
     }
 
 
@@ -70,6 +62,7 @@ public class Worker : Unit
         }
         return false;
     }
+
     private void Update()
     {
         _command?.Execute();

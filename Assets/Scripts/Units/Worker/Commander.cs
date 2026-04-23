@@ -25,12 +25,11 @@ namespace WorkerLogic
             AssignCommand(new Interact(_worker, building));
         }
 
-        private void OnMouseUpAsButton()
+        public void SwitchProgrammedMode()
         {
             _isProgramActivated = !_isProgramActivated;
             if (_isProgramActivated)
                 NextCommand();
-
         }
         private void Awake()
         {

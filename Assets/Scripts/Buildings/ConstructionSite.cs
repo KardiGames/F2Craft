@@ -1,12 +1,9 @@
 using System;
 using System.Collections.Generic;
-using System.Threading;
 using UnityEngine;
 
 public class ConstructionSite : Building
 {
-    private const int BASE_HP = 1;
-
     [SerializeField] private BlueprintForBuilding _buildingBlueprint;
     [SerializeField] private BlueprintForItem _itemBlueprint;
     [SerializeField] private BlueprintForUnit _unitBlueprint;
@@ -19,7 +16,7 @@ public class ConstructionSite : Building
     [SerializeField] private int _stageResuorcesCost = 0; //CRUTCH delete SerField
     
 
-    public void Init(int playerNumber, ActiveEntitiesManager activeEntitiesManager, BlueprintForBuilding buildingBlueprint, Foundation foundation, BlueprintForItem itemBlueprint, BlueprintForUnit unitBlueprint)
+    public void Init(int playerNumber, BlueprintForBuilding buildingBlueprint, Foundation foundation, BlueprintForItem itemBlueprint, BlueprintForUnit unitBlueprint)
     {
         if (buildingBlueprint == null || foundation == null)
         {
@@ -37,9 +34,10 @@ public class ConstructionSite : Building
         {
             print("Error. ConstructionSite re-initialisation aborted");
             return;
-
         }
-        Init(playerNumber, BASE_HP, buildingBlueprint.BuildingHP, activeEntitiesManager);
+
+        _maxHp = buildingBlueprint.ConstructingBuilding.MaxHp;
+        Init(playerNumber);
         _buildingBlueprint = buildingBlueprint;
         _itemBlueprint = itemBlueprint;
         _unitBlueprint = unitBlueprint;
@@ -109,7 +107,7 @@ public class ConstructionSite : Building
 
     private void FinishStage()
     {
-        _hp = Mathf.Min(_hp + (int)((float)_stageResuorcesCost / _totalResourcesCost * _buildingBlueprint.BuildingHP), _maxHp);
+        _hp = Mathf.Min(_hp + Mathf.CeilToInt((float)_stageResuorcesCost / _totalResourcesCost * _buildingBlueprint.ConstructingBuilding.MaxHp), _maxHp);
 
 
         int currentResourcesCost = 0;
@@ -138,15 +136,14 @@ public class ConstructionSite : Building
         if (_buildingBlueprint.ConstructingBuilding is Factory factoryBlueprint)
         {
             Factory factory = Instantiate<Factory>(factoryBlueprint, transform.position, factoryBlueprint.transform.rotation);
-            factory.Init(_playerNumber, _hp, _maxHp, _activeEntitiesManager, _foundation, _itemBlueprint);
+            factory.Init(_playerNumber, _hp, _foundation, _itemBlueprint);
             Destroy();
         } else if (_buildingBlueprint.ConstructingBuilding is UnitProducer unitProducerBlueprint)
         {
             UnitProducer producer = Instantiate<UnitProducer>(unitProducerBlueprint, transform.position, unitProducerBlueprint.transform.rotation);
-            producer.Init(_playerNumber, _hp, _maxHp, _activeEntitiesManager, _foundation, _unitBlueprint);
+            producer.Init(_playerNumber, _hp, _foundation, _unitBlueprint);
             Destroy();
         }
-
     }
 }
 

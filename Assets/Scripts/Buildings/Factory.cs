@@ -10,26 +10,26 @@ public class Factory : Building
     private float _timer = 0f;
     private bool _isProducting = false;
     [SerializeField] private BlueprintForItem _tmpBlueprint;
-    [SerializeField] private Foundation _tmpFoundation;
 
-    private void Start()
+    protected override void Start()
     {
-        //CRUTCH: go.Find
+        base.Start();
         if (_tmpBlueprint != null)
         {
-            Foundation fdt = Instantiate<Foundation>(_tmpFoundation, transform.position, _tmpFoundation.transform.rotation);
-            Init(0, 250, 250, GameObject.Find("SingleScripts").GetComponent<ActiveEntitiesManager>(), fdt, _tmpBlueprint);
-            fdt.gameObject.SetActive(false);
+            SetupBlueprint(_tmpBlueprint);
+            print("Crutch. Factory blueprint set by Start()");
         }
     }
-    public void Init(int playerNumber, int hp, int maxHp, ActiveEntitiesManager activeEntitiesManager, Foundation foundation, BlueprintForItem itemBlueprint)
+    public void Init(int playerNumber, int hp, Foundation foundation, BlueprintForItem itemBlueprint)
     {
-        if (foundation == null || itemBlueprint == null)
+        if (foundation == null || foundation.IsInstantiated == false || itemBlueprint == null)
         {
+            Debug.LogError("Factory initialisation aborted. Destroying. GO: " + gameObject.name);
             Destroy();
             return;
         }
-        Init(playerNumber, hp, maxHp, activeEntitiesManager);
+        _hp = hp;
+        Init(playerNumber);
         _foundation = foundation;
         SetupBlueprint(itemBlueprint);
 
