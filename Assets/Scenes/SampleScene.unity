@@ -2387,8 +2387,8 @@ MonoBehaviour:
   _moveWithEdgeScrolling: 1
   _moveWithMouseDrag: 0
   _blockOutsideMouseMoving: 0
-  _fastSpeed: 0.05
-  _normalSpeed: 0.01
+  _fastSpeed: 0.5
+  _normalSpeed: 0.1
   _movementSensitivity: 1
   _edgeSize: 50
   _cursorArrowUp: {fileID: 2800000, guid: d44631936a6911247a3d6acf1649ae7e, type: 3}

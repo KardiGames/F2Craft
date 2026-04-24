@@ -6,9 +6,10 @@ public class TextUserInterface : MonoBehaviour
     public static TextUserInterface Instance;
     [SerializeField] private SelectionManager _selectionManager;
     [SerializeField] private TextMeshProUGUI _text;
-    private string _buildMenuText="";
+    private string _buildMenuText = "";
     private string _selectionText = "";
-
+    private string _currentText = "";
+    private ActiveEntity _storedCurrentSelected;
 
     private void Awake()
     {
@@ -29,10 +30,12 @@ public class TextUserInterface : MonoBehaviour
     private void OnEnable()
     {
         _selectionManager.OnSelectionChanged += UpdateSelectionInfo;
+        _selectionManager.OnCurrentChanged += AskNewCurrent;
     }
     private void OnDisable()
     {
         _selectionManager.OnSelectionChanged -= UpdateSelectionInfo;
+        _selectionManager.OnCurrentChanged -= AskNewCurrent;
     }
 
     public void SetBuildMenuText(string text)
@@ -43,9 +46,36 @@ public class TextUserInterface : MonoBehaviour
     private void RefreshUIText()
     {
         _text.text = _buildMenuText
-            +"\n===================\n"
-            +_selectionText;
-        
+            + "\n===================\n"
+            + _selectionText
+            + "===================\n"
+            + _currentText;
+
+    }
+
+    private void AskNewCurrent()
+    {
+
+        ActiveEntity newCurrent = _selectionManager.CurrentInSelection;
+        if (_storedCurrentSelected == newCurrent)
+            return;
+
+        if (_storedCurrentSelected != null)
+            _storedCurrentSelected.OnParameterChaged -= UpdateCurrentInfo;
+        _storedCurrentSelected = newCurrent;
+        if (_storedCurrentSelected != null)
+            _storedCurrentSelected.OnParameterChaged += UpdateCurrentInfo;
+        UpdateCurrentInfo();
+    }
+
+    private void UpdateCurrentInfo()
+    {
+        _currentText = "";
+        if (_storedCurrentSelected!= null)
+        {
+            _currentText += "HP " + _storedCurrentSelected.HP + "/" + _storedCurrentSelected.MaxHp + "\n";
+        }
+        RefreshUIText();
     }
     private void UpdateSelectionInfo()
     {
@@ -55,8 +85,8 @@ public class TextUserInterface : MonoBehaviour
         {
             if (selectedEntity == currentInSelected)
                 _selectionText += "->";
-            _selectionText += selectedEntity.name+" ["+selectedEntity.HP*100/selectedEntity.MaxHp+"%]\n";
+            _selectionText += selectedEntity.name + " [" + selectedEntity.HP * 100 / selectedEntity.MaxHp + "%]\n";
         }
-        RefreshUIText() ;
+        RefreshUIText();
     }
 }

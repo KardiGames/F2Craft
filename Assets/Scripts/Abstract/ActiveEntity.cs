@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Collections.Specialized;
@@ -6,6 +7,7 @@ using UnityEngine;
 
 public class ActiveEntity : MonoBehaviour
 {
+    public static event Action<ActiveEntity> OnEntityRemoved;
     private static ObservableCollection<ActiveEntity> _entities = new ObservableCollection<ActiveEntity>();
 
     /*
@@ -47,6 +49,7 @@ public class ActiveEntity : MonoBehaviour
     public static bool Contains(ActiveEntity entity) =>
         _entities.Contains(entity);
 
+    public event Action OnParameterChaged;
     [SerializeField] protected int _playerNumber;
     [SerializeField] protected int _hp;
     [SerializeField] protected int _maxHp;
@@ -73,6 +76,7 @@ public class ActiveEntity : MonoBehaviour
         if (damage <= 0)
             return;
         _hp-= damage;
+        OnParameterChaged?.Invoke();
         
         if (_hp<0)
         {
@@ -88,6 +92,7 @@ public class ActiveEntity : MonoBehaviour
     protected virtual void Destroy ()
     {
         _entities.Remove(this);
+        OnEntityRemoved?.Invoke(this);
         Destroy(gameObject);
     }
 
