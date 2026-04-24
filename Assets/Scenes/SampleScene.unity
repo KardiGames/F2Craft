@@ -1906,6 +1906,12 @@ MonoBehaviour:
   _buildings:
   - {fileID: 11400000, guid: 6ca3fcf6c40d94847a282c6ccaf76c6b, type: 2}
   - {fileID: 11400000, guid: e0256a5a92b8be547a58a5d3095115a4, type: 2}
+  _itemBlueprints:
+  - {fileID: 11400000, guid: 6e350b2bc9a59db42b85745907946398, type: 2}
+  - {fileID: 11400000, guid: f7d4427ab76e9c047897d9e4fc583cb3, type: 2}
+  _unitBlueprints:
+  - {fileID: 11400000, guid: d9b22f1248f3d3e459f110c4031077ec, type: 2}
+  - {fileID: 11400000, guid: d129df98d3f867542b1f14b7b1661154, type: 2}
 --- !u!114 &1307069945 stripped
 MonoBehaviour:
   m_CorrespondingSourceObject: {fileID: 2879976269712404072, guid: 7cb8965d171c1624f8d1dcfc43514e67, type: 3}
