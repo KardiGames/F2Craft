@@ -4,12 +4,15 @@ using UnityEngine;
 public class TextUserInterface : MonoBehaviour
 {
     public static TextUserInterface Instance;
-    [SerializeField] private TextMeshProUGUI _text;    
-    
+    [SerializeField] private SelectionManager _selectionManager;
+    [SerializeField] private TextMeshProUGUI _text;
+    private string _buildMenuText="";
+    private string _selectionText = "";
+
 
     private void Awake()
     {
-        if (Instance == null) 
+        if (Instance == null)
             Instance = this;
         else
             Destroy(this);
@@ -17,18 +20,43 @@ public class TextUserInterface : MonoBehaviour
 
     private void Start()
     {
-        if (_text == null)
+        if (_text == null || _selectionManager == null)
         {
             Debug.LogError("Link is not set");
         }
     }
 
-    public void Show (string text)
+    private void OnEnable()
     {
-        _text.text = text;
+        _selectionManager.OnSelectionChanged += UpdateSelectionInfo;
     }
-    public void Add(string text)
+    private void OnDisable()
     {
-        _text.text += text;
+        _selectionManager.OnSelectionChanged -= UpdateSelectionInfo;
+    }
+
+    public void SetBuildMenuText(string text)
+    {
+        _buildMenuText = text;
+        RefreshUIText();
+    }
+    private void RefreshUIText()
+    {
+        _text.text = _buildMenuText
+            +"\n===================\n"
+            +_selectionText;
+        
+    }
+    private void UpdateSelectionInfo()
+    {
+        _selectionText = "";
+        ActiveEntity currentInSelected = _selectionManager.CurrentInSelection;
+        foreach (ActiveEntity selectedEntity in _selectionManager.SelectedEntities)
+        {
+            if (selectedEntity == currentInSelected)
+                _selectionText += "->";
+            _selectionText += selectedEntity.name+" ["+selectedEntity.HP*100/selectedEntity.MaxHp+"%]\n";
+        }
+        RefreshUIText() ;
     }
 }

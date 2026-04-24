@@ -94,11 +94,11 @@ public class HotkeyUserInterface : MonoBehaviour
                     {
                         case Factory factory:
                             _hotkeyState = HotkeyState.SelectItemBlueprint;
-                            _textUI.Show(_stateText[(int)HotkeyState.SelectItemBlueprint]);
+                            _textUI.SetBuildMenuText(_stateText[(int)HotkeyState.SelectItemBlueprint]);
                             break;
                         case UnitProducer pruducer:
                             _hotkeyState = HotkeyState.SelectUnit;
-                            _textUI.Show(_stateText[(int)HotkeyState.SelectUnit]);
+                            _textUI.SetBuildMenuText(_stateText[(int)HotkeyState.SelectUnit]);
                             break;
                         default:
                             Debug.LogError("Building type is not detected");
@@ -116,7 +116,7 @@ public class HotkeyUserInterface : MonoBehaviour
                 {
                     _hotkeyState = HotkeyState.SelectFoundation;
                     _selectedItem = _itemBlueprints[itemBlueprintIndex];
-                    _textUI.Show("Select place for\n" + _selectedBuilding + "\n with blueprint for\n" + _selectedItem.name);
+                    _textUI.SetBuildMenuText("Select place for\n" + _selectedBuilding + "\n with blueprint for\n" + _selectedItem.name);
                 }
                 else if (Input.GetKeyDown(KeyCode.Escape))
                     ResetState();
@@ -127,7 +127,7 @@ public class HotkeyUserInterface : MonoBehaviour
                 {
                     _hotkeyState = HotkeyState.SelectFoundation;
                     _selectedUnit = _unitBlueprints[unitIndex];
-                    _textUI.Show("Select place for\n" + _selectedBuilding + "\n with blueprint for\n" + _selectedUnit.ProducedUnit.name);
+                    _textUI.SetBuildMenuText("Select place for\n" + _selectedBuilding + "\n with blueprint for\n" + _selectedUnit.ProducedUnit.name);
                 }
                 else if (Input.GetKeyDown(KeyCode.Escape))
                     ResetState();
@@ -136,7 +136,7 @@ public class HotkeyUserInterface : MonoBehaviour
                 if (Input.GetKeyDown(KeyCode.B))
                 {
                     _hotkeyState = HotkeyState.SelectBuilding;
-                    _textUI.Show(_stateText[(int)HotkeyState.SelectBuilding]);
+                    _textUI.SetBuildMenuText(_stateText[(int)HotkeyState.SelectBuilding]);
                 }
                 break;
 
@@ -149,7 +149,7 @@ public class HotkeyUserInterface : MonoBehaviour
         _selectedItem = null;
         _selectedUnit = null;
         _hotkeyState = HotkeyState.Default;
-        _textUI.Show(_stateText[(int)HotkeyState.Default]);
+        _textUI.SetBuildMenuText(_stateText[(int)HotkeyState.Default]);
     }
 
     private bool TryGetIndexOfPressedKey(out int index)
