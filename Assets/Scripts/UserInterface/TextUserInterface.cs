@@ -1,5 +1,6 @@
 using TMPro;
 using UnityEngine;
+using WorkerLogic;
 
 public class TextUserInterface : MonoBehaviour
 {
@@ -71,11 +72,37 @@ public class TextUserInterface : MonoBehaviour
     private void UpdateCurrentInfo()
     {
         _currentText = "";
-        if (_storedCurrentSelected!= null)
+        if (_storedCurrentSelected != null)
         {
-            _currentText += "HP " + _storedCurrentSelected.HP + "/" + _storedCurrentSelected.MaxHp + "\n";
+            _currentText += "HP " + _storedCurrentSelected.HP + "/" + _storedCurrentSelected.MaxHp + " " + PlaceText(_storedCurrentSelected.transform) + "\n";
+            if (_storedCurrentSelected is Worker worker)
+            {
+                _currentText += worker.ItemsSlot.Quantity + "/" + worker.ItemsSlot.QuantityLimit + " " + worker.ItemsSlot.Item?.name + "\n";
+                Programmer programmer = worker.GetComponent<Programmer>();
+                if (programmer == null)
+                {
+                    Debug.LogError("Worker without programmer", worker);
+                    return;
+                }
+                _currentText += "Program log:\n";
+                foreach (Program program in programmer.GetLog())
+                {
+                    _currentText += PlaceText(program.Building.transform) + " ";
+                    if (program.IsGettingItem)
+                        _currentText += "=> ";
+                    else
+                        _currentText += "<= ";
+                    if (program.ForceQuantity)
+                        _currentText += "!";
+                    _currentText += program.Quantity+" ";
+                    if (program.ForceItem)
+                        _currentText += "!";
+                    _currentText += program.Item?.name + "\n";
+
+                }
+            }
+            RefreshUIText();
         }
-        RefreshUIText();
     }
     private void UpdateSelectionInfo()
     {
@@ -88,5 +115,10 @@ public class TextUserInterface : MonoBehaviour
             _selectionText += selectedEntity.name + " [" + selectedEntity.HP * 100 / selectedEntity.MaxHp + "%]\n";
         }
         RefreshUIText();
+    }
+
+    private string PlaceText (Transform transform)
+    {
+        return "[" + Mathf.RoundToInt(transform.position.x) + " " + Mathf.RoundToInt(transform.position.z) + "]";
     }
 }

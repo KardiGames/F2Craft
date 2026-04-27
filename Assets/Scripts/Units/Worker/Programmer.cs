@@ -18,9 +18,11 @@ namespace WorkerLogic
                     _programLog.RemoveRange(0, _logSize - value);
                 }
                 _logSize = value;
-
             }
         }
+
+        public IEnumerable<Program> GetLog()
+            => _programLog;
         public void Log(Program program)
         {
             if (program == null)
