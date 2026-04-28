@@ -4,7 +4,9 @@ using WorkerLogic;
 
 public class Worker : Unit
 {
+    public const int DEFAULT_SLOT_CAPACITY = 5;
 
+    [SerializeField] private Commander _commander;
     [SerializeField] private Building _connectedBuilding;
     [SerializeField] private ItemsSlot _itemsSlot;
     [SerializeField] private ICommand _command;
@@ -12,18 +14,25 @@ public class Worker : Unit
     public Building ConnectedBuilding => _connectedBuilding;
     public ItemsSlot ItemsSlot => _itemsSlot;
 
-    public ICommand Command {get => _command; set 
-    {
-        _command?.Cancel();
+    public Commander Commander => _commander;
 
-        //THINK m.b. do check is this == _command.Worker
-        _command = value;
+    public ICommand Command
+    {
+        get => _command; set
+        {
+            if (_command == value)
+                return;
+            _command?.Cancel();
+            //THINK m.b. do check is this == _command.Worker
+            _command = value;
+            OnParameterChangedInvoke();
+        }
     }
-}
     public void Init(int playerNumber, int slotCapacity)
     {
         Init(playerNumber);
         _itemsSlot = new ItemsSlot(slotCapacity);
+        _itemsSlot.OnContentChanged += OnParameterChangedInvoke;
     }
 
 
@@ -38,6 +47,7 @@ public class Worker : Unit
         if (sqrDelta <= _moveSpeed * _moveSpeed * Time.deltaTime * Time.deltaTime)
         {
             transform.position = point;
+            OnParameterChangedInvoke();
             return true;
         }
 
@@ -47,9 +57,9 @@ public class Worker : Unit
         return false;
     }
 
-    public bool TryConnectBuilding (Building building)
+    public bool TryConnectBuilding(Building building)
     {
-        if (building==null)
+        if (building == null)
             return false;
 
         Vector3 delta = building.transform.position - transform.position;
@@ -58,11 +68,17 @@ public class Worker : Unit
         if (sqrFlatDelta <= Time.deltaTime * _moveSpeed)
         {
             _connectedBuilding = building;
+            OnParameterChangedInvoke();
             return true;
         }
         return false;
     }
 
+    private void Start()
+    {
+        if (_commander == null)
+            Debug.LogError("Link is not set", this);
+    }
     private void Update()
     {
         _command?.Execute();

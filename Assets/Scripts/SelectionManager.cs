@@ -183,7 +183,7 @@ public class SelectionManager : MonoBehaviour
                     Building target = hit.collider.gameObject.GetComponent<Building>();
                     if (target != null)
                     {
-                        worker.GetComponent<WorkerLogic.Commander>().Interact(target);
+                        worker.GetComponent<WorkerLogic.Commander>().Interact(target, (Input.GetKey(KeyCode.LeftShift) || Input.GetKey(KeyCode.RightShift)));
                     }
                 }
             }

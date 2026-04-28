@@ -179,7 +179,7 @@ public class UnitProducer : Building
         else if (_blueprint.ProducedUnit is Worker worker)
         {
             Worker newWorker = Instantiate<Worker>(worker, unitPosition, worker.transform.rotation);
-            newWorker.Init(_playerNumber, 5);
+            newWorker.Init(_playerNumber, Worker.DEFAULT_SLOT_CAPACITY);
         }
 
         _isProducting = false;

@@ -49,7 +49,7 @@ public class ActiveEntity : MonoBehaviour
     public static bool Contains(ActiveEntity entity) =>
         _entities.Contains(entity);
 
-    public event Action OnParameterChaged;
+    public event Action OnParameterChanged;
     [SerializeField] protected int _playerNumber;
     [SerializeField] protected int _hp;
     [SerializeField] protected int _maxHp;
@@ -71,12 +71,17 @@ public class ActiveEntity : MonoBehaviour
         _playerNumber = playerNumber;
     }
 
+    protected void OnParameterChangedInvoke()
+    {
+        OnParameterChanged?.Invoke();
+    }
+
     public void GetDamage (int damage)
     {
         if (damage <= 0)
             return;
         _hp-= damage;
-        OnParameterChaged?.Invoke();
+        OnParameterChanged?.Invoke();
         
         if (_hp<0)
         {

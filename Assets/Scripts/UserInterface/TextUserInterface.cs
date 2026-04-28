@@ -62,10 +62,10 @@ public class TextUserInterface : MonoBehaviour
             return;
 
         if (_storedCurrentSelected != null)
-            _storedCurrentSelected.OnParameterChaged -= UpdateCurrentInfo;
+            _storedCurrentSelected.OnParameterChanged -= UpdateCurrentInfo;
         _storedCurrentSelected = newCurrent;
         if (_storedCurrentSelected != null)
-            _storedCurrentSelected.OnParameterChaged += UpdateCurrentInfo;
+            _storedCurrentSelected.OnParameterChanged += UpdateCurrentInfo;
         UpdateCurrentInfo();
     }
 
