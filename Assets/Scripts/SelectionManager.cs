@@ -58,12 +58,12 @@ public class SelectionManager : MonoBehaviour
     private void OnEnable()
     {
         ActiveEntity.AddObserver(RefreshEntitiesLists);
-        ActiveEntity.OnEntityRemoved += UnselectRemovedEntity;
+        ActiveEntity.S_OnEntityRemoved += UnselectRemovedEntity;
     }
     private void OnDisable()
     {
         ActiveEntity.RemoveObserver(RefreshEntitiesLists);
-        ActiveEntity.OnEntityRemoved -= UnselectRemovedEntity;
+        ActiveEntity.S_OnEntityRemoved -= UnselectRemovedEntity;
     }
 
     private void GroupSelection()

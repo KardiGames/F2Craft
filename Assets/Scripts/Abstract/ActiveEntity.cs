@@ -7,8 +7,8 @@ using UnityEngine;
 
 public class ActiveEntity : MonoBehaviour
 {
-    public static event Action<ActiveEntity> OnEntityRemoved;
-    private static ObservableCollection<ActiveEntity> _entities = new ObservableCollection<ActiveEntity>();
+    public static event Action<ActiveEntity> S_OnEntityRemoved;
+    private static ObservableCollection<ActiveEntity> s_entities = new ObservableCollection<ActiveEntity>();
 
     /*
     private static void AddEntity(ActiveEntity entity)
@@ -33,21 +33,21 @@ public class ActiveEntity : MonoBehaviour
     */
     public static void AddObserver (NotifyCollectionChangedEventHandler handler)
     {
-        _entities.CollectionChanged += handler;
+        s_entities.CollectionChanged += handler;
     }
     public static void RemoveObserver (NotifyCollectionChangedEventHandler handler)
     {
-        _entities.CollectionChanged -= handler;
+        s_entities.CollectionChanged -= handler;
     }
 
     public static IEnumerable<ActiveEntity> GetEnemiesList(int playerNumber)
     {
-        return _entities.Where(entity => entity.PlayerNumber != playerNumber);
+        return s_entities.Where(entity => entity.PlayerNumber != playerNumber);
     }
-    public static IEnumerable<ActiveEntity> GetEntitiesList() => _entities;
+    public static IEnumerable<ActiveEntity> GetEntitiesList() => s_entities;
 
     public static bool Contains(ActiveEntity entity) =>
-        _entities.Contains(entity);
+        s_entities.Contains(entity);
 
     public event Action OnParameterChanged;
     [SerializeField] protected int _playerNumber;
@@ -96,8 +96,8 @@ public class ActiveEntity : MonoBehaviour
     
     protected virtual void Destroy ()
     {
-        _entities.Remove(this);
-        OnEntityRemoved?.Invoke(this);
+        s_entities.Remove(this);
+        S_OnEntityRemoved?.Invoke(this);
         Destroy(gameObject);
     }
 
@@ -106,6 +106,6 @@ public class ActiveEntity : MonoBehaviour
         if (_selectionIndicator == null)
             Debug.LogError("Selection indicator isn't set on " + gameObject.name);
 
-        _entities.Add(this);
+        s_entities.Add(this);
     }
 }

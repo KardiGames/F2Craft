@@ -40,7 +40,7 @@ namespace WorkerLogic
             switch (_state)
             {
                 case State.Moving:
-                    if (_worker.TryReachThePoint(_point))
+                    if (_worker.TryReachThePoint(_point)) 
                     {
                         _state = State.Connecting;
                     }

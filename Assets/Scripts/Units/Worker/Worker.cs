@@ -74,10 +74,17 @@ public class Worker : Unit
         return false;
     }
 
-    private void Start()
+    protected override void Start()
     {
+        base.Start();
         if (_commander == null)
             Debug.LogError("Link is not set", this);
+        if (_itemsSlot == null || _itemsSlot.HasContentChangedSubscriber(OnParameterChangedInvoke) == false)
+        {
+            Init(_playerNumber, DEFAULT_SLOT_CAPACITY);
+            print("CRUTCH. " + gameObject.name + " initiated by Start");
+        }
+
     }
     private void Update()
     {
