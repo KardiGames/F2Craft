@@ -2384,7 +2384,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::RTSCameraController
   _followTransform: {fileID: 0}
   _moveWithKeyboad: 1
-  _moveWithEdgeScrolling: 1
+  _moveWithEdgeScrolling: 0
   _moveWithMouseDrag: 0
   _blockOutsideMouseMoving: 0
   _fastSpeed: 0.5

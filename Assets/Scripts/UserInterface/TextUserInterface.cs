@@ -87,6 +87,11 @@ public class TextUserInterface : MonoBehaviour
                 _currentText += "Program log:\n";
                 foreach (Program program in programmer.GetLog())
                 {
+                    if (program.Building == null)
+                    {
+                        Debug.LogWarning("Building link in program uncontrollable lost");
+                        continue;
+                    }
                     _currentText += PlaceText(program.Building.transform) + " ";
                     if (program.IsGettingItem)
                         _currentText += "=> ";

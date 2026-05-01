@@ -23,7 +23,6 @@ public class Worker : Unit
             if (_command == value)
                 return;
             _command?.Cancel();
-            //THINK m.b. do check is this == _command.Worker
             _command = value;
             OnParameterChangedInvoke();
         }
@@ -79,11 +78,9 @@ public class Worker : Unit
         base.Start();
         if (_commander == null)
             Debug.LogError("Link is not set", this);
-        if (_itemsSlot == null || _itemsSlot.HasContentChangedSubscriber(OnParameterChangedInvoke) == false)
-        {
-            Init(_playerNumber, DEFAULT_SLOT_CAPACITY);
-            print("CRUTCH. " + gameObject.name + " initiated by Start");
-        }
+        //Crutch for self-initiation
+        _itemsSlot.OnContentChanged -= OnParameterChangedInvoke;
+        _itemsSlot.OnContentChanged += OnParameterChangedInvoke;
 
     }
     private void Update()
