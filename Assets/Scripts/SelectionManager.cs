@@ -104,8 +104,8 @@ public class SelectionManager : MonoBehaviour
         _isGrouped = true;
         if (isChanged)
             OnSelectionChanged?.Invoke();
-
     }
+
     private void UnselectRemovedEntity (ActiveEntity removedEntity)
     {
         if (removedEntity == null) 
@@ -220,8 +220,11 @@ public class SelectionManager : MonoBehaviour
     {
         if (_selectedEntities.Contains(entity) || entity == null)
             return;
-        if (_selectedEntities.Count > 0 && (entity is Unit) != (_selectedEntities[0] is Unit))
-            return;
+        if (_selectedEntities.Count > 0)
+            if (entity is Unit && _selectedEntities[0] is not Unit)
+                DeselectAll();
+            else if (entity is not Unit && _selectedEntities[0] is Unit)
+                return;
 
         _selectedEntities.Add(entity);
         if (_selectedEntities.Count == 1)

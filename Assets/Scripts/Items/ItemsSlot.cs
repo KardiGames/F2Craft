@@ -48,6 +48,16 @@ public class ItemsSlot
         _whiteList.Add(item);
     }
     public Item Item => _item;
+    public Item MonoItem
+    {
+        get
+        {
+            if (_whiteList.Count == 1 && _blackList.Count == 0)
+                return _whiteList[0];
+            else
+                return _item;
+        }
+    }
     public int Quantity => _quantity;
     public int QuantityLimit => _quantityLimit;
 

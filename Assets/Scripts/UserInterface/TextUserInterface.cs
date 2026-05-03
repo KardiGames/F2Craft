@@ -56,7 +56,6 @@ public class TextUserInterface : MonoBehaviour
 
     private void AskNewCurrent()
     {
-
         ActiveEntity newCurrent = _selectionManager.CurrentInSelection;
         if (_storedCurrentSelected == newCurrent)
             return;
@@ -105,13 +104,29 @@ public class TextUserInterface : MonoBehaviour
                     _currentText += program.Item?.name + "\n";
 
                 }
+            } else if (_storedCurrentSelected is ConstructionSite site)
+            {
+                _currentText += site.ConstructedBuildingName + " under construction\n";
+                _currentText += "Nesassary resources:\n";
+                foreach (ItemsSlot slot in site.ResourcesStorage)
+                {
+                    _currentText += slot.Quantity + "/" + slot.QuantityLimit + " ";
+                    if (slot.Item != null)
+                        _currentText += slot.Item.name;
+                    else if (slot.MonoItem != null)
+                        _currentText += slot.MonoItem.name;
+                    _currentText += "\n";
+                }
+                if (site.StageTimer > 0)
+                    _currentText += "Stage timer: " + site.StageTimer;
             }
-            RefreshUIText();
+                RefreshUIText();
         }
     }
     private void UpdateSelectionInfo()
     {
         _selectionText = "";
+        AskNewCurrent();
         ActiveEntity currentInSelected = _selectionManager.CurrentInSelection;
         foreach (ActiveEntity selectedEntity in _selectionManager.SelectedEntities)
         {
