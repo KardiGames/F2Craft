@@ -30,7 +30,7 @@ namespace WorkerLogic
 
         public void Interact (Building building, bool enqueue = false)
         {
-            if (enqueue && _worker.Command == null)
+            if (enqueue && _worker.Command != null)
                 _commandQueue.Add(new Interact(_worker, building));
             else
                 AssignCommand(new Interact(_worker, building));

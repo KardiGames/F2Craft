@@ -98,13 +98,14 @@ public class TextUserInterface : MonoBehaviour
                         _currentText += "<= ";
                     if (program.ForceQuantity)
                         _currentText += "!";
-                    _currentText += program.Quantity+" ";
+                    _currentText += program.Quantity + " ";
                     if (program.ForceItem)
                         _currentText += "!";
                     _currentText += program.Item?.name + "\n";
 
                 }
-            } else if (_storedCurrentSelected is ConstructionSite site)
+            }
+            else if (_storedCurrentSelected is ConstructionSite site)
             {
                 _currentText += site.ConstructedBuildingName + " under construction\n";
                 _currentText += "Nesassary resources:\n";
@@ -120,7 +121,64 @@ public class TextUserInterface : MonoBehaviour
                 if (site.StageTimer > 0)
                     _currentText += "Stage timer: " + site.StageTimer;
             }
-                RefreshUIText();
+            else if (_storedCurrentSelected is UnitProducer producer)
+            {
+                if (producer.Blueprint != null)
+                {
+
+                    _currentText += producer.Blueprint.ProducedUnit.name + " producer\n";
+                    _currentText += producer.QueuedUnits + " units queued";
+                    if (producer.Autoproduction)
+                        _currentText += " (auto)";
+                    _currentText += "\n";
+                    _currentText += "Resources:\n";
+                    foreach (ItemsSlot slot in producer.ResourcesStorage)
+                    {
+                        _currentText += slot.Quantity + "/" + slot.QuantityLimit + " ";
+                        if (slot.Item != null)
+                            _currentText += slot.Item.name;
+                        else if (slot.MonoItem != null)
+                            _currentText += slot.MonoItem.name;
+                        _currentText += "\n";
+                    }
+                    if (producer.UnitTimer > 0)
+                        _currentText += "Unit ready in: " + producer.UnitTimer;
+                }
+                else
+                    _currentText += "Unit to produce isn't selected";
+            }
+            else if (_storedCurrentSelected is Factory factory)
+            {
+                if (factory.Blueprint != null)
+                {
+                    _currentText += "Factory\nResources:\n";
+                    foreach (ItemsSlot slot in factory.ResourcesStorage)
+                    {
+                        _currentText += slot.Quantity + "/" + slot.QuantityLimit + " ";
+                        if (slot.Item != null)
+                            _currentText += slot.Item.name;
+                        else if (slot.MonoItem != null)
+                            _currentText += slot.MonoItem.name;
+                        _currentText += "\n";
+                    }
+                    _currentText += "Production:\n";
+                    foreach (ItemsSlot slot in factory.ProductionStorage)
+                    {
+                        _currentText += slot.Quantity + "/" + slot.QuantityLimit + " ";
+                        if (slot.Item != null)
+                            _currentText += slot.Item.name;
+                        else if (slot.MonoItem != null)
+                            _currentText += slot.MonoItem.name;
+                        _currentText += "\n";
+                    }
+
+                    if (factory.ItemTimer > 0)
+                        _currentText += "Items ready in: " + factory.ItemTimer;
+                }
+                else
+                    _currentText += "Item to produce isn't selected";
+            }
+            RefreshUIText();
         }
     }
     private void UpdateSelectionInfo()
@@ -137,7 +195,7 @@ public class TextUserInterface : MonoBehaviour
         RefreshUIText();
     }
 
-    private string PlaceText (Transform transform)
+    private string PlaceText(Transform transform)
     {
         return "[" + Mathf.RoundToInt(transform.position.x) + " " + Mathf.RoundToInt(transform.position.z) + "]";
     }
