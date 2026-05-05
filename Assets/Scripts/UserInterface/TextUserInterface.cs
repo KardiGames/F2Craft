@@ -191,7 +191,7 @@ public class TextUserInterface : MonoBehaviour
             else if (_storedCurrentSelected is Storehouse storehouse)
             {
                 _currentText += "Storehouse\n";
-                _currentText += storehouse.MateriaStorage.Quantity + "/" + storehouse.MateriaStorage.QuantityLimit + " ";
+                _currentText += storehouse.Storage.Quantity + "/" + storehouse.Storage.QuantityLimit + " ";
                 if (storehouse.Storage.Item != null)
                     _currentText += storehouse.Storage.Item.name;
                 else if (storehouse.Storage.MonoItem != null)

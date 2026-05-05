@@ -45,7 +45,7 @@ public class PlayerBase : Building
         if (_materiaStorage == null)
         {
             Init(_playerNumber);
-            print("Crutch. Command center initiated by Start()");
+            print("Crutch. Player base initiated by Start()");
         }
     }
     private void Update()

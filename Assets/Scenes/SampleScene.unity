@@ -1594,17 +1594,17 @@ MonoBehaviour:
   m_GameObject: {fileID: 813894203}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: b9dd56b977492774ebe3202bdd2cce69, type: 3}
+  m_Script: {fileID: 11500000, guid: 5fb1481b47b9adb40901783f409baca5, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::CommandCenter
   _playerNumber: 0
-  _hp: 250
-  _maxHp: 500
+  _hp: 500
+  _maxHp: 280
   _selectionIndicator: {fileID: 779386590}
   _foundation: {fileID: 521364907}
-  _materiaItem: {fileID: 11400000, guid: a40053139cbbab34a820502f4295ac6d, type: 2}
-  _producingTime: 0.3
-  _materiaCapacity: 1000
+  _materiaItem: {fileID: 0}
+  _producingTime: 0
+  _materiaCapacity: 0
 --- !u!1 &832575517
 GameObject:
   m_ObjectHideFlags: 0
@@ -1907,6 +1907,7 @@ MonoBehaviour:
   _buildings:
   - {fileID: 11400000, guid: 6ca3fcf6c40d94847a282c6ccaf76c6b, type: 2}
   - {fileID: 11400000, guid: e0256a5a92b8be547a58a5d3095115a4, type: 2}
+  - {fileID: 11400000, guid: ecc6678c95f38f54293d1e4cc8cb23ce, type: 2}
   _itemBlueprints:
   - {fileID: 11400000, guid: 6e350b2bc9a59db42b85745907946398, type: 2}
   - {fileID: 11400000, guid: f7d4427ab76e9c047897d9e4fc583cb3, type: 2}
