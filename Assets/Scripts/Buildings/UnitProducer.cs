@@ -156,7 +156,10 @@ public class UnitProducer : Building
         foreach (ItemsSlot slot in _resourcesStorage)
         {
             if (slot.Item != null && slot.Quantity > 0)
+            {
                 _recycler.Recycle(slot.Item, slot.Quantity);
+                slot.OnContentChanged -= OnParameterChangedInvoke;
+            }
         }
         _resourcesStorage.Clear();
 

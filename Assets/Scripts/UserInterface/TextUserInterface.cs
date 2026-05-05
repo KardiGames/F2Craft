@@ -178,6 +178,26 @@ public class TextUserInterface : MonoBehaviour
                 else
                     _currentText += "Item to produce isn't selected";
             }
+            else if (_storedCurrentSelected is PlayerBase playerBase)
+            {
+                    _currentText += "Player "+playerBase.PlayerNumber+ " base\n";
+                    _currentText += playerBase.MateriaStorage.Quantity + "/" + playerBase.MateriaStorage.QuantityLimit + " ";
+                        if (playerBase.MateriaStorage.Item != null)
+                            _currentText += playerBase.MateriaStorage.Item.name;
+                        else if (playerBase.MateriaStorage.MonoItem != null)
+                            _currentText += playerBase.MateriaStorage.MonoItem.name;
+                        _currentText += "\n";
+            }
+            else if (_storedCurrentSelected is Storehouse storehouse)
+            {
+                _currentText += "Storehouse\n";
+                _currentText += storehouse.MateriaStorage.Quantity + "/" + storehouse.MateriaStorage.QuantityLimit + " ";
+                if (storehouse.Storage.Item != null)
+                    _currentText += storehouse.Storage.Item.name;
+                else if (storehouse.Storage.MonoItem != null)
+                    _currentText += storehouse.Storage.MonoItem.name;
+                _currentText += "\n";
+            }
             RefreshUIText();
         }
     }

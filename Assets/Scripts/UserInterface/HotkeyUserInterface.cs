@@ -114,6 +114,8 @@ public class HotkeyUserInterface : MonoBehaviour
             case HotkeyState.SelectItemBlueprint:
                 if (TryGetIndexOfPressedKey(out int itemBlueprintIndex))
                 {
+                    if (itemBlueprintIndex > _itemBlueprints.Count)
+                        return;
                     _hotkeyState = HotkeyState.SelectFoundation;
                     _selectedItem = _itemBlueprints[itemBlueprintIndex];
                     _textUI.SetBuildMenuText("Select place for\n" + _selectedBuilding + "\n with blueprint for\n" + _selectedItem.name);

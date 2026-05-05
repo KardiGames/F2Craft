@@ -1,31 +1,21 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public class Factory : Building
+public class Storehouse : Building
 {
-    [SerializeField] private BlueprintForItem _blueprint;
-    [SerializeField] private List<ItemsSlot> _productionStorage;
-    [SerializeField] private List<ItemsSlot> _resourcesStorage;
-    private ItemRecycler _recycler;
-    private float _timer = 0f;
-    private bool _isProducting = false;
-    [SerializeField] private BlueprintForItem _tmpBlueprint;
+    private const int RESOURCE_CAPACITY = 100;
 
-    public int ItemTimer { get; private set; }
-    public BlueprintForItem Blueprint => _blueprint;
-    public IEnumerable<ItemsSlot> ResourcesStorage => _resourcesStorage;
-    public IEnumerable<ItemsSlot> ProductionStorage => _productionStorage;
+    [SerializeField] private ItemsSlot _storage;
+    private ItemRecycler _recycler;
+    public ItemsSlot Storage => _storage;
+
 
     protected override void Start()
     {
         base.Start();
-        if (_tmpBlueprint != null)
-        {
-            SetupBlueprint(_tmpBlueprint);
-            print("Crutch. Factory blueprint set by Start()");
-        }
+        
     }
-    public void Init(int playerNumber, int hp, Foundation foundation, BlueprintForItem itemBlueprint)
+    public void Init(int playerNumber, int hp, Foundation foundation)
     {
         if (foundation == null || foundation.IsInstantiated == false || itemBlueprint == null)
         {

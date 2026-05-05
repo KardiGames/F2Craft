@@ -1,7 +1,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public class CommandCenter : Building
+public class PlayerBase : Building
 {
     [SerializeField] private Item _materiaItem;
     [SerializeField] private float _producingTime;
@@ -10,6 +10,8 @@ public class CommandCenter : Building
     private float _timer = 0f;
     private bool _isProducting = false;
 
+    public ItemsSlot MateriaStorage => _materiaStorage;
+    
     public override IEnumerable<Item> ItemsToGive()
     {
         List<Item> items = new List<Item>();
@@ -27,7 +29,8 @@ public class CommandCenter : Building
     public new void Init(int playerNumber)
     {
         base.Init(playerNumber);
-        _materiaStorage = new ItemsSlot(_materiaItem, _materiaCapacity);
+        _materiaStorage = new ItemsSlot(_materiaCapacity);
+        _materiaStorage.OnContentChanged += OnParameterChangedInvoke;
     }
     protected override void Start()
     {
