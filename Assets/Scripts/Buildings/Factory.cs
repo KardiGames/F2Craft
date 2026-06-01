@@ -11,6 +11,11 @@ public class Factory : Building
     private bool _isProducting = false;
     [SerializeField] private BlueprintForItem _tmpBlueprint;
 
+    public int ItemTimer { get; private set; }
+    public BlueprintForItem Blueprint => _blueprint;
+    public IEnumerable<ItemsSlot> ResourcesStorage => _resourcesStorage;
+    public IEnumerable<ItemsSlot> ProductionStorage => _productionStorage;
+
     protected override void Start()
     {
         base.Start();
@@ -43,9 +48,13 @@ public class Factory : Building
 
         for (int i = 0; i < _blueprint.Production.Count; i++)
             _productionStorage.Add(new ItemsSlot(_blueprint.Production[i], _blueprint.ProductionQuantities[i] * STORAGE_QUANTITY_MULTIPLER));
+        foreach (ItemsSlot slot in _productionStorage)
+            slot.OnContentChanged += OnParameterChangedInvoke;
         for (int i = 0; i < _blueprint.Resources.Count; i++)
             _resourcesStorage.Add(new ItemsSlot(_blueprint.Resources[i], _blueprint.ResourcesQuantities[i] * STORAGE_QUANTITY_MULTIPLER));
-
+        foreach (ItemsSlot slot in _resourcesStorage)
+            slot.OnContentChanged += OnParameterChangedInvoke;
+        OnParameterChangedInvoke();
     }
 
     public override IEnumerable<Item> ItemsToGive()
@@ -98,18 +107,25 @@ public class Factory : Building
         foreach (ItemsSlot slot in _productionStorage)
         {
             if (slot.Item != null && slot.Quantity > 0)
+            {
                 _recycler.Recycle(slot.Item, slot.Quantity);
+                slot.OnContentChanged -= OnParameterChangedInvoke;
+            }
         }
         _productionStorage.Clear();
 
         foreach (ItemsSlot slot in _resourcesStorage)
         {
             if (slot.Item != null && slot.Quantity > 0)
+            {
                 _recycler.Recycle(slot.Item, slot.Quantity);
+                slot.OnContentChanged -= OnParameterChangedInvoke;
+            }
         }
         _resourcesStorage.Clear();
 
         _blueprint = null;
+        OnParameterChangedInvoke();
     }
 
     private void Update()
@@ -117,7 +133,14 @@ public class Factory : Building
         if (_isProducting)
         {
             if (_timer > 0f)
+            {
                 _timer -= Time.deltaTime;
+                if (_timer + 1 < ItemTimer)
+                {
+                    ItemTimer = (int)_timer + 1;
+                    OnParameterChangedInvoke();
+                }
+            }
             else
                 ProduceItem();
         }
@@ -138,6 +161,8 @@ public class Factory : Building
         }
 
         _isProducting = false;
+        ItemTimer = 0;
+        OnParameterChangedInvoke();
         StartProduction();
     }
 
@@ -148,7 +173,9 @@ public class Factory : Building
             )
         {
             _timer += _blueprint.Time;
+            ItemTimer = (int)_timer + 1;
             _isProducting = true;
+            OnParameterChangedInvoke();
         }
     }
 

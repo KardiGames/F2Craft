@@ -1,28 +1,39 @@
+using System.Collections;
 using System.Collections.Generic;
+using System.Drawing;
+using UnityEditor.Search;
 using UnityEngine;
 
 namespace WorkerLogic
 {
-
     public class Commander : MonoBehaviour
     {
         [SerializeField] bool _isProgramActivated=false;
         private Worker _worker;
         private Programmer _programmer;
-        [SerializeField] List<ICommand> _commandQueue=new();
+        [SerializeField] private List<ICommand> _commandQueue=new(); //TODO remove SerField
 
-        public void Move(Vector3 point) {
-            AssignCommand(new Move(_worker, point));
-        }        
+        public void Move(Vector3 point, bool enqueue = false) {
+            if (enqueue && _worker.Command == null)
+                _commandQueue.Add(new Move(_worker, point));
+            else
+                AssignCommand(new Move(_worker, point));
+        }
         
-        public void Connect(Building building)
+        public void Connect(Building building, bool queue = false)
         {
-            AssignCommand(new MoveAndConnect(_worker, building));
+            if (queue && _worker.Command == null)
+                _commandQueue.Add(new MoveAndConnect(_worker, building));
+            else
+                AssignCommand(new MoveAndConnect(_worker, building));
         }
 
-        public void Interact (Building building)
+        public void Interact (Building building, bool enqueue = false)
         {
-            AssignCommand(new Interact(_worker, building));
+            if (enqueue && _worker.Command != null)
+                _commandQueue.Add(new Interact(_worker, building));
+            else
+                AssignCommand(new Interact(_worker, building));
         }
 
         public void SwitchProgrammedMode()
@@ -37,12 +48,6 @@ namespace WorkerLogic
             _programmer = GetComponent<Programmer>();
         }
 
-        private void Start()
-        {
-
-            //_worker.GetCommand(new Move(GameObject.Find("Factory").transform.position));
-            //_worker.GetCommand(new MoveAndConnect(_worker, GameObject.Find("Factory").GetComponent<Factory>()));
-        }
         private void AssignCommand (ICommand command)
         {
             if (command == null) 
@@ -65,6 +70,5 @@ namespace WorkerLogic
                 _worker.Command = null;
             }
         }
-
     }
 }

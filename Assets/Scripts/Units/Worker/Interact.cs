@@ -37,10 +37,12 @@ namespace WorkerLogic
 
         public void Execute()
         {
+                    if (_building == null)
+                        _state = State.Finished;
             switch (_state)
             {
                 case State.Moving:
-                    if (_worker.TryReachThePoint(_point))
+                    if (_worker.TryReachThePoint(_point)) 
                     {
                         _state = State.Connecting;
                     }
@@ -91,7 +93,7 @@ namespace WorkerLogic
                 && slot != null
                 && slot.TryGive(_worker.ItemsSlot, quantity))
             {
-                _worker.GetComponent<Programmer>().Log(new Program(_building, _worker.ItemsSlot.Item, quantity, false));
+                _worker.GetComponent<Programmer>().Log(new Program(_building, _worker.ItemsSlot.Item, quantity, true));
                 _state = State.Finished;
                 return true;
             }
@@ -107,7 +109,7 @@ namespace WorkerLogic
                 && _worker.ItemsSlot.TryGive(slot, quantity)
                 )
             {
-                _worker.GetComponent<Programmer>().Log(new Program(_building, slot.Item, quantity, true));
+                _worker.GetComponent<Programmer>().Log(new Program(_building, slot.Item, quantity, false));
                 _state = State.Finished;
                 return true;
             }

@@ -17,8 +17,8 @@ public class RTSCameraController : MonoBehaviour
     [SerializeField] bool _blockOutsideMouseMoving;
 
     [Header("Keyboard Movement")]
-    [SerializeField] float _fastSpeed = 0.05f;
-    [SerializeField] float _normalSpeed = 0.01f;
+    [SerializeField] float _fastSpeed = 0.5f;
+    [SerializeField] float _normalSpeed = 0.1f;
     [SerializeField] float _movementSensitivity = 1f; // Hardcoded Sensitivity
     float movementSpeed;
 
@@ -86,19 +86,19 @@ public class RTSCameraController : MonoBehaviour
                 movementSpeed = _normalSpeed;
             }
 
-            if (Input.GetKey(KeyCode.W) || Input.GetKey(KeyCode.UpArrow))
+            if (Input.GetKey(KeyCode.UpArrow))
             {
                 _newPosition += (transform.forward * movementSpeed);
             }
-            if (Input.GetKey(KeyCode.S) || Input.GetKey(KeyCode.DownArrow))
+            if (Input.GetKey(KeyCode.DownArrow))
             {
                 _newPosition += (transform.forward * -movementSpeed);
             }
-            if (Input.GetKey(KeyCode.D) || Input.GetKey(KeyCode.RightArrow))
+            if (Input.GetKey(KeyCode.RightArrow))
             {
                 _newPosition += (transform.right * movementSpeed);
             }
-            if (Input.GetKey(KeyCode.A) || Input.GetKey(KeyCode.LeftArrow))
+            if (Input.GetKey(KeyCode.LeftArrow))
             {
                 _newPosition += (transform.right * -movementSpeed);
             }

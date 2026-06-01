@@ -16,6 +16,15 @@ public class ItemsSlot
     [SerializeField] private int _quantityLimit = 1;
     [SerializeField] private List<Item> _whiteList = new List<Item>();
     [SerializeField] private List<Item> _blackList = new List<Item>();
+    
+    public bool HasContentChangedSubscriber (Action handler)
+    {
+        if (OnContentChanged == null)
+            return false;
+
+        return OnContentChanged.GetInvocationList()
+            .Contains(handler);
+    }
     public ItemsSlot(int quantityLimit, IEnumerable<Item> whileList, IEnumerable<Item> blackList)
     {
         if (quantityLimit < 1)
@@ -39,6 +48,16 @@ public class ItemsSlot
         _whiteList.Add(item);
     }
     public Item Item => _item;
+    public Item MonoItem
+    {
+        get
+        {
+            if (_whiteList.Count == 1 && _blackList.Count == 0)
+                return _whiteList[0];
+            else
+                return _item;
+        }
+    }
     public int Quantity => _quantity;
     public int QuantityLimit => _quantityLimit;
 

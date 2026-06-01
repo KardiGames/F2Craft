@@ -14,6 +14,10 @@ public class ConstructionSite : Building
     private float _timeForResource;
     [SerializeField] private float _timer = 0f; //CRUTCH delete SerField
     [SerializeField] private int _stageResuorcesCost = 0; //CRUTCH delete SerField
+
+    public string ConstructedBuildingName => _buildingBlueprint.ConstructingBuilding.name;
+    public IEnumerable<ItemsSlot> ResourcesStorage => _resourcesStorage;
+    public int StageTimer { get; private set; }
     
 
     public void Init(int playerNumber, BlueprintForBuilding buildingBlueprint, Foundation foundation, BlueprintForItem itemBlueprint, BlueprintForUnit unitBlueprint)
@@ -48,6 +52,8 @@ public class ConstructionSite : Building
             _resourcesStorage.Add(new ItemsSlot(_buildingBlueprint.Resources[i], BuildingBlueprint.ResourcesQuantities[i]));
             _totalResourcesCost += BuildingBlueprint.ResourcesQuantities[i];
         }
+        foreach (var resource in _resourcesStorage)
+            resource.OnContentChanged += OnParameterChangedInvoke;
 
         if (_totalResourcesCost <= 0)
         {
@@ -79,7 +85,14 @@ public class ConstructionSite : Building
     private void Update()
     {
         if (_timer > 0f)
+        {
             _timer -= Time.deltaTime;
+            if (_timer+1<StageTimer)
+            {
+                StageTimer = (int)_timer + 1;
+                OnParameterChangedInvoke();
+            }
+        }
         else if (_stageResuorcesCost > 0)
             FinishStage();
         else
@@ -101,7 +114,9 @@ public class ConstructionSite : Building
         if (resourcesSpent > 0)
         {
             _timer += resourcesSpent * _timeForResource;
+            StageTimer = (int)_timer + 1;
             _stageResuorcesCost = resourcesSpent;
+            OnParameterChangedInvoke();
         }
     }
 
@@ -127,6 +142,8 @@ public class ConstructionSite : Building
             Color color = _renderer.material.color;
             color.a = MathF.Min(((float)_totalResourcesCost - currentResourcesCost) / _totalResourcesCost, 1f);
             _renderer.material.color = color;
+            StageTimer = 0;
+            OnParameterChangedInvoke();
         }
     }
 

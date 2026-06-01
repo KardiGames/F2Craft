@@ -18,8 +18,11 @@ public class UnitProducer : Building
     private List<Item> _spentOptionalResources = new();
     [SerializeField] private BlueprintForUnit _tmpBlueprint;
 
-    public bool Autoproduction { get => _autoproduction; private set => _autoproduction = value; }
+    public int UnitTimer { get; private set; }
     public int QueuedUnits => _queuedUnits;
+    public BlueprintForUnit Blueprint => _blueprint;
+    public IEnumerable<ItemsSlot> ResourcesStorage => _resourcesStorage;
+    public bool Autoproduction { get => _autoproduction; private set => _autoproduction = value; }
     protected override void Start()
     {
         base.Start();
@@ -32,7 +35,7 @@ public class UnitProducer : Building
     }
     public void Init(int playerNumber, int hp, Foundation foundation, BlueprintForUnit unitBlueprint)
     {
-        if (foundation == null || foundation.IsInstantiated==false || unitBlueprint == null)
+        if (foundation == null || foundation.IsInstantiated == false || unitBlueprint == null)
         {
             Debug.LogError("Error! Unit producer havn't built");
             Destroy();
@@ -58,20 +61,24 @@ public class UnitProducer : Building
         {
             _resourcesStorage.Add(new ItemsSlot(STORAGE_QUANTITY_MULTIPLER, blueprint.OptionalResources, null));
         }
+        foreach (var resource in _resourcesStorage)
+            resource.OnContentChanged += OnParameterChangedInvoke;
     }
 
     public void AddUnitToQueue()
     {
         _queuedUnits++;
+        OnParameterChangedInvoke();
     }
     public void RemoveUnitFromQueue()
     {
         _queuedUnits--;
+        OnParameterChangedInvoke();
     }
 
     public void ForceOptionalResource(Item item)
     {
-        if (item == null && !_blueprint.OptionalResources.Contains(item) && _forcedOptionalResources.ContainsKey(item))
+        if (item == null && _blueprint.OptionalResources.Contains(item) == false && _forcedOptionalResources.ContainsKey(item))
         {
             print("Error! Forcing optional resourse doesn't happen");
             return;
@@ -86,6 +93,7 @@ public class UnitProducer : Building
 
         slot.SetAccessLists(new Item[] { item }, null);
         _forcedOptionalResources.Add(item, slot);
+        OnParameterChangedInvoke();
     }
 
     public void UnforceOptionalResource(Item item)
@@ -104,8 +112,12 @@ public class UnitProducer : Building
         }
         slot.SetAccessLists(_blueprint.OptionalResources, null);
         _forcedOptionalResources.Remove(item);
+        OnParameterChangedInvoke();
 
     }
+
+    public bool IsForced(ItemsSlot itemSlot) =>
+        _forcedOptionalResources.ContainsValue(itemSlot);
 
     public override int ItemsOfTypeToGet(Item item, out ItemsSlot slot)
     {
@@ -144,11 +156,15 @@ public class UnitProducer : Building
         foreach (ItemsSlot slot in _resourcesStorage)
         {
             if (slot.Item != null && slot.Quantity > 0)
+            {
                 _recycler.Recycle(slot.Item, slot.Quantity);
+                slot.OnContentChanged -= OnParameterChangedInvoke;
+            }
         }
         _resourcesStorage.Clear();
 
         _blueprint = null;
+        OnParameterChangedInvoke();
     }
 
     private void Update()
@@ -156,7 +172,14 @@ public class UnitProducer : Building
         if (_isProducting)
         {
             if (_timer > 0f)
+            {
                 _timer -= Time.deltaTime;
+                if (_timer + 1 < UnitTimer)
+                {
+                    UnitTimer = (int)_timer + 1;
+                    OnParameterChangedInvoke();
+                }
+            }
             else
                 ProduceUnit();
         }
@@ -179,10 +202,11 @@ public class UnitProducer : Building
         else if (_blueprint.ProducedUnit is Worker worker)
         {
             Worker newWorker = Instantiate<Worker>(worker, unitPosition, worker.transform.rotation);
-            newWorker.Init(_playerNumber, 5);
+            newWorker.Init(_playerNumber, Worker.DEFAULT_SLOT_CAPACITY);
         }
 
         _isProducting = false;
+        UnitTimer = 0;
         if (_autoproduction == false)
             _queuedUnits--;
         StartProduction();
@@ -196,6 +220,8 @@ public class UnitProducer : Building
         {
             _timer += _blueprint.Time;
             _isProducting = true;
+            UnitTimer = (int)_timer + 1;
+            OnParameterChangedInvoke();
         }
     }
 

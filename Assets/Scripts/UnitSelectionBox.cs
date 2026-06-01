@@ -56,7 +56,7 @@ public class UnitSelectionBox : MonoBehaviour
         }
     }
 
-    void DrawVisual()
+    private void DrawVisual()
     {
         // Calculate the starting and ending positions of the selection box.
         Vector2 boxStart = _startPosition;
@@ -75,7 +75,7 @@ public class UnitSelectionBox : MonoBehaviour
         _boxVisual.sizeDelta = boxSize;
     }
 
-    void DrawSelection()
+    private void DrawSelection()
     {
         if (Input.mousePosition.x < _startPosition.x)
         {
@@ -101,7 +101,7 @@ public class UnitSelectionBox : MonoBehaviour
         }
     }
 
-    void SelectUnits()
+    private void SelectUnits()
     {
         foreach (var entity in ActiveEntity.GetEntitiesList())
         {

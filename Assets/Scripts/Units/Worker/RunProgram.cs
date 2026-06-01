@@ -7,7 +7,7 @@ namespace WorkerLogic
     public class RunProgram : ICommand
     {
         public event Action OnFinishedCommandExecuted;
-        private enum State { Finished, Moving, Connecting, Interacting }
+        private enum State { Finished, Moving, Connecting, Interacting}
         private Worker _worker;
         private Program _program;
         private Vector3 _point;
@@ -15,9 +15,13 @@ namespace WorkerLogic
 
         public RunProgram(Worker worker, Program program)
         {
-            if (worker == null || program == null || program.Building == null || program.Quantity <= 0)
+            if (worker == null || program == null || program.Quantity <= 0 || program.IsAborted)
             {
-                Debug.Log("Error! Command RunProgram hasn't created!");
+                Debug.Log("Error! Command RunProgram failed to create and finished!");
+                _state = State.Finished;
+            }
+            else if (program.Building == null)
+            {
                 _state = State.Finished;
             }
             else
@@ -36,6 +40,8 @@ namespace WorkerLogic
 
         public void Execute()
         {
+            if (_program.Building == null)
+                _state = State.Finished;
             switch (_state)
             {
                 case State.Moving:
