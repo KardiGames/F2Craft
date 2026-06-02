@@ -45,6 +45,8 @@ public class ActiveEntity : MonoBehaviour
         return s_entities.Where(entity => entity.PlayerNumber != playerNumber);
     }
     public static IEnumerable<ActiveEntity> GetEntitiesList() => s_entities;
+    public static IEnumerable<ActiveEntity> GetEntitiesList(int playerNumber) => 
+        s_entities.Where(entity => entity.PlayerNumber==playerNumber);
 
     public static bool Contains(ActiveEntity entity) =>
         s_entities.Contains(entity);
