@@ -7,25 +7,21 @@ public class Ai : MonoBehaviour
     [SerializeField] private int _aiNumber;
     private List<Worker> _freeWorkers = new();
     private Dictionary<Worker, Route> _busyWorkers = new Dictionary<Worker, Route>();
+    private List<Worker> _busyWorkersCleaner = new List<Worker>();
     private List<UnitProducer> _unitProducers = new List<UnitProducer>();
     private List<Factory> _factories = new List<Factory>();
     private List<Storehouse> _storehouses = new List<Storehouse>();
     private List<ConstructionSite> _constructionSites = new List<ConstructionSite>();
     private List<Building> _otherBuildings = new List<Building>();
-    Dictionary<(Building, Item), int> _blockedItems = new Dictionary<(Building, Item), int>();
+    private Dictionary<(Building, Item), int> _blockedItems = new Dictionary<(Building, Item), int>();
+    private List<(Building, Item)> _blockedItemsCleaner = new List<(Building, Item)>();
 
     private void OnEnable()
     {
         if (TryGetComponent<ActiveEntity>(out ActiveEntity aiNumber))
         {
             _aiNumber = aiNumber.PlayerNumber;
-            ActiveEntity.S_OnEntityRemoved+=
         }
-    }
-
-    private void OnDisable()
-    {
-        
     }
 
     private void Update()
@@ -83,6 +79,7 @@ public class Ai : MonoBehaviour
         Route route = _busyWorkers[worker];
         if (route == null)
             return;
+
         if (_blockedItems.ContainsKey((route.From, route.Item)))
         {
             _blockedItems[(route.From, route.Item)]-=route.Quantity;
@@ -105,27 +102,6 @@ public class Ai : MonoBehaviour
     private void UpdateRoutes()
     {
         throw new NotImplementedException();
-    }
-
-    private void RemoveEntityHandler (ActiveEntity entity)
-    {
-        if (entity == null) { 
-            Debug.LogError("Ai got null on Remove Entity handler");
-        return;
-        }
-        if (entity.PlayerNumber != _aiNumber)
-            return;
-
-        List<(Building, Item)> _keysToRemove
-        foreach (var blocker in _blockedItems.Keys)
-        {
-            if (blocker.Item1 == entity)
-            {
-                _blockedItems.Remove()
-            }
-        }
-        
-        //add removing from queue
     }
 
     private class Route

@@ -34,6 +34,9 @@ public class SelectionManager : MonoBehaviour
     }
     public ActiveEntity GetNextCurrent()
     {
+        if (_selectedEntities.Count == 0) 
+            return null;
+        
         if (_isGrouped == false)
             GroupSelection();
 
@@ -72,7 +75,7 @@ public class SelectionManager : MonoBehaviour
             return;
 
         bool isChanged = false;
-        ActiveEntity currentSelectedEntity = _selectedEntities[_current];
+        ActiveEntity currentSelectedEntity = CurrentInSelection;
         ActiveEntity cashedEntity;
         for (int i = 0; i < _selectedEntities.Count; i++)
         {
@@ -112,9 +115,7 @@ public class SelectionManager : MonoBehaviour
             {
             Debug.LogError("Lost link to removed entity"); 
             return; }
-        bool isRemovedCurrent = false;
-        if (removedEntity == _selectedEntities[_current])
-            isRemovedCurrent = true;
+        bool isRemovedCurrent = (removedEntity == CurrentInSelection);
 
         if (_selectedEntities.Contains(removedEntity))
         {
