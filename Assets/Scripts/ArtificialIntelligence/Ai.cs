@@ -7,7 +7,7 @@ public class Ai : MonoBehaviour
     [SerializeField] private int _aiNumber;
     private List<Worker> _freeWorkers = new();
     private Dictionary<Worker, Route> _busyWorkers = new Dictionary<Worker, Route>();
-    private List<Worker> _busyWorkersCleaner = new List<Worker>();
+    //private List<Worker> _busyWorkersCleaner = new List<Worker>();
     private List<UnitProducer> _unitProducers = new List<UnitProducer>();
     private List<Factory> _factories = new List<Factory>();
     private List<Storehouse> _storehouses = new List<Storehouse>();
@@ -15,6 +15,8 @@ public class Ai : MonoBehaviour
     private List<Building> _otherBuildings = new List<Building>();
     private Dictionary<(Building, Item), int> _blockedItems = new Dictionary<(Building, Item), int>();
     private List<(Building, Item)> _blockedItemsCleaner = new List<(Building, Item)>();
+    private List<Route> _routesQueue = new List<Route>();
+    private List<Route> _routesLog = new List<Route>();
 
     private void OnEnable()
     {
@@ -27,7 +29,7 @@ public class Ai : MonoBehaviour
     private void Update()
     {
         RefreshEntities();
-        UpdateRoutes();
+        //UpdateRoutes();
         AppendRouteList();
         StartNewRoutes();
     }
@@ -76,6 +78,8 @@ public class Ai : MonoBehaviour
     {
         if (worker == null)
             return;
+        worker.Command = null;
+
         Route route = _busyWorkers[worker];
         if (route == null)
             return;
@@ -83,10 +87,14 @@ public class Ai : MonoBehaviour
         if (_blockedItems.ContainsKey((route.From, route.Item)))
         {
             _blockedItems[(route.From, route.Item)]-=route.Quantity;
-            if (_blockedItems[(route.From, route.Item)]<=0)
-                _blockedItems.Remove((route.From, route.Item)); //TODO FIX IT!!!
+            if (_blockedItems[(route.From, route.Item)] <= 0) 
+                _blockedItemsCleaner.Add((route.From, route.Item));
         }
-        _busyWorkers[worker] = route;
+        foreach (var blockedItemToRemove in _blockedItemsCleaner)
+            _blockedItems.Remove(blockedItemToRemove);
+        _blockedItemsCleaner.Clear();
+
+        _busyWorkers.Remove(worker);
     }
 
     private void StartNewRoutes()
@@ -96,7 +104,37 @@ public class Ai : MonoBehaviour
 
     private void AppendRouteList()
     {
-        throw new NotImplementedException();
+        if (_freeWorkers.Count == 0)
+            return;
+
+        foreach (UnitProducer producer in _unitProducers)
+        {
+            if (_routesQueue.Exists(route => route.To == producer))
+                continue;
+            
+            foreach (ItemsSlot slot in producer.ResourcesStorage)
+            {
+                if (slot.Quantity>=slot.QuantityLimit
+                    || slot.MonoItem == null)
+                    continue;
+
+                Item requestedItem = slot.MonoItem;
+                int requestedQuantity = slot.FreeCapacity(requestedItem);
+                Building containsRequestedItem = null;
+                int availableQuantity = 0;
+               
+                foreach (Factory factory in _factories)
+                {
+                    availableQuantity = factory.ItemsOfTypeToGet(requestedItem, out ItemsSlot s);
+                    if (availableQuantity>0)
+                    {
+
+                    }
+                }   
+            }
+
+            
+        }
     }
 
     private void UpdateRoutes()

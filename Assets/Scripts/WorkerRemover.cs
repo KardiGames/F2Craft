@@ -3,6 +3,8 @@ using UnityEngine;
 
 public class WorkerRemover : MonoBehaviour
 {
+    //TODO Delete this class! It's temporal class to test dictionaries
+    
     [SerializeField] private List<Worker> _list = new List<Worker>();
     private Dictionary<Worker, int> _dict = new Dictionary<Worker, int>();
     int c = 0;
