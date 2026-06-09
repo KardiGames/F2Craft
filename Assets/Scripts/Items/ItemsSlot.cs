@@ -84,7 +84,7 @@ public class ItemsSlot
 
     public void Clear()
     {
-        if (_item == null)
+        if (_item == null && _quantity == 0)
             return;
 
         _quantity = 0;

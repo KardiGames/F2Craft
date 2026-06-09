@@ -1,7 +1,5 @@
-using System.Collections;
+
 using System.Collections.Generic;
-using System.Drawing;
-using UnityEditor.Search;
 using UnityEngine;
 
 namespace WorkerLogic
@@ -20,9 +18,9 @@ namespace WorkerLogic
                 AssignCommand(new Move(_worker, point));
         }
         
-        public void Connect(Building building, bool queue = false)
+        public void Connect(Building building, bool enqueue = false)
         {
-            if (queue && _worker.Command == null)
+            if (enqueue && _worker.Command == null)
                 _commandQueue.Add(new MoveAndConnect(_worker, building));
             else
                 AssignCommand(new MoveAndConnect(_worker, building));
@@ -55,7 +53,6 @@ namespace WorkerLogic
 
             _worker.Command = command;
             command.OnFinishedCommandExecuted += NextCommand;
-
         }
         private void NextCommand ()
         {
