@@ -40,6 +40,14 @@ namespace WorkerLogic
             if (_isProgramActivated)
                 NextCommand();
         }
+        public void SetAiPrograms (Program from, Program to)
+        {
+            if (from == null || to == null || _worker.Command != null)
+                return;
+            AssignCommand(new RunProgram(_worker, from));
+            _commandQueue.Add(new RunProgram(_worker, to));
+        }
+
         private void Awake()
         {
             _worker = GetComponent<Worker>();

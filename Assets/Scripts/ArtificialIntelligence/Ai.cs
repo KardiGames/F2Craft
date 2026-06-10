@@ -6,18 +6,17 @@ using WorkerLogic;
 public class Ai : MonoBehaviour
 {
     [SerializeField] private int _aiNumber;
-    private List<Worker> _freeWorkers = new();
+    [SerializeField] private List<Worker> _freeWorkers = new();
     private Dictionary<Worker, Route> _busyWorkers = new Dictionary<Worker, Route>();
-    //private List<Worker> _busyWorkersCleaner = new List<Worker>();
-    private List<UnitProducer> _unitProducers = new List<UnitProducer>();
-    private List<Factory> _factories = new List<Factory>();
-    private List<Storehouse> _storehouses = new List<Storehouse>();
-    private List<ConstructionSite> _constructionSites = new List<ConstructionSite>();
-    private List<Building> _otherBuildings = new List<Building>();
+    [SerializeField] private List<UnitProducer> _unitProducers = new List<UnitProducer>();
+    [SerializeField] private List<Factory> _factories = new List<Factory>();
+    [SerializeField] private List<Storehouse> _storehouses = new List<Storehouse>();
+    [SerializeField] private List<ConstructionSite> _constructionSites = new List<ConstructionSite>();
+    [SerializeField] private List<Building> _otherBuildings = new List<Building>();
     private Dictionary<(Building, Item), int> _blockedItems = new Dictionary<(Building, Item), int>();
     private List<(Building, Item)> _blockedItemsCleaner = new List<(Building, Item)>();
-    private List<Route> _routesQueue = new List<Route>();
-    private List<Route> _routesLog = new List<Route>();
+    [SerializeField] private List<Route> _routesQueue = new List<Route>();
+    [SerializeField] private List<Route> _routesLog = new List<Route>();
 
     private void OnEnable()
     {
@@ -39,14 +38,14 @@ public class Ai : MonoBehaviour
 
     private void RefreshEntities()
     {
+        _unitProducers.Clear();
+        _factories.Clear();
+        _storehouses.Clear();
+        _freeWorkers.Clear();
+        _constructionSites.Clear();
+        _otherBuildings.Clear();
         foreach (ActiveEntity entity in ActiveEntity.GetEntitiesList(_aiNumber))
         {
-            _unitProducers.Clear();
-            _factories.Clear();
-            _storehouses.Clear();
-            _freeWorkers.Clear();
-            _constructionSites.Clear();
-            _otherBuildings.Clear();
             switch (entity)
             {
                 case Worker worker:
@@ -105,32 +104,48 @@ public class Ai : MonoBehaviour
     {
         _freeWorkers.Sort(CompareWorkersByCapacity);
         _routesQueue.Sort(CompareRoutesByPriority);
-        while (_freeWorkers.Count > 0 && _routesQueue.Count>0)
+        while (_freeWorkers.Count > 0 && _routesQueue.Count > 0)
         {
             Route route = _routesQueue[^1];
+            if (!route.Correct)
+            {
+                _routesQueue.Remove(route);
+                continue;
+            }
             Worker worker = GetFreeWorker(route.Quantity);
             if (worker == null)
                 return;
+
             worker.ItemsSlot.Clear();
             if (worker.ItemsSlot.FreeCapacity(route.Item) < route.Quantity)
             {
                 _routesQueue[^1] = route.GetReminderAfterDecrease(worker.ItemsSlot.QuantityLimit);
-            } else
+            }
+            else
             {
                 _routesQueue.Remove(route);
             }
+
+            Program from = new Program(route.From, route.Item, route.Quantity, true);
+            from.ForceItem = true;
+            from.ForceQuantity = true;
+            Program to = new Program(route.To, route.Item, route.Quantity, false);
+            to.ForceItem = true;
+            to.ForceQuantity = true;
+
             _freeWorkers.Remove(worker);
             _busyWorkers.Add(worker, route);
+            
 
-            worker.Command = 
+            worker.Commander.SetAiPrograms(from, to);
         }
     }
-    
-    Worker GetFreeWorker (int quantity)
+
+    Worker GetFreeWorker(int quantity)
     {
-        if (_freeWorkers.Count == 0) 
+        if (_freeWorkers.Count == 0)
             return null;
-        for (int i=0; i<_freeWorkers.Count; i++)
+        for (int i = 0; i < _freeWorkers.Count; i++)
             if (quantity <= _freeWorkers[i].ItemsSlot.QuantityLimit)
             {
                 return _freeWorkers[i];
@@ -138,11 +153,11 @@ public class Ai : MonoBehaviour
         return _freeWorkers[^1];
     }
 
-    private int CompareRoutesByPriority (Route route1, Route route2)
+    private int CompareRoutesByPriority(Route route1, Route route2)
     {
         int priority1 = int.MaxValue;
         int priority2 = int.MaxValue;
-        for (int i=_routesLog.Count-1; i>=0; i--)
+        for (int i = _routesLog.Count - 1; i >= 0; i--)
         {
             if (_routesLog[i].TheSameAs(route1))
                 priority1 = i;
@@ -151,7 +166,7 @@ public class Ai : MonoBehaviour
         }
         return priority1 - priority2;
     }
-    private int CompareWorkersByCapacity (Worker worker1, Worker worker2) =>
+    private int CompareWorkersByCapacity(Worker worker1, Worker worker2) =>
         worker1.ItemsSlot.QuantityLimit - worker2.ItemsSlot.QuantityLimit;
 
     private void AppendRouteList()
@@ -171,7 +186,7 @@ public class Ai : MonoBehaviour
                 Building containsRequestedItem = FindResourceInBuildings(requestedItem, _factories, _otherBuildings, _storehouses);
                 if (containsRequestedItem == null)
                     continue;
-                int quantity = Mathf.Min (slot.FreeCapacity(requestedItem), AvailableItemsInBuilding(containsRequestedItem, requestedItem));
+                int quantity = Mathf.Min(slot.FreeCapacity(requestedItem), AvailableItemsInBuilding(containsRequestedItem, requestedItem));
                 if (quantity <= 0)
                     continue;
 
@@ -216,7 +231,7 @@ public class Ai : MonoBehaviour
         {
             foreach (Building building in buildingList)
             {
-               if (AvailableItemsInBuilding(building,item) > 0)
+                if (AvailableItemsInBuilding(building, item) > 0)
                 {
                     return building;
                 }
@@ -225,18 +240,18 @@ public class Ai : MonoBehaviour
         return null;
     }
 
-    private int AvailableItemsInBuilding (Building building, Item item)
+    private int AvailableItemsInBuilding(Building building, Item item)
     {
         if (building == null || item == null)
         {
             Debug.LogError("Ai method got bad building or item");
             return 0;
         }
-        int availableItems = building.ItemsOfTypeToGet(item, out ItemsSlot s);
+        int availableItems = building.ItemsOfTypeToGive(item, out ItemsSlot s);
         if (_blockedItems.ContainsKey((building, item)))
             availableItems -= _blockedItems[(building, item)];
         return availableItems;
-    } 
+    }
 
     private class Route
     {
@@ -255,7 +270,7 @@ public class Ai : MonoBehaviour
                 Quantity = 0;
         }
 
-        public Route GetReminderAfterDecrease (int newQuantity)
+        public Route GetReminderAfterDecrease(int newQuantity)
         {
             if (newQuantity >= Quantity)
                 return null;
@@ -264,7 +279,7 @@ public class Ai : MonoBehaviour
             return reminder;
         }
 
-        public bool Correct => (From != null && To != null && Item != null && Quantity>0);
+        public bool Correct => (From != null && To != null && Item != null && Quantity > 0);
         public bool TheSameAs(Route route)
         {
             return (route.From == From && route.To == To);
