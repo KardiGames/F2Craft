@@ -6,17 +6,18 @@ using WorkerLogic;
 public class Ai : MonoBehaviour
 {
     [SerializeField] private int _aiNumber;
-    [SerializeField] private List<Worker> _freeWorkers = new();
-    private Dictionary<Worker, Route> _busyWorkers = new Dictionary<Worker, Route>();
+    [SerializeField] bool _autoproduction = true;
     [SerializeField] private List<UnitProducer> _unitProducers = new List<UnitProducer>();
     [SerializeField] private List<Factory> _factories = new List<Factory>();
     [SerializeField] private List<Storehouse> _storehouses = new List<Storehouse>();
     [SerializeField] private List<ConstructionSite> _constructionSites = new List<ConstructionSite>();
     [SerializeField] private List<Building> _otherBuildings = new List<Building>();
+    private List<Worker> _freeWorkers = new();
+    private Dictionary<Worker, Route> _busyWorkers = new Dictionary<Worker, Route>();
     private Dictionary<(Building, Item), int> _blockedItems = new Dictionary<(Building, Item), int>();
     private List<(Building, Item)> _blockedItemsCleaner = new List<(Building, Item)>();
-    [SerializeField] private List<Route> _routesQueue = new List<Route>();
-    [SerializeField] private List<Route> _routesLog = new List<Route>();
+    private List<Route> _routesQueue = new List<Route>();
+    private List<Route> _routesLog = new List<Route>();
 
     private void OnEnable()
     {
@@ -34,7 +35,9 @@ public class Ai : MonoBehaviour
         //UpdateRoutes();
         AppendRouteList();
         AssignWorkers();
+        Develop();
     }
+
 
     private void RefreshEntities()
     {
@@ -65,10 +68,10 @@ public class Ai : MonoBehaviour
                     break;
                 case UnitProducer producer:
                     _unitProducers.Add(producer);
+                    producer.Autoproduction = _autoproduction;
                     break;
                 case ConstructionSite constructionSite:
                     _constructionSites.Add(constructionSite);
-
                     break;
                 case Building building:
                     _otherBuildings.Add(building);
@@ -216,6 +219,28 @@ public class Ai : MonoBehaviour
             }
         }
 
+        foreach (ConstructionSite site in _constructionSites)
+        {
+            foreach (ItemsSlot slot in site.ResourcesStorage)
+            {
+                if (slot.Quantity >= slot.QuantityLimit
+                    || slot.MonoItem == null)
+                    continue;
+                Item requestedItem = slot.MonoItem;
+                if (_routesQueue.Exists(route => route.To == site && route.Item == requestedItem))
+                    continue;
+
+                Building containsRequestedItem = FindResourceInBuildings(requestedItem, _factories, _otherBuildings, _storehouses);
+                if (containsRequestedItem == null)
+                    continue;
+                int quantity = Mathf.Min(slot.FreeCapacity(requestedItem), AvailableItemsInBuilding(containsRequestedItem, requestedItem));
+                if (quantity <= 0)
+                    continue;
+
+                _routesQueue.Add(new Route(containsRequestedItem, site, requestedItem, quantity));
+            }
+        }
+
         //TODO Fill storages if routelist is less then free workers
     }
 
@@ -251,6 +276,21 @@ public class Ai : MonoBehaviour
         if (_blockedItems.ContainsKey((building, item)))
             availableItems -= _blockedItems[(building, item)];
         return availableItems;
+    }
+
+    private void Develop()
+    {
+        //если недостаток зданий в билде
+        Rebuild();
+        //если рабочих не хватает
+        ProduceWorker();
+        //если очередь пуста, есть св.рабочие, есть свободные ресурсы в наличии || нет construction site'ов
+        Build();
+    }
+
+    private void ProduceWorker()
+    {
+        throw new NotImplementedException();
     }
 
     private class Route
