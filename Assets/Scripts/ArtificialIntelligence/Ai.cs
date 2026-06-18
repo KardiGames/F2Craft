@@ -5,8 +5,12 @@ using WorkerLogic;
 
 public class Ai : MonoBehaviour
 {
+    private const string WORKER_BLUEPRINT_NAME = "WorkerBlueprint";
+
     [SerializeField] private int _aiNumber;
     [SerializeField] bool _autoproduction = true;
+    [SerializeField] private List<ScriptableObject> _buildOrder = new();
+    [SerializeField] private List<Building> _builtByOrder = new();
     [SerializeField] private List<UnitProducer> _unitProducers = new List<UnitProducer>();
     [SerializeField] private List<Factory> _factories = new List<Factory>();
     [SerializeField] private List<Storehouse> _storehouses = new List<Storehouse>();
@@ -68,7 +72,8 @@ public class Ai : MonoBehaviour
                     break;
                 case UnitProducer producer:
                     _unitProducers.Add(producer);
-                    producer.Autoproduction = _autoproduction;
+                    if (producer.Blueprint.name != WORKER_BLUEPRINT_NAME)
+                        producer.Autoproduction = _autoproduction;
                     break;
                 case ConstructionSite constructionSite:
                     _constructionSites.Add(constructionSite);
@@ -280,12 +285,40 @@ public class Ai : MonoBehaviour
 
     private void Develop()
     {
-        //если недостаток зданий в билде
-        Rebuild();
-        //если рабочих не хватает
-        ProduceWorker();
-        //если очередь пуста, есть св.рабочие, есть свободные ресурсы в наличии || нет construction site'ов
-        Build();
+        int rebuildIndex = -1;
+        bool buildingInProcess = false;
+        for (int i = 0; i< _builtByOrder.Count; i++)
+            if (_builtByOrder[i] == null)
+            {
+                rebuildIndex=i;
+                break;
+            } else if (_builtByOrder[i] is ConstructionSite)
+            {
+                buildingInProcess = true;
+                break;
+            }
+        if (rebuildIndex >= 0)
+        {
+            Build(rebuildIndex);
+            buildingInProcess = true;
+        }
+
+        int workersDemand = ( _routesQueue.Count - _busyWorkers.Count) / _busyWorkers.Count;
+        if (workersDemand > 0)
+        {
+            ProduceWorker(workersDemand);
+            return;
+        }
+        
+        if (buildingInProcess || _buildOrder.Count <= _builtByOrder.Count)
+            return;
+
+        Build (_builtByOrder.Count);
+    }
+
+    private void Build (int buildOrderIndex)
+    {
+
     }
 
     private void ProduceWorker()
