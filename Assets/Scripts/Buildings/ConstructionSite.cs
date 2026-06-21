@@ -12,13 +12,14 @@ public class ConstructionSite : Building
     private Renderer _renderer;
     private int _totalResourcesCost = 0;
     private float _timeForResource;
-    [SerializeField] private float _timer = 0f; //CRUTCH delete SerField
+    private float _timer = 0f;
     [SerializeField] private int _stageResuorcesCost = 0; //CRUTCH delete SerField
 
     public string ConstructedBuildingName => _buildingBlueprint.ConstructingBuilding.name;
     public IEnumerable<ItemsSlot> ResourcesStorage => _resourcesStorage;
     public int StageTimer { get; private set; }
-    
+    public BlueprintForBuilding BuildingBlueprint => _buildingBlueprint;
+    public BlueprintForItem ItemBlueprint => _itemBlueprint;
 
     public void Init(int playerNumber, BlueprintForBuilding buildingBlueprint, Foundation foundation, BlueprintForItem itemBlueprint, BlueprintForUnit unitBlueprint)
     {
@@ -27,8 +28,8 @@ public class ConstructionSite : Building
             print("Error! ConstructionSite initialisation aborted");
             return;
         }
-        
-        if ((buildingBlueprint.ConstructingBuilding is Factory && itemBlueprint == null) && (buildingBlueprint.ConstructingBuilding is UnitProducer && unitBlueprint==null))
+
+        if ((buildingBlueprint.ConstructingBuilding is Factory && itemBlueprint == null) && (buildingBlueprint.ConstructingBuilding is UnitProducer && unitBlueprint == null))
         {
             print("Error! ConstructionSite initialisation aborted");
             return;
@@ -57,7 +58,7 @@ public class ConstructionSite : Building
 
         if (_totalResourcesCost <= 0)
         {
-            print("Error? ResourcesCost for building is 0. Destroying.");
+            Debug.LogError("ResourcesCost for building is 0. Destroying.");
             Destroy(gameObject);
             return;
         }
@@ -65,8 +66,7 @@ public class ConstructionSite : Building
         _timeForResource = (float)_buildingBlueprint.Time / _totalResourcesCost;
         _foundation.gameObject.SetActive(false);
     }
-    public BlueprintForBuilding BuildingBlueprint => _buildingBlueprint;
-    public BlueprintForItem ItemBlueprint => _itemBlueprint;
+
     public override int ItemsOfTypeToGet(Item item, out ItemsSlot slot)
     {
         int capacity;
@@ -87,7 +87,7 @@ public class ConstructionSite : Building
         if (_timer > 0f)
         {
             _timer -= Time.deltaTime;
-            if (_timer+1<StageTimer)
+            if (_timer + 1 < StageTimer)
             {
                 StageTimer = (int)_timer + 1;
                 OnParameterChangedInvoke();
@@ -147,19 +147,19 @@ public class ConstructionSite : Building
         }
     }
 
-
     private void FinishConstruction()
     {
         if (_buildingBlueprint.ConstructingBuilding is Factory factoryBlueprint)
         {
             Factory factory = Instantiate<Factory>(factoryBlueprint, transform.position, factoryBlueprint.transform.rotation);
             factory.Init(_playerNumber, _hp, _foundation, _itemBlueprint);
-            Destroy();
-        } else if (_buildingBlueprint.ConstructingBuilding is UnitProducer unitProducerBlueprint)
+            Replace(this, factory);
+        }
+        else if (_buildingBlueprint.ConstructingBuilding is UnitProducer unitProducerBlueprint)
         {
             UnitProducer producer = Instantiate<UnitProducer>(unitProducerBlueprint, transform.position, unitProducerBlueprint.transform.rotation);
             producer.Init(_playerNumber, _hp, _foundation, _unitBlueprint);
-            Destroy();
+            Replace(this, producer);
         }
     }
 }

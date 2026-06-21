@@ -29,6 +29,16 @@ public class Ai : MonoBehaviour
         {
             _aiNumber = aiNumber.PlayerNumber;
         }
+        ActiveEntity.S_OnEntityReplaced += ReplaceHandler;
+        if (_builtByOrder.Count > 0)
+            RestoreBuiltList();
+    }
+
+
+
+    private void OnDisable()
+    {
+        ActiveEntity.S_OnEntityReplaced -= ReplaceHandler;
     }
 
     private void Update()
@@ -316,14 +326,33 @@ public class Ai : MonoBehaviour
         Build (_builtByOrder.Count);
     }
 
-    private void Build (int buildOrderIndex)
-    {
-
-    }
-
-    private void ProduceWorker()
+    private void RestoreBuiltList()
     {
         throw new NotImplementedException();
+    }
+
+    private void Build (int buildOrderIndex)
+    {
+        throw new NotImplementedException();
+    }
+
+    private void ProduceWorker(int maxProduction)
+    {
+        throw new NotImplementedException();
+    }
+
+    private void ReplaceHandler (ActiveEntity oldEntity, ActiveEntity newEntity)
+    {
+        if (newEntity == null)
+        {
+            Debug.LogError("Replacing by NULL of not existing entity. Canceled.");
+            return;
+        }
+        if (oldEntity == null)
+            Debug.LogWarning("Replacing NULL entity. Strange. Continuing");
+
+        if (oldEntity is Building oldBuilding && _builtByOrder.Contains(oldBuilding) && newEntity is Building newBuilding)
+            _builtByOrder[_builtByOrder.IndexOf(oldBuilding)]= newBuilding;
     }
 
     private class Route
