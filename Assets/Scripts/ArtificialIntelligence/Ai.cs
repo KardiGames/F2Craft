@@ -11,6 +11,7 @@ public class Ai : MonoBehaviour
     [SerializeField] bool _autoproduction = true;
     [SerializeField] private List<ScriptableObject> _buildOrder = new();
     [SerializeField] private List<Building> _builtByOrder = new();
+    [SerializeField] private List<Foundation> _foundations = new();
     [SerializeField] private List<UnitProducer> _unitProducers = new List<UnitProducer>();
     [SerializeField] private List<Factory> _factories = new List<Factory>();
     [SerializeField] private List<Storehouse> _storehouses = new List<Storehouse>();
@@ -153,7 +154,7 @@ public class Ai : MonoBehaviour
 
             _freeWorkers.Remove(worker);
             _busyWorkers.Add(worker, route);
-            
+
 
             worker.Commander.SetAiPrograms(from, to);
         }
@@ -297,12 +298,13 @@ public class Ai : MonoBehaviour
     {
         int rebuildIndex = -1;
         bool buildingInProcess = false;
-        for (int i = 0; i< _builtByOrder.Count; i++)
+        for (int i = 0; i < _builtByOrder.Count; i++)
             if (_builtByOrder[i] == null)
             {
-                rebuildIndex=i;
+                rebuildIndex = i;
                 break;
-            } else if (_builtByOrder[i] is ConstructionSite)
+            }
+            else if (_builtByOrder[i] is ConstructionSite)
             {
                 buildingInProcess = true;
                 break;
@@ -313,17 +315,17 @@ public class Ai : MonoBehaviour
             buildingInProcess = true;
         }
 
-        int workersDemand = ( _routesQueue.Count - _busyWorkers.Count) / _busyWorkers.Count;
+        int workersDemand = (_routesQueue.Count - _busyWorkers.Count) / _busyWorkers.Count;
         if (workersDemand > 0)
         {
             ProduceWorker(workersDemand);
             return;
         }
-        
+
         if (buildingInProcess || _buildOrder.Count <= _builtByOrder.Count)
             return;
 
-        Build (_builtByOrder.Count);
+        Build(_builtByOrder.Count);
     }
 
     private void RestoreBuiltList()
@@ -331,17 +333,31 @@ public class Ai : MonoBehaviour
         throw new NotImplementedException();
     }
 
-    private void Build (int buildOrderIndex)
+    private void Build(int buildOrderIndex)
     {
-        throw new NotImplementedException();
+        foreach (Foundation foundation in _foundations)
+        {
+            if (foundation.enabled == false)
+                continue;
+
+
+            return;
+        }
     }
 
     private void ProduceWorker(int maxProduction)
     {
-        throw new NotImplementedException();
+        for (int i = 0; (i < _unitProducers.Count && maxProduction > 0); i++)
+        {
+            if (_unitProducers[i].Blueprint.name != WORKER_BLUEPRINT_NAME)
+                continue;
+            if (_unitProducers[i].QueuedUnits == 0)
+                _unitProducers[i].AddUnitToQueue();
+            maxProduction++;
+        }
     }
 
-    private void ReplaceHandler (ActiveEntity oldEntity, ActiveEntity newEntity)
+    private void ReplaceHandler(ActiveEntity oldEntity, ActiveEntity newEntity)
     {
         if (newEntity == null)
         {
@@ -352,7 +368,7 @@ public class Ai : MonoBehaviour
             Debug.LogWarning("Replacing NULL entity. Strange. Continuing");
 
         if (oldEntity is Building oldBuilding && _builtByOrder.Contains(oldBuilding) && newEntity is Building newBuilding)
-            _builtByOrder[_builtByOrder.IndexOf(oldBuilding)]= newBuilding;
+            _builtByOrder[_builtByOrder.IndexOf(oldBuilding)] = newBuilding;
     }
 
     private class Route

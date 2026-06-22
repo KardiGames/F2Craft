@@ -62,11 +62,13 @@ public class SelectionManager : MonoBehaviour
     {
         ActiveEntity.AddObserver(RefreshEntitiesLists);
         ActiveEntity.S_OnEntityRemoved += UnselectRemovedEntity;
+        ActiveEntity.S_OnEntityReplaced += ReplaceSelectedEntity;
     }
     private void OnDisable()
     {
         ActiveEntity.RemoveObserver(RefreshEntitiesLists);
         ActiveEntity.S_OnEntityRemoved -= UnselectRemovedEntity;
+        ActiveEntity.S_OnEntityReplaced -= ReplaceSelectedEntity;
     }
 
     private void GroupSelection()
@@ -144,6 +146,23 @@ public class SelectionManager : MonoBehaviour
                     _allBuildings.Add(building);
                     break;
             }
+        }
+    }
+
+    private void ReplaceSelectedEntity (ActiveEntity oldEntity, ActiveEntity newEntity)
+    {
+        if (newEntity == null)
+        {
+            Debug.LogError("Replacing by NULL. Canceled.");
+            return;
+        }
+        if (oldEntity == null)
+            Debug.LogWarning("Replacing NULL entity. Continuing");
+
+        if (_selectedEntities.Contains(oldEntity))
+        {
+            _selectedEntities[_selectedEntities.IndexOf(oldEntity)] = newEntity;
+            OnSelectionChanged?.Invoke();
         }
     }
 

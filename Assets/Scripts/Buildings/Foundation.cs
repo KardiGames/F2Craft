@@ -17,13 +17,11 @@ public class Foundation : MonoBehaviour
     public void BuildFactory(int playerNumber, BlueprintForBuilding buildingBlueprint, BlueprintForItem blueprintToSetup)
     {
         ConstructionSite site = Instantiate<ConstructionSite>(_underConstructionPrefab, transform.position, _underConstructionPrefab.transform.rotation);
-        //CRUTCH: go.Find
         site.Init(playerNumber, buildingBlueprint, this, blueprintToSetup, null);
     }
     public void BuildUnitProducer(int playerNumber, BlueprintForBuilding buildingBlueprint, BlueprintForUnit blueprintToSetup)
     {
         ConstructionSite site = Instantiate<ConstructionSite>(_underConstructionPrefab, transform.position, _underConstructionPrefab.transform.rotation);
-        //CRUTCH: go.Find
         site.Init(playerNumber, buildingBlueprint, this, null, blueprintToSetup);
 
     }
