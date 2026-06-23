@@ -7,22 +7,37 @@ public class Ai : MonoBehaviour
 {
     private const string WORKER_BLUEPRINT_NAME = "WorkerBlueprint";
 
+    [Header("Observing")]
     [SerializeField] private int _aiNumber;
-    [SerializeField] bool _autoproduction = true;
-    [SerializeField] private List<ScriptableObject> _buildOrder = new();
+    [SerializeField] private bool _autoproduction = true;
     [SerializeField] private List<Building> _builtByOrder = new();
-    [SerializeField] private List<Foundation> _foundations = new();
     [SerializeField] private List<UnitProducer> _unitProducers = new List<UnitProducer>();
     [SerializeField] private List<Factory> _factories = new List<Factory>();
     [SerializeField] private List<Storehouse> _storehouses = new List<Storehouse>();
     [SerializeField] private List<ConstructionSite> _constructionSites = new List<ConstructionSite>();
     [SerializeField] private List<Building> _otherBuildings = new List<Building>();
+    [Header("Setup")]
+    [SerializeField] private List<ScriptableObject> _buildOrder = new();
+    [SerializeField] private List<Foundation> _foundations = new();
+    [Header("Building Blueprints")]
+    [SerializeField] private BlueprintForBuilding _factoryBlueprint;
+    [SerializeField] private BlueprintForBuilding _unitProducerBlueprint;
+    [SerializeField] private BlueprintForBuilding _storageBlueprint;
     private List<Worker> _freeWorkers = new();
     private Dictionary<Worker, Route> _busyWorkers = new Dictionary<Worker, Route>();
     private Dictionary<(Building, Item), int> _blockedItems = new Dictionary<(Building, Item), int>();
     private List<(Building, Item)> _blockedItemsCleaner = new List<(Building, Item)>();
     private List<Route> _routesQueue = new List<Route>();
     private List<Route> _routesLog = new List<Route>();
+
+    private void Start()
+    {
+        if (_factoryBlueprint == null
+            || _unitProducerBlueprint == null
+            || _storageBlueprint == null
+            )
+            Debug.LogError("LINKS in AI are lost");
+    }
 
     private void OnEnable()
     {
@@ -335,12 +350,24 @@ public class Ai : MonoBehaviour
 
     private void Build(int buildOrderIndex)
     {
+        ScriptableObject blueprint = _buildOrder[buildOrderIndex];
         foreach (Foundation foundation in _foundations)
         {
             if (foundation.enabled == false)
                 continue;
 
-
+            switch (blueprint)
+            {
+                case BlueprintForItem itemBlueprint:
+                    foundation.BuildFactory(_aiNumber, _factoryBlueprint, itemBlueprint);
+                    break;
+                case BlueprintForUnit unitBluepring:
+                    foundation.BuildUnitProducer(_aiNumber, _unitProducerBlueprint, unitBluepring);
+                    break;
+                case null:
+                    foundation.BuildStorehouse(_aiNumber, _storageBlueprint);
+                    break;
+            }
             return;
         }
     }

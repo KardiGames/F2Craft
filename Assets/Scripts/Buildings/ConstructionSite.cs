@@ -25,19 +25,19 @@ public class ConstructionSite : Building
     {
         if (buildingBlueprint == null || foundation == null)
         {
-            print("Error! ConstructionSite initialisation aborted");
+            Debug.LogError("ConstructionSite initialisation aborted");
             return;
         }
 
         if ((buildingBlueprint.ConstructingBuilding is Factory && itemBlueprint == null) && (buildingBlueprint.ConstructingBuilding is UnitProducer && unitBlueprint == null))
         {
-            print("Error! ConstructionSite initialisation aborted");
+            Debug.LogError("ConstructionSite initialisation aborted");
             return;
         }
 
         if (_buildingBlueprint != null || _itemBlueprint != null || _foundation != null)
         {
-            print("Error. ConstructionSite re-initialisation aborted");
+            Debug.LogError("ConstructionSite re-initialisation aborted");
             return;
         }
 
@@ -158,6 +158,11 @@ public class ConstructionSite : Building
         else if (_buildingBlueprint.ConstructingBuilding is UnitProducer unitProducerBlueprint)
         {
             UnitProducer producer = Instantiate<UnitProducer>(unitProducerBlueprint, transform.position, unitProducerBlueprint.transform.rotation);
+            producer.Init(_playerNumber, _hp, _foundation, _unitBlueprint);
+            Replace(this, producer);
+        } else if (_buildingBlueprint.ConstructingBuilding is Storehouse storehouseBlueprint)
+        {
+            Storehouse storehouse = Instantiate<Storehouse>(storehouseBlueprint, transform.position, unitProducerBlueprint.transform.rotation);
             producer.Init(_playerNumber, _hp, _foundation, _unitBlueprint);
             Replace(this, producer);
         }

@@ -1,3 +1,4 @@
+using System;
 using UnityEngine;
 
 public class Foundation : MonoBehaviour
@@ -24,5 +25,10 @@ public class Foundation : MonoBehaviour
         ConstructionSite site = Instantiate<ConstructionSite>(_underConstructionPrefab, transform.position, _underConstructionPrefab.transform.rotation);
         site.Init(playerNumber, buildingBlueprint, this, null, blueprintToSetup);
 
+    }
+    public void BuildStorehouse(int playerNumber, BlueprintForBuilding buildingBlueprint)
+    {
+        ConstructionSite site = Instantiate<ConstructionSite>(_underConstructionPrefab, transform.position, _underConstructionPrefab.transform.rotation);
+        site.Init(playerNumber, buildingBlueprint, this, null, null);
     }
 }
