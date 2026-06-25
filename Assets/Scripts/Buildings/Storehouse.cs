@@ -30,9 +30,17 @@ public class Storehouse : Building
         return _storage.FreeCapacity(item);
     }
 
-    public void Init(int playerNumber, int capacity)
+    public void Init(int playerNumber, int capacity, Foundation foundation)
     {
         base.Init(playerNumber);
+        if (foundation == null || foundation.IsInstantiated == false)
+        {
+            Debug.LogError("Error! Unit producer havn't built");
+            Destroy();
+            return;
+        }
+
+        _foundation = foundation;
         _storage = new ItemsSlot(capacity);
         _storage.OnContentChanged += OnParameterChangedInvoke;
     }

@@ -162,9 +162,9 @@ public class ConstructionSite : Building
             Replace(this, producer);
         } else if (_buildingBlueprint.ConstructingBuilding is Storehouse storehouseBlueprint)
         {
-            Storehouse storehouse = Instantiate<Storehouse>(storehouseBlueprint, transform.position, unitProducerBlueprint.transform.rotation);
-            producer.Init(_playerNumber, _hp, _foundation, _unitBlueprint);
-            Replace(this, producer);
+            Storehouse storehouse = Instantiate<Storehouse>(storehouseBlueprint, transform.position, storehouseBlueprint.transform.rotation);
+            storehouse.Init(_playerNumber, _hp, _foundation);
+            Replace(this, storehouse);
         }
     }
 }
