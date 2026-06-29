@@ -40,7 +40,7 @@ public class Building : ActiveEntity
         }
         if (_foundation.IsInstantiated == false)
         {
-            print("Crutch. Instantiating foundation for " + gameObject.name);
+            Debug.Log("Crutch. Instantiating foundation for " + gameObject.name);
             _foundation=Instantiate(_foundation, transform.position, _foundation.transform.rotation);
         }
         _foundation.gameObject.SetActive(false);

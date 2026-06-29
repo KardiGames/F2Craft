@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using UnityEngine;
+using static UnityEditor.Experimental.GraphView.Port;
 
 public class Storehouse : Building
 {
@@ -51,8 +52,14 @@ public class Storehouse : Building
 
         if (_storage == null)
         {
-            Init(_playerNumber, DEFAULT_CAPACITY);
-            print("Crutch. Storehouse center initiated by Start()");
+            if (_foundation == null)
+            {
+                Debug.LogError("Foundation link on storehouse is null! Destriying");
+                Destroy();
+                return;
+            }
+            _storage = new ItemsSlot(DEFAULT_CAPACITY);
+            Debug.Log("Crutch. Storehouse center initiated by Start()");
         }
     }
 }

@@ -35,6 +35,8 @@ public class Ai : MonoBehaviour
         if (_factoryBlueprint == null
             || _unitProducerBlueprint == null
             || _storageBlueprint == null
+            || _buildOrder.Count == 0
+            || _foundations.Count == 0
             )
             Debug.LogError("LINKS in AI are lost");
     }
@@ -330,7 +332,7 @@ public class Ai : MonoBehaviour
             buildingInProcess = true;
         }
 
-        int workersDemand = (_routesQueue.Count - _busyWorkers.Count) / _busyWorkers.Count;
+        int workersDemand = (_routesQueue.Count - _busyWorkers.Count) / Mathf.Max(_busyWorkers.Count, 1);
         if (workersDemand > 0)
         {
             ProduceWorker(workersDemand);
@@ -351,23 +353,31 @@ public class Ai : MonoBehaviour
     private void Build(int buildOrderIndex)
     {
         ScriptableObject blueprint = _buildOrder[buildOrderIndex];
+        Building building = null;
         foreach (Foundation foundation in _foundations)
         {
-            if (foundation.enabled == false)
+            if (foundation.isActiveAndEnabled == false)
                 continue;
 
             switch (blueprint)
             {
                 case BlueprintForItem itemBlueprint:
-                    foundation.BuildFactory(_aiNumber, _factoryBlueprint, itemBlueprint);
+                    building = foundation.BuildFactory(_aiNumber, _factoryBlueprint, itemBlueprint);
                     break;
-                case BlueprintForUnit unitBluepring:
-                    foundation.BuildUnitProducer(_aiNumber, _unitProducerBlueprint, unitBluepring);
+                case BlueprintForUnit unitBlueprint:
+                    building = foundation.BuildUnitProducer(_aiNumber, _unitProducerBlueprint, unitBlueprint);
                     break;
                 case null:
-                    foundation.BuildStorehouse(_aiNumber, _storageBlueprint);
+                    building = foundation.BuildStorehouse(_aiNumber, _storageBlueprint);
                     break;
             }
+            if (_builtByOrder.Count > buildOrderIndex)
+                _builtByOrder[buildOrderIndex] = building;
+            else if (_builtByOrder.Count == buildOrderIndex)
+                _builtByOrder.Add(building);
+            else
+                Debug.LogError("Wrong index for BuiltByOrder list. Continuing without saving data");
+
             return;
         }
     }
@@ -380,7 +390,7 @@ public class Ai : MonoBehaviour
                 continue;
             if (_unitProducers[i].QueuedUnits == 0)
                 _unitProducers[i].AddUnitToQueue();
-            maxProduction++;
+            maxProduction--;
         }
     }
 
