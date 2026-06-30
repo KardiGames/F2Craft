@@ -23,7 +23,7 @@ public class Ai : MonoBehaviour
     [SerializeField] private BlueprintForBuilding _factoryBlueprint;
     [SerializeField] private BlueprintForBuilding _unitProducerBlueprint;
     [SerializeField] private BlueprintForBuilding _storageBlueprint;
-    private List<Worker> _freeWorkers = new();
+    [SerializeField] private List<Worker> _freeWorkers = new();
     private Dictionary<Worker, Route> _busyWorkers = new Dictionary<Worker, Route>();
     private Dictionary<(Building, Item), int> _blockedItems = new Dictionary<(Building, Item), int>();
     private List<(Building, Item)> _blockedItemsCleaner = new List<(Building, Item)>();

@@ -10,6 +10,7 @@ public class ActiveEntity : MonoBehaviour
     public static event Action<ActiveEntity> S_OnEntityRemoved;
     public static event Action<ActiveEntity, ActiveEntity> S_OnEntityReplaced;
     private static ObservableCollection<ActiveEntity> s_entities = new ObservableCollection<ActiveEntity>();
+    private static List<ActiveEntity> s_replaced = new List<ActiveEntity>();
     public static IEnumerable<ActiveEntity> GetEntitiesList() => s_entities;
 
     /*
@@ -64,6 +65,7 @@ public class ActiveEntity : MonoBehaviour
             Debug.LogWarning("Replacing NULL entity. Strange. Continuing");
 
         s_entities[s_entities.IndexOf(oldEntity)] = newEntity;
+        s_replaced.Add(newEntity);
         S_OnEntityReplaced?.Invoke(oldEntity, newEntity);
 
         Destroy(oldEntity.gameObject);
@@ -126,6 +128,11 @@ public class ActiveEntity : MonoBehaviour
         if (_selectionIndicator == null)
             Debug.LogError("Selection indicator isn't set on " + gameObject.name);
 
-        s_entities.Add(this);
+        if (s_entities.Contains(this) == false)
+            s_entities.Add(this);
+        else if (s_replaced.Contains(this))
+            s_replaced.Remove(this);
+        else
+            Debug.LogWarning("New ActiveEntity already in global list");
     }
 }
