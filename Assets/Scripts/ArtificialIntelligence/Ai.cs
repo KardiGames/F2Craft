@@ -25,7 +25,8 @@ public class Ai : MonoBehaviour
     [SerializeField] private BlueprintForBuilding _storageBlueprint;
     [SerializeField] private List<Worker> _freeWorkers = new();
     private Dictionary<Worker, Route> _busyWorkers = new Dictionary<Worker, Route>();
-    private Dictionary<(Building, Item), int> _blockedItems = new Dictionary<(Building, Item), int>();
+    private Dictionary<(Building, Item), int> _blockedFromItems = new Dictionary<(Building, Item), int>();
+    private Dictionary<(Building, Item), int> _blockedToItems = new Dictionary<(Building, Item), int>();
     private List<(Building, Item)> _blockedItemsCleaner = new List<(Building, Item)>();
     private List<Route> _routesQueue = new List<Route>();
     private List<Route> _routesLog = new List<Route>();
@@ -123,14 +124,14 @@ public class Ai : MonoBehaviour
         if (route == null)
             return;
 
-        if (_blockedItems.ContainsKey((route.From, route.Item)))
+        if (_blockedFromItems.ContainsKey((route.From, route.Item)))
         {
-            _blockedItems[(route.From, route.Item)] -= route.Quantity;
-            if (_blockedItems[(route.From, route.Item)] <= 0)
+            _blockedFromItems[(route.From, route.Item)] -= route.Quantity;
+            if (_blockedFromItems[(route.From, route.Item)] <= 0)
                 _blockedItemsCleaner.Add((route.From, route.Item));
         }
         foreach (var blockedItemToRemove in _blockedItemsCleaner)
-            _blockedItems.Remove(blockedItemToRemove);
+            _blockedFromItems.Remove(blockedItemToRemove);
         _blockedItemsCleaner.Clear();
 
         _busyWorkers.Remove(worker);
@@ -171,14 +172,19 @@ public class Ai : MonoBehaviour
             to.ForceItem = true;
             to.ForceQuantity = true;
 
+            BlockItemsFrom(route);
             _freeWorkers.Remove(worker);
-            if (_blockedItems.ContainsKey((route.From, route.Item)))
-                _blockedItems[(route.From, route.Item)] += route.Quantity;
-            else
-                _blockedItems.Add((route.From, route.Item), route.Quantity);
             _busyWorkers.Add(worker, route);
             worker.Commander.SetAiPrograms(from, to);
         }
+    }
+
+    private void BlockItemsFrom (Route route)
+    {
+        if (_blockedFromItems.ContainsKey((route.From, route.Item)))
+            _blockedFromItems[(route.From, route.Item)] += route.Quantity;
+        else
+            _blockedFromItems.Add((route.From, route.Item), route.Quantity);
     }
 
     Worker GetFreeWorker(int quantity)
@@ -310,8 +316,8 @@ public class Ai : MonoBehaviour
             return 0;
         }
         int availableItems = building.ItemsOfTypeToGive(item, out ItemsSlot s);
-        if (_blockedItems.ContainsKey((building, item)))
-            availableItems -= _blockedItems[(building, item)];
+        if (_blockedFromItems.ContainsKey((building, item)))
+            availableItems -= _blockedFromItems[(building, item)];
         return availableItems;
     }
 
