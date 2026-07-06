@@ -6,6 +6,7 @@ using WorkerLogic;
 public class Ai : MonoBehaviour
 {
     private const string WORKER_BLUEPRINT_NAME = "WorkerBlueprint";
+    private enum BlockingStorageType { From, To };
 
     [Header("Observing")]
     [SerializeField] private int _aiNumber;
@@ -27,9 +28,9 @@ public class Ai : MonoBehaviour
     private Dictionary<Worker, Route> _busyWorkers = new Dictionary<Worker, Route>();
     private Dictionary<(Building, Item), int> _blockedFromItems = new Dictionary<(Building, Item), int>();
     private Dictionary<(Building, Item), int> _blockedToItems = new Dictionary<(Building, Item), int>();
-    private List<(Building, Item)> _blockedItemsCleaner = new List<(Building, Item)>();
     private List<Route> _routesQueue = new List<Route>();
     private List<Route> _routesLog = new List<Route>();
+
 
     private void Start()
     {
@@ -119,20 +120,14 @@ public class Ai : MonoBehaviour
         if (worker == null)
             return;
         worker.Command = null;
-
-        Route route = _busyWorkers[worker];
-        if (route == null)
-            return;
-
-        if (_blockedFromItems.ContainsKey((route.From, route.Item)))
+        if (_busyWorkers.ContainsKey(worker) == false)
         {
-            _blockedFromItems[(route.From, route.Item)] -= route.Quantity;
-            if (_blockedFromItems[(route.From, route.Item)] <= 0)
-                _blockedItemsCleaner.Add((route.From, route.Item));
+            Debug.LogWarning("The worker is absent in busy list");
+            return;
         }
-        foreach (var blockedItemToRemove in _blockedItemsCleaner)
-            _blockedFromItems.Remove(blockedItemToRemove);
-        _blockedItemsCleaner.Clear();
+        Route route = _busyWorkers[worker];
+        if (route != null)
+            UnblockItems(route);
 
         _busyWorkers.Remove(worker);
     }
@@ -158,7 +153,7 @@ public class Ai : MonoBehaviour
             {
                 _routesQueue[^1] = route.GetReminderAfterDecrease(worker.ItemsSlot.QuantityLimit);
                 if (_routesQueue[^1] == null)
-                    _routesQueue.RemoveAt(_routesQueue.Count-1);
+                    _routesQueue.RemoveAt(_routesQueue.Count - 1);
             }
             else
             {
@@ -172,21 +167,40 @@ public class Ai : MonoBehaviour
             to.ForceItem = true;
             to.ForceQuantity = true;
 
-            BlockItemsFrom(route);
+            BlockItems(route);
             _freeWorkers.Remove(worker);
             _busyWorkers.Add(worker, route);
             worker.Commander.SetAiPrograms(from, to);
         }
     }
 
-    private void BlockItemsFrom (Route route)
+    private void BlockItems(Route route)
     {
         if (_blockedFromItems.ContainsKey((route.From, route.Item)))
             _blockedFromItems[(route.From, route.Item)] += route.Quantity;
         else
             _blockedFromItems.Add((route.From, route.Item), route.Quantity);
+        if (_blockedToItems.ContainsKey((route.To, route.Item)))
+            _blockedToItems[(route.To, route.Item)] += route.Quantity;
+        else
+            _blockedToItems.Add((route.To, route.Item), route.Quantity);
     }
 
+    private void UnblockItems(Route route)
+    {
+        if (_blockedFromItems.ContainsKey((route.From, route.Item)))
+        {
+            _blockedFromItems[(route.From, route.Item)] -= route.Quantity;
+            if (_blockedFromItems[(route.From, route.Item)] <= 0)
+                _blockedFromItems.Remove((route.From, route.Item));
+        }
+        if (_blockedToItems.ContainsKey((route.To, route.Item)))
+        {
+            _blockedToItems[(route.To, route.Item)] -= route.Quantity;
+            if (_blockedToItems[(route.To, route.Item)] <= 0)
+                _blockedToItems.Remove((route.To, route.Item));
+        }
+    }
     Worker GetFreeWorker(int quantity)
     {
         if (_freeWorkers.Count == 0)
@@ -321,6 +335,19 @@ public class Ai : MonoBehaviour
         return availableItems;
     }
 
+    private int FreeCapacityInBuilding(Building building, Item item) //TODO USE IT instead of...
+    {
+        if (building == null || item == null)
+        {
+            Debug.LogWarning("Ai method got bad building or item");
+            return 0;
+        }
+        int freeCapacity = building.ItemsOfTypeToGet(item, out ItemsSlot s);
+        if (_blockedToItems.ContainsKey((building, item)))
+            freeCapacity -= _blockedToItems[(building, item)];
+        return freeCapacity;
+    }
+
     private void Develop()
     {
         int rebuildIndex = -1;
@@ -439,7 +466,7 @@ public class Ai : MonoBehaviour
         {
             if (newQuantity <= 0 || newQuantity >= Quantity)
             {
-                Debug.LogWarning("Cant give reminder of "+Item.name);
+                Debug.LogWarning("Cant give reminder of " + Item.name);
                 return null;
             }
             Route reminder = new Route(From, To, Item, Quantity - newQuantity);
