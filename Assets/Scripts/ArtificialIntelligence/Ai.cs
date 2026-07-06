@@ -1,12 +1,12 @@
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using UnityEngine;
 using WorkerLogic;
 
 public class Ai : MonoBehaviour
 {
     private const string WORKER_BLUEPRINT_NAME = "WorkerBlueprint";
-    private enum BlockingStorageType { From, To };
 
     [Header("Observing")]
     [SerializeField] private int _aiNumber;
@@ -167,7 +167,6 @@ public class Ai : MonoBehaviour
             to.ForceItem = true;
             to.ForceQuantity = true;
 
-            BlockItems(route);
             _freeWorkers.Remove(worker);
             _busyWorkers.Add(worker, route);
             worker.Commander.SetAiPrograms(from, to);
@@ -240,7 +239,8 @@ public class Ai : MonoBehaviour
                     || slot.MonoItem == null)
                     continue;
                 Item requestedItem = slot.MonoItem;
-                if (_routesQueue.Exists(route => route.To == producer && route.Item == requestedItem))
+                if (_routesQueue.Exists(route => route.To == producer && route.Item == requestedItem)
+                    || _busyWorkers.Values.Any(route => route.To == producer && route.Item == requestedItem))
                     continue;
 
                 Building containsRequestedItem = FindResourceInBuildings(requestedItem, _factories, _otherBuildings, _storehouses);
@@ -251,6 +251,7 @@ public class Ai : MonoBehaviour
                     continue;
 
                 _routesQueue.Add(new Route(containsRequestedItem, producer, requestedItem, quantity));
+                BlockItems(_routesQueue[^1]);
             }
         }
 
@@ -262,7 +263,8 @@ public class Ai : MonoBehaviour
                     || slot.MonoItem == null)
                     continue;
                 Item requestedItem = slot.MonoItem;
-                if (_routesQueue.Exists(route => route.To == factory && route.Item == requestedItem))
+                if (_routesQueue.Exists(route => route.To == factory && route.Item == requestedItem)
+                    || _busyWorkers.Values.Any(route => route.To == factory && route.Item == requestedItem))
                     continue;
 
                 Building containsRequestedItem = FindResourceInBuildings(requestedItem, _factories, _otherBuildings, _storehouses);
@@ -273,6 +275,7 @@ public class Ai : MonoBehaviour
                     continue;
 
                 _routesQueue.Add(new Route(containsRequestedItem, factory, requestedItem, quantity));
+                BlockItems(_routesQueue[^1]);
             }
         }
 
@@ -284,7 +287,8 @@ public class Ai : MonoBehaviour
                     || slot.MonoItem == null)
                     continue;
                 Item requestedItem = slot.MonoItem;
-                if (_routesQueue.Exists(route => route.To == site && route.Item == requestedItem))
+                if (_routesQueue.Exists(route => route.To == site && route.Item == requestedItem)
+                    || _busyWorkers.Values.Any(route => route.To == site && route.Item == requestedItem))
                     continue;
 
                 Building containsRequestedItem = FindResourceInBuildings(requestedItem, _factories, _otherBuildings, _storehouses);
@@ -295,6 +299,7 @@ public class Ai : MonoBehaviour
                     continue;
 
                 _routesQueue.Add(new Route(containsRequestedItem, site, requestedItem, quantity));
+                BlockItems(_routesQueue[^1]);
             }
         }
 
@@ -333,19 +338,6 @@ public class Ai : MonoBehaviour
         if (_blockedFromItems.ContainsKey((building, item)))
             availableItems -= _blockedFromItems[(building, item)];
         return availableItems;
-    }
-
-    private int FreeCapacityInBuilding(Building building, Item item) //TODO USE IT instead of...
-    {
-        if (building == null || item == null)
-        {
-            Debug.LogWarning("Ai method got bad building or item");
-            return 0;
-        }
-        int freeCapacity = building.ItemsOfTypeToGet(item, out ItemsSlot s);
-        if (_blockedToItems.ContainsKey((building, item)))
-            freeCapacity -= _blockedToItems[(building, item)];
-        return freeCapacity;
     }
 
     private void Develop()

@@ -160,7 +160,7 @@ MonoBehaviour:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 160136957}
-  m_Enabled: 1
+  m_Enabled: 0
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: dc42784cf147c0c48a680349fa168899, type: 3}
   m_Name: 
@@ -728,6 +728,7 @@ MonoBehaviour:
   _factoryBlueprint: {fileID: 11400000, guid: 6ca3fcf6c40d94847a282c6ccaf76c6b, type: 2}
   _unitProducerBlueprint: {fileID: 11400000, guid: e0256a5a92b8be547a58a5d3095115a4, type: 2}
   _storageBlueprint: {fileID: 11400000, guid: ecc6678c95f38f54293d1e4cc8cb23ce, type: 2}
+  _freeWorkers: []
 --- !u!1 &330585543
 GameObject:
   m_ObjectHideFlags: 0
