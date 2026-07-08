@@ -8,7 +8,10 @@ using UnityEngine;
 public class ActiveEntity : MonoBehaviour
 {
     public static event Action<ActiveEntity> S_OnEntityRemoved;
+    public static event Action<ActiveEntity, ActiveEntity> S_OnEntityReplaced;
     private static ObservableCollection<ActiveEntity> s_entities = new ObservableCollection<ActiveEntity>();
+    private static List<ActiveEntity> s_replaced = new List<ActiveEntity>();
+    public static IEnumerable<ActiveEntity> GetEntitiesList() => s_entities;
 
     /*
     private static void AddEntity(ActiveEntity entity)
@@ -31,11 +34,11 @@ public class ActiveEntity : MonoBehaviour
         _entities.Remove(entity);
     }
     */
-    public static void AddObserver (NotifyCollectionChangedEventHandler handler)
+    public static void AddObserver(NotifyCollectionChangedEventHandler handler)
     {
         s_entities.CollectionChanged += handler;
     }
-    public static void RemoveObserver (NotifyCollectionChangedEventHandler handler)
+    public static void RemoveObserver(NotifyCollectionChangedEventHandler handler)
     {
         s_entities.CollectionChanged -= handler;
     }
@@ -44,10 +47,29 @@ public class ActiveEntity : MonoBehaviour
     {
         return s_entities.Where(entity => entity.PlayerNumber != playerNumber);
     }
-    public static IEnumerable<ActiveEntity> GetEntitiesList() => s_entities;
+
+    public static IEnumerable<ActiveEntity> GetEntitiesList(int playerNumber) =>
+        s_entities.Where(entity => entity.PlayerNumber == playerNumber);
 
     public static bool Contains(ActiveEntity entity) =>
         s_entities.Contains(entity);
+
+    protected static void Replace(ActiveEntity oldEntity, ActiveEntity newEntity)
+    {
+        if (newEntity == null || s_entities.Contains(oldEntity) == false)
+        {
+            Debug.LogError("Replacing by NULL of not existing entity. Canceled.");
+            return;
+        }
+        if (oldEntity == null)
+            Debug.LogWarning("Replacing NULL entity. Strange. Continuing");
+
+        s_entities[s_entities.IndexOf(oldEntity)] = newEntity;
+        s_replaced.Add(newEntity);
+        S_OnEntityReplaced?.Invoke(oldEntity, newEntity);
+
+        Destroy(oldEntity.gameObject);
+    }
 
     public event Action OnParameterChanged;
     [SerializeField] protected int _playerNumber;
@@ -61,13 +83,13 @@ public class ActiveEntity : MonoBehaviour
 
     protected void Init(int playerNumber)
     {
-        if (_maxHp<=0 || _hp<=0 || _hp>_maxHp || _selectionIndicator == null)
+        if (_maxHp <= 0 || _hp <= 0 || _hp > _maxHp || _selectionIndicator == null)
         {
             Debug.LogError("Active Entity initialisation aborted. Destroying. GO: " + gameObject.name);
             Destroy();
             return;
         }
-        
+
         _playerNumber = playerNumber;
     }
 
@@ -76,25 +98,25 @@ public class ActiveEntity : MonoBehaviour
         OnParameterChanged?.Invoke();
     }
 
-    public void GetDamage (int damage)
+    public void GetDamage(int damage)
     {
         if (damage <= 0)
             return;
-        _hp-= damage;
+        _hp -= damage;
         OnParameterChanged?.Invoke();
-        
-        if (_hp<0)
+
+        if (_hp < 0)
         {
             Destroy();
         }
     }
 
-    public void SetSelection (bool isSelecting)
+    public void SetSelection(bool isSelecting)
     {
         _selectionIndicator.SetActive(isSelecting);
     }
-    
-    protected virtual void Destroy ()
+
+    protected virtual void Destroy()
     {
         s_entities.Remove(this);
         S_OnEntityRemoved?.Invoke(this);
@@ -106,6 +128,11 @@ public class ActiveEntity : MonoBehaviour
         if (_selectionIndicator == null)
             Debug.LogError("Selection indicator isn't set on " + gameObject.name);
 
-        s_entities.Add(this);
+        if (s_entities.Contains(this) == false)
+            s_entities.Add(this);
+        else if (s_replaced.Contains(this))
+            s_replaced.Remove(this);
+        else
+            Debug.LogWarning("New ActiveEntity already in global list");
     }
 }

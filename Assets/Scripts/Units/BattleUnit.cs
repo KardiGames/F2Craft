@@ -14,6 +14,8 @@ public class BattleUnit : Unit
     private void Update()
     {
         if (_target == null)
+            FindTarget();
+        if (_target == null)
             return;
 
         if (SqrDistanceTo(_target) > _attackDistance * _attackDistance)
@@ -26,7 +28,7 @@ public class BattleUnit : Unit
     {
         if ( _target == null )
         {
-            print("Error! No target for DistanceTo");
+            Debug.LogError("No target for DistanceTo");
             return float.MaxValue;
         }
         float sqrDistance = (transform.position - target.transform.position).sqrMagnitude; //TODO m.b. change to 2D distance &&|| cash transform
@@ -57,5 +59,21 @@ public class BattleUnit : Unit
         }
         else
             _cooldown-= Time.deltaTime;
+    }
+
+    private void FindTarget()
+    {
+        float minSqrDistance = float.MaxValue;
+        ActiveEntity target = null;
+        foreach (ActiveEntity entity in ActiveEntity.GetEnemiesList(_playerNumber))
+        {
+            float sqrDistance = SqrDistanceTo(entity);
+            if (sqrDistance < minSqrDistance)
+            {
+                target = entity;
+                minSqrDistance = sqrDistance;
+            }
+        }
+        _target = target;
     }
 }

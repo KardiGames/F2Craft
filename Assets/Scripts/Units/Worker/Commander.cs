@@ -1,7 +1,5 @@
-using System.Collections;
+
 using System.Collections.Generic;
-using System.Drawing;
-using UnityEditor.Search;
 using UnityEngine;
 
 namespace WorkerLogic
@@ -20,9 +18,9 @@ namespace WorkerLogic
                 AssignCommand(new Move(_worker, point));
         }
         
-        public void Connect(Building building, bool queue = false)
+        public void Connect(Building building, bool enqueue = false)
         {
-            if (queue && _worker.Command == null)
+            if (enqueue && _worker.Command == null)
                 _commandQueue.Add(new MoveAndConnect(_worker, building));
             else
                 AssignCommand(new MoveAndConnect(_worker, building));
@@ -42,6 +40,14 @@ namespace WorkerLogic
             if (_isProgramActivated)
                 NextCommand();
         }
+        public void SetAiPrograms (Program from, Program to)
+        {
+            if (from == null || to == null || _worker.Command != null)
+                return;
+            AssignCommand(new RunProgram(_worker, from));
+            _commandQueue.Add(new RunProgram(_worker, to));
+        }
+
         private void Awake()
         {
             _worker = GetComponent<Worker>();
@@ -55,7 +61,6 @@ namespace WorkerLogic
 
             _worker.Command = command;
             command.OnFinishedCommandExecuted += NextCommand;
-
         }
         private void NextCommand ()
         {

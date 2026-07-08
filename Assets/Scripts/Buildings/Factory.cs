@@ -22,7 +22,7 @@ public class Factory : Building
         if (_tmpBlueprint != null)
         {
             SetupBlueprint(_tmpBlueprint);
-            print("Crutch. Factory blueprint set by Start()");
+            Debug.Log("Crutch. Factory blueprint set by Start()");
         }
     }
     public void Init(int playerNumber, int hp, Foundation foundation, BlueprintForItem itemBlueprint)

@@ -22,7 +22,16 @@ public class UnitProducer : Building
     public int QueuedUnits => _queuedUnits;
     public BlueprintForUnit Blueprint => _blueprint;
     public IEnumerable<ItemsSlot> ResourcesStorage => _resourcesStorage;
-    public bool Autoproduction { get => _autoproduction; private set => _autoproduction = value; }
+    public bool Autoproduction
+    {
+        get => _autoproduction; set
+        {
+            if (value == true && _autoproduction == false && _queuedUnits <= 0)
+                AddUnitToQueue();
+
+            _autoproduction = value;
+        }
+    }
     protected override void Start()
     {
         base.Start();
@@ -207,7 +216,7 @@ public class UnitProducer : Building
 
         _isProducting = false;
         UnitTimer = 0;
-        if (_autoproduction == false)
+        if (Autoproduction == false)
             _queuedUnits--;
         StartProduction();
     }
