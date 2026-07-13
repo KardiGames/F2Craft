@@ -9,7 +9,6 @@ public class Factory : Building
     private ItemRecycler _recycler;
     private float _timer = 0f;
     private bool _isProducting = false;
-    [SerializeField] private BlueprintForItem _tmpBlueprint;
 
     public int ItemTimer { get; private set; }
     public BlueprintForItem Blueprint => _blueprint;
@@ -19,9 +18,15 @@ public class Factory : Building
     protected override void Start()
     {
         base.Start();
-        if (_tmpBlueprint != null)
+        if (_blueprint == null)
         {
-            SetupBlueprint(_tmpBlueprint);
+            Debug.LogError("Error! Factory havn't set by Start(). Destroying");
+            Destroy();
+            return;
+        }
+        if (_productionStorage.Count == 0)
+        {
+            SetupBlueprint(_blueprint);
             Debug.Log("Crutch. Factory blueprint set by Start()");
         }
     }

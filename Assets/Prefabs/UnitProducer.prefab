@@ -52,6 +52,7 @@ MonoBehaviour:
   _playerNumber: 0
   _hp: 150
   _maxHp: 150
+  _tags: 1
   _selectionIndicator: {fileID: 8887875155389156890}
   _foundation: {fileID: 2879976269712404072, guid: 7cb8965d171c1624f8d1dcfc43514e67, type: 3}
   _blueprint: {fileID: 0}
@@ -59,7 +60,6 @@ MonoBehaviour:
   _optionalResoursesSlots: 0
   _autoproduction: 0
   _queuedUnits: 0
-  _tmpBlueprint: {fileID: 0}
 --- !u!114 &693668467032575836
 MonoBehaviour:
   m_ObjectHideFlags: 0

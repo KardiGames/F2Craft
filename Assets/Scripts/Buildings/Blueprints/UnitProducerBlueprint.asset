@@ -14,8 +14,6 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::BlueprintForBuilding
   _buildingPefub: {fileID: 1905176029019989943, guid: 354871ee8ed14f64c83b7edeb8cc8062, type: 3}
   _time: 30
-  _buildingHP: 203
   _resources:
   - {fileID: 11400000, guid: a40053139cbbab34a820502f4295ac6d, type: 2}
-  - {fileID: 11400000, guid: c6f94364ccac40b4f9b3542d7621ba7f, type: 2}
-  _resourcesQuantities: 1e00000003000000
+  _resourcesQuantities: 1e000000

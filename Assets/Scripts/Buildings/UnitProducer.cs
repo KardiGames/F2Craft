@@ -16,7 +16,7 @@ public class UnitProducer : Building
     private float _timer = 0f;
     private bool _isProducting = false;
     private List<Item> _spentOptionalResources = new();
-    [SerializeField] private BlueprintForUnit _tmpBlueprint;
+
 
     public int UnitTimer { get; private set; }
     public int QueuedUnits => _queuedUnits;
@@ -32,16 +32,7 @@ public class UnitProducer : Building
             _autoproduction = value;
         }
     }
-    protected override void Start()
-    {
-        base.Start();
 
-        if (_tmpBlueprint != null)
-        {
-            print("Crutch. Unitproducer blueprint set by Start()");
-            SetupBlueprint(_tmpBlueprint);
-        }
-    }
     public void Init(int playerNumber, int hp, Foundation foundation, BlueprintForUnit unitBlueprint)
     {
         if (foundation == null || foundation.IsInstantiated == false || unitBlueprint == null)
@@ -152,6 +143,22 @@ public class UnitProducer : Building
             }
         }
         return foundSlotCapacity;
+    }
+    protected override void Start()
+    {
+        base.Start();
+
+        if (_blueprint == null)
+        {
+            Debug.LogError("Error! Unit producer havn't set by Start(). Destroying");
+            Destroy();
+            return;
+        }
+        if (_resourcesStorage.Count == 0)
+        {
+            print("Crutch. Unitproducer blueprint set by Start()");
+            SetupBlueprint(_blueprint);
+        }
     }
 
     private void RemoveBlueprint()

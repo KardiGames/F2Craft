@@ -142,12 +142,12 @@ MonoBehaviour:
   _playerNumber: 0
   _hp: 203
   _maxHp: 203
+  _tags: 1
   _selectionIndicator: {fileID: 5734514306671418610}
   _foundation: {fileID: 0}
   _blueprint: {fileID: 0}
   _productionStorage: []
   _resourcesStorage: []
-  _tmpBlueprint: {fileID: 0}
 --- !u!114 &6167024785155600365
 MonoBehaviour:
   m_ObjectHideFlags: 0

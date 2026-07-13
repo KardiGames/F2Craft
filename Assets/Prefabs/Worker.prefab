@@ -143,6 +143,7 @@ MonoBehaviour:
   _playerNumber: 0
   _hp: 5
   _maxHp: 5
+  _tags: 8
   _selectionIndicator: {fileID: 851500187659022686}
   _moveSpeed: 6
   _commander: {fileID: 2921855552532832037}

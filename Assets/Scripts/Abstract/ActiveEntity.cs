@@ -7,6 +7,23 @@ using UnityEngine;
 
 public class ActiveEntity : MonoBehaviour
 {
+    [Flags] public enum Flags
+    {
+        None = 0,
+        Building = 1 << 0,
+        Mechanical = 1 << 1,
+        Biological = 1 << 2,
+        Flying = 1 << 3,
+        Hover = 1 << 4,
+        Massive = 1 << 5,
+        Superheavy = 1 << 6,
+        Cloaked = 1 << 7,
+        Detector = 1 << 8,
+        Regeneration = 1 << 9,
+        Carrier = 1 << 10,
+        Burrow = 1 << 11
+    }
+
     public static event Action<ActiveEntity> S_OnEntityRemoved;
     public static event Action<ActiveEntity, ActiveEntity> S_OnEntityReplaced;
     private static ObservableCollection<ActiveEntity> s_entities = new ObservableCollection<ActiveEntity>();
@@ -72,21 +89,24 @@ public class ActiveEntity : MonoBehaviour
     }
 
     public event Action OnParameterChanged;
+
     [SerializeField] protected int _playerNumber;
     [SerializeField] protected int _hp;
     [SerializeField] protected int _maxHp;
+    [SerializeField] protected Flags _tags;
     [SerializeField] protected GameObject _selectionIndicator;
 
     public int PlayerNumber => _playerNumber;
     public int HP => _hp;
     public int MaxHp => _maxHp;
+    public Flags Tags => _tags;
 
     protected void Init(int playerNumber)
     {
         if (_maxHp <= 0 || _hp <= 0 || _hp > _maxHp || _selectionIndicator == null)
         {
             Debug.LogError("Active Entity initialisation aborted. Destroying. GO: " + gameObject.name);
-            Destroy();
+            Destroy(); //TODO Think! M.b. here must be Destroy (go) ?
             return;
         }
 
