@@ -5,12 +5,6 @@ using System;
 public class BattleUnit : Unit
 {
     [SerializeField] private Weapon _weapon;
-    [SerializeField] private ActiveEntity _target;
-    [SerializeField] private int _damage;
-    [SerializeField] float _attackDistance;
-    [SerializeField] private float _attackCooldown;
-    private float _cooldown=0f;
-
     public new void Init (int playerNumber) =>
         base.Init(playerNumber);
 
@@ -30,23 +24,10 @@ public class BattleUnit : Unit
         if (_target == null)
             return;
 
-        if (SqrDistanceTo(_target) > _attackDistance * _attackDistance)
+        if (SqrDistanceTo(_target.transform) > _weapon.Range*_weapon.Range)
             Move();
         else
             Attack();
-    }
-
-    private float SqrDistanceTo (ActiveEntity target) 
-    {
-        if ( target == null )
-        {
-            Debug.LogError("No target for DistanceTo");
-            return float.MaxValue;
-        }
-        float sqrDistance = (transform.position - target.transform.position).sqrMagnitude; //TODO m.b. change to 2D distance &&|| cash transform
-        sqrDistance -= transform.localScale.x/2;
-        sqrDistance -= target.transform.localScale.x/2;
-        return sqrDistance;
     }
 
     private void Move ()
@@ -72,31 +53,7 @@ public class BattleUnit : Unit
             _cooldown-= Time.deltaTime;
     }
 
-    private ActiveEntity BestTarget(float attackRange = 0)
-    {
-        float minSqrDistance = float.MaxValue;
-        float sqrRange = attackRange*attackRange;
-        ActiveEntity target = null;
-        AttackPriority currentPriority = 0;
-        foreach (ActiveEntity entity in ActiveEntity.GetEnemiesList(_playerNumber))
-        {
-            AttackPriority priority = _weapon.PriorityToAttack(entity);
-            if (priority == AttackPriority.ImpossibleToAttack)
-                continue;
-            float sqrDistance = SqrDistanceTo(entity);
-            if (sqrDistance < sqrRange && priority > currentPriority)
-            {
-                target = entity;
-                currentPriority = priority;
-            }
-            else if (currentPriority <= AttackPriority.Building && sqrDistance < minSqrDistance) 
-            {
-                target = entity;
-                minSqrDistance = sqrDistance;
-            }
-        }
-        return target;
-    }
+
 
     private void SwitchTarget ()
     {

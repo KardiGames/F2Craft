@@ -136,6 +136,19 @@ public class ActiveEntity : MonoBehaviour
         _selectionIndicator.SetActive(isSelecting);
     }
 
+    public float SqrDistanceTo(Transform targetTransform)
+    {
+        if (targetTransform == null)
+        {
+            Debug.LogError("No target for SqrDistanceTo");
+            return float.MaxValue;
+        }
+        float sqrDistance = (transform.position - targetTransform.position).sqrMagnitude; //TODO m.b. change to 2D distance &&|| cash transform
+        sqrDistance -= transform.localScale.x / 2;
+        sqrDistance -= targetTransform.localScale.x / 2;
+        return sqrDistance;
+    }
+
     protected virtual void Destroy()
     {
         s_entities.Remove(this);
