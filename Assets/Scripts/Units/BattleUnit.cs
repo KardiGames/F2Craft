@@ -5,8 +5,12 @@ using System;
 public class BattleUnit : Unit
 {
     [SerializeField] private Weapon _weapon;
-    public new void Init (int playerNumber) =>
+    public new void Init(int playerNumber)
+    {
         base.Init(playerNumber);
+        if (_weapon != null )
+            _weapon.PlayerNumber = playerNumber;
+    }
 
     protected override void Start()
     {
@@ -19,10 +23,6 @@ public class BattleUnit : Unit
     }
     private void Update()
     {
-        if (_target == null)
-            _target = BestTarget();
-        if (_target == null)
-            return;
 
         if (SqrDistanceTo(_target.transform) > _weapon.Range*_weapon.Range)
             Move();
@@ -42,16 +42,6 @@ public class BattleUnit : Unit
         transform.position = transform.position+ moveVector;
     }
 
-    private void Attack()
-    {
-        if (_cooldown <= 0f)
-        {
-            _target.GetDamage(_damage);
-            _cooldown += _attackCooldown;
-        }
-        else
-            _cooldown-= Time.deltaTime;
-    }
 
 
 
