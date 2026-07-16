@@ -100,10 +100,10 @@ GameObject:
   m_Component:
   - component: {fileID: 6408758874951375214}
   - component: {fileID: 5244063435836057177}
+  - component: {fileID: 4767786305468223070}
   - component: {fileID: 8923293200017985886}
   - component: {fileID: 4089004507521424143}
   - component: {fileID: 4032694646334014507}
-  - component: {fileID: 4767786305468223070}
   m_Layer: 7
   m_Name: Fighter
   m_TagString: Untagged
@@ -146,10 +146,23 @@ MonoBehaviour:
   _selectionIndicator: {fileID: 517325742261540844}
   _moveSpeed: 1.5
   _weapon: {fileID: 4767786305468223070}
+--- !u!114 &4767786305468223070
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6920079358077919681}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: ae30d1b221a5be948ba36fdaf19c35a2, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::Battle.Weapon
+  _playerNumber: -1
+  _range: 0
+  _damage: 0
+  _attackCooldown: 0
   _target: {fileID: 0}
-  _damage: 10
-  _attackDistance: 5
-  _attackCooldown: 0.5
 --- !u!33 &8923293200017985886
 MeshFilter:
   m_ObjectHideFlags: 0
@@ -230,15 +243,3 @@ CapsuleCollider:
   m_Height: 2
   m_Direction: 1
   m_Center: {x: 0.000000059604645, y: 0, z: -0.00000008940697}
---- !u!114 &4767786305468223070
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 6920079358077919681}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: ae30d1b221a5be948ba36fdaf19c35a2, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::Battle.Weapon

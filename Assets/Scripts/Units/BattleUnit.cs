@@ -23,18 +23,14 @@ public class BattleUnit : Unit
     }
     private void Update()
     {
-
-        if (SqrDistanceTo(_target.transform) > _weapon.Range*_weapon.Range)
-            Move();
-        else
-            Attack();
+        Move();
     }
 
     private void Move ()
     {
-        if (_target == null) 
+        if (_weapon.Target == null || _weapon.TargetInRange) 
             return;
-        Vector3 targetPoint = _target.transform.position;
+        Vector3 targetPoint = _weapon.Target.transform.position;
         targetPoint.y = transform.position.y;
         transform.LookAt(targetPoint);
         Vector3 moveVector = ((targetPoint - transform.position).normalized)*_moveSpeed*Time.deltaTime;

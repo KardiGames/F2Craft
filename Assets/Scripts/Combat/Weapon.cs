@@ -1,20 +1,39 @@
+using System;
 using UnityEngine;
 namespace Battle
 {
     public class Weapon : MonoBehaviour
     {
+        [Flags] public enum Flags
+        {
+            None = 0,
+            Building = 1 << 0,
+            Mechanical = 1 << 1,
+            Biological = 1 << 2,
+            Flying = 1 << 3,
+            Hover = 1 << 4,
+            Massive = 1 << 5,
+            Superheavy = 1 << 6,
+            Cloaked = 1 << 7,
+            Detector = 1 << 8,
+            Regeneration = 1 << 9,
+            Carrier = 1 << 10,
+            Burrow = 1 << 11
+        }
+
         [SerializeField] private int _playerNumber = -1;
         [SerializeField] private float _range;
         [SerializeField] private int _damage;
         [SerializeField] private float _attackCooldown;
         [SerializeField] private ActiveEntity _target;
         private float _cooldown = 0f;
+        private bool _wasTargetAttacked = false;
         //public float Range => _range;
         public int PlayerNumber
         {
             get => _playerNumber; set
             {
-                if (_playerNumber < 0 && value > 0)
+                if (_playerNumber < 0 && value >= 0)
                     _playerNumber = value;
                 else
                     Debug.LogWarning("Trying initialize player number with " + value, gameObject);
@@ -43,20 +62,29 @@ namespace Battle
         void Update()
         {
             if (_target == null)
-                _target = BestTarget();
+                TrySetTarget(FindTarget());
             if (_cooldown > 0f)
                 _cooldown -= Time.deltaTime;
             else if (TargetInRange)
-                Attack();
+                TryAttack();
         }
 
-        private void Attack()
+        private bool TryAttack()
         {
-            if (_cooldown <= 0f)
+            if (_cooldown > 0f || _target == null)
+                return false;
+            if (TargetInRange == false)
             {
-                _target.GetDamage(_damage);
-                _cooldown += _attackCooldown;
+                if (_wasTargetAttacked && TryUpdateTarget())
+                    return TryAttack();
+                else
+                    return false;
             }
+
+            _target.GetDamage(_damage);
+            _wasTargetAttacked = true;
+            _cooldown += _attackCooldown;
+            return true;
         }
 
         public AttackPriority PriorityToAttack(ActiveEntity target)
@@ -69,27 +97,49 @@ namespace Battle
             return AttackPriority.Normal;
         }
 
-        /* There is no attacker accesseble yet
-        public ActiveEntity BetterTarget(ActiveEntity attacker, ActiveEntity target1, ActiveEntity target2, out int priority)
+        // call when got damage of target out of range
+        public bool TryUpdateTarget()
         {
-            priority = 0;
-            AttackPriority priority2 = PriorityToAttack(target2);
-            if (priority2 <= AttackPriority.ZeroDamage)
-                return target1;
 
-            AttackPriority priority1 = PriorityToAttack(target1);
-            if (priority1 <= AttackPriority.ZeroDamage)
-                return target2;
+            ActiveEntity alternativeTarget = FindTarget();
+            if (alternativeTarget == null)
+                return false;
+            if (_target == null)
+            {
+                _target = alternativeTarget;
+                return true;
+            }
 
-            bool inRange1 = attacker.SqrDistanceTo(target1.transform) < _range * _range;
-            bool inRange2 = attacker.SqrDistanceTo(target2.transform) < _range * _range;
-            
-            if (inRange1 == true && inRange2 == false)
-                return target1;
-            if ()
-            
-        }*/
-        private ActiveEntity BestTarget()
+            AttackPriority alternativeTypePriority = PriorityToAttack(alternativeTarget);
+            if (alternativeTypePriority <= AttackPriority.ZeroDamage)
+                return false;
+            AttackPriority typePriority = PriorityToAttack(_target);
+            if (typePriority <= AttackPriority.ZeroDamage)
+            {
+                _target = alternativeTarget;
+                return true;
+            }
+
+            bool inRange = _target.SqrDistanceTo(transform) < _range * _range;
+            bool inAlternativeRange = alternativeTarget.SqrDistanceTo(transform) < _range * _range;
+            if (inRange == true && inAlternativeRange == false)
+                return false;
+            if (inRange == false && inAlternativeRange == true)
+            {
+                _target = alternativeTarget;
+                return true;
+            }
+
+            float maxTypePriority = typePriority >= alternativeTypePriority ? (float)typePriority : (float)alternativeTypePriority;
+            float priority = (float)typePriority + (1.0f - _target.HP / _target.MaxHp) * maxTypePriority;
+            float alternativePriority = (float)alternativeTypePriority + (1.0f - alternativeTarget.HP / alternativeTarget.MaxHp) * maxTypePriority;
+
+            if (priority >= alternativePriority)
+                return false;
+            _target = alternativeTarget;
+            return true;
+        }
+        private ActiveEntity FindTarget()
         {
             Transform weaponTransform = transform;
             float minSqrDistance = float.MaxValue;
@@ -114,6 +164,16 @@ namespace Battle
                 }
             }
             return target;
+        }
+
+        private bool TrySetTarget(ActiveEntity target)
+        {
+            if (target == null)
+                return false;
+
+            _target = target;
+            _wasTargetAttacked = false;
+            return true;
         }
     }
 }
