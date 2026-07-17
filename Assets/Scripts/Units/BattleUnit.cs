@@ -1,15 +1,30 @@
 using UnityEngine;
-using Battle;
+using Combat;
 using System;
 
 public class BattleUnit : Unit
 {
     [SerializeField] private Weapon _weapon;
+    [SerializeField] private Armor _armor;
+    //public Weapon Weapon => _weapon;
+    public Armor Armor => _armor;
     public new void Init(int playerNumber)
     {
         base.Init(playerNumber);
         if (_weapon != null )
             _weapon.PlayerNumber = playerNumber;
+    }
+
+    public override void TakeDamage(Combat.DamageData damage)
+    {
+        if (_armor != null )
+            _armor.ReduceDamage (damage);
+        base.TakeDamage(damage);
+        
+        if (_hp > 0)
+        {
+            _weapon.TryUpdateTarget();
+        }
     }
 
     protected override void Start()
@@ -19,6 +34,11 @@ public class BattleUnit : Unit
         {
             Debug.LogWarning("LINK to weapon was lost!");
             _weapon = GetComponent<Weapon>();
+        }
+        if (_armor == null)
+        {
+            Debug.LogWarning("LINK to armor was lost!");
+            _armor = GetComponent<Armor>();
         }
     }
     private void Update()

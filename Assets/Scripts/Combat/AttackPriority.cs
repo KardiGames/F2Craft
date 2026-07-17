@@ -1,4 +1,4 @@
-namespace Battle
+namespace Combat
 {
 
     public enum AttackPriority

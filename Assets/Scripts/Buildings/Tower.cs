@@ -21,7 +21,7 @@ public class Tower : Building
     {
         if (_cooldown <= 0f)
         {
-            _target.GetDamage(_damage);
+            _target.TakeDamage(new Combat.DamageData(_damage, Combat.Weapon.Flags.None));
             _cooldown += _attackCooldown;
         }
         else

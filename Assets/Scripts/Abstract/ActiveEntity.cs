@@ -118,17 +118,18 @@ public class ActiveEntity : MonoBehaviour
         OnParameterChanged?.Invoke();
     }
 
-    public void GetDamage(int damage)
+    public virtual void TakeDamage(Combat.DamageData damage)
     {
-        if (damage <= 0)
+        if (damage.Amount <= 0)
             return;
-        _hp -= damage;
+        ApplyDamageModifiers(damage);
+        _hp -= damage.Amount;
         OnParameterChanged?.Invoke();
 
-        if (_hp < 0)
+        if (_hp <= 0)
         {
             Destroy();
-        }
+        } 
     }
 
     public void SetSelection(bool isSelecting)
@@ -167,5 +168,10 @@ public class ActiveEntity : MonoBehaviour
             s_replaced.Remove(this);
         else
             Debug.LogWarning("New ActiveEntity already in global list");
+    }
+
+    private void ApplyDamageModifiers(Combat.DamageData damage)
+    {
+
     }
 }

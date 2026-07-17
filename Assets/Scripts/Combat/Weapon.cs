@@ -1,24 +1,24 @@
 using System;
 using UnityEngine;
-namespace Battle
+namespace Combat
 {
     public class Weapon : MonoBehaviour
     {
         [Flags] public enum Flags
         {
             None = 0,
-            Building = 1 << 0,
-            Mechanical = 1 << 1,
-            Biological = 1 << 2,
-            Flying = 1 << 3,
-            Hover = 1 << 4,
-            Massive = 1 << 5,
-            Superheavy = 1 << 6,
-            Cloaked = 1 << 7,
-            Detector = 1 << 8,
-            Regeneration = 1 << 9,
-            Carrier = 1 << 10,
-            Burrow = 1 << 11
+            ArmorPiercing = 1 << 0,
+            IgnoreArmorl = 1 << 1,
+            ShieldBypass = 1 << 2,
+            Siege = 1 << 3,
+            Splash = 1 << 4,
+            AntiBuilding = 1 << 5,
+            Chain = 1 << 6,
+            EMP = 1 << 7,
+            Corrosive = 1 << 8,
+            Toxin = 1 << 9,
+            Precision = 1 << 10,
+            Slow = 1 << 11
         }
 
         [SerializeField] private int _playerNumber = -1;
@@ -81,7 +81,7 @@ namespace Battle
                     return false;
             }
 
-            _target.GetDamage(_damage);
+            _target.TakeDamage(new DamageData(_damage, Flags.None));
             _wasTargetAttacked = true;
             _cooldown += _attackCooldown;
             return true;
