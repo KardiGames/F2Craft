@@ -122,7 +122,7 @@ public class ActiveEntity : MonoBehaviour
     {
         if (damage.Amount <= 0)
             return;
-        ApplyDamageModifiers(damage);
+        damage = ApplyDamageModifiers(damage);
         _hp -= damage.Amount;
         OnParameterChanged?.Invoke();
 
@@ -170,8 +170,8 @@ public class ActiveEntity : MonoBehaviour
             Debug.LogWarning("New ActiveEntity already in global list");
     }
 
-    private void ApplyDamageModifiers(Combat.DamageData damage)
+    private Combat.DamageData ApplyDamageModifiers(Combat.DamageData damage)
     {
-
+        return damage;
     }
 }

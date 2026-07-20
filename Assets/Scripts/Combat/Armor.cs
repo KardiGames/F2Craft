@@ -14,15 +14,15 @@ namespace Combat
             ReactiveArmor = 1 << 2
         }
 
-        private int _defence = 0;
-        private Flags _tags;
+        [SerializeField] private int _defence = 0;
+        [SerializeField] private Flags _tags;
 
         public int Defence => _defence;
         public Flags Tags => _tags;
 
-        public void ReduceDamage(DamageData damage)
+        public DamageData ReduceDamage(DamageData damage)
         {
-            
+            return damage;
         }
     }
 

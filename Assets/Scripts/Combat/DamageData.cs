@@ -2,16 +2,17 @@ using UnityEngine;
 namespace Combat
 {
 
-    public readonly struct DamageData
+    public struct DamageData
     {
-        public int Amount { get; }
-        public Weapon.Flags WeaponTags { get; }
+        public int Amount;
+        public Weapon.Flags WeaponTags;
 
-        public DamageData (int amount, Weapon.Flags weaponTags)
+        public DamageData(int amount, Weapon.Flags weaponTags)
         {
             Amount = amount;
             WeaponTags = weaponTags;
         }
+
     }
 
 }

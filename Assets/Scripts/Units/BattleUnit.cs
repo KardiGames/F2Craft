@@ -18,7 +18,7 @@ public class BattleUnit : Unit
     public override void TakeDamage(Combat.DamageData damage)
     {
         if (_armor != null )
-            _armor.ReduceDamage (damage);
+            damage = _armor.ReduceDamage (damage);
         base.TakeDamage(damage);
         
         if (_hp > 0)
@@ -56,13 +56,5 @@ public class BattleUnit : Unit
         Vector3 moveVector = ((targetPoint - transform.position).normalized)*_moveSpeed*Time.deltaTime;
         
         transform.position = transform.position+ moveVector;
-    }
-
-
-
-
-    private void SwitchTarget ()
-    {
-        throw new NotImplementedException();
     }
 }
